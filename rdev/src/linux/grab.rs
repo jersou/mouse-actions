@@ -1,12 +1,3 @@
-use crate::linux::common::Display;
-use crate::linux::keyboard::Keyboard;
-use crate::rdev::{Button, Event, EventType, GrabError, Key, KeyboardState};
-use epoll::ControlOptions::{EPOLL_CTL_ADD, EPOLL_CTL_DEL};
-use evdev_rs::{
-    enums::{EventCode, EV_KEY, EV_REL},
-    Device, InputEvent, UInputDevice,
-};
-use inotify::{Inotify, WatchMask};
 use std::ffi::{OsStr, OsString};
 use std::fs::{read_dir, File};
 use std::io;
@@ -17,6 +8,17 @@ use std::os::unix::{
 };
 use std::path::Path;
 use std::time::SystemTime;
+
+use epoll::ControlOptions::{EPOLL_CTL_ADD, EPOLL_CTL_DEL};
+use evdev_rs::{
+    enums::{EventCode, EV_KEY, EV_REL},
+    Device, InputEvent, UInputDevice,
+};
+use inotify::{Inotify, WatchMask};
+
+use crate::linux::common::Display;
+use crate::linux::keyboard::Keyboard;
+use crate::rdev::{Button, Event, EventType, GrabError, Key, KeyboardState};
 
 // TODO The x, y coordinates are currently wrong !! Is there mouse acceleration
 // to take into account ??
@@ -74,7 +76,15 @@ macro_rules! convert_buttons {
 convert_buttons!(
     BTN_LEFT, Left,
     BTN_RIGHT, Right,
-    BTN_MIDDLE, Middle
+    BTN_MIDDLE, Middle,
+    BTN_SIDE, Side,
+    BTN_EXTRA, Extra,
+    BTN_FORWARD, Forward,
+    BTN_BACK, Back,
+    BTN_TASK, Task,
+    BTN_TRIGGER, Trigger,
+    BTN_THUMB, Thumb,
+    BTN_THUMB2, Thumb2
 );
 
 //TODO: IntlBackslash, kpDelete

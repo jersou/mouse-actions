@@ -1,11 +1,13 @@
-use crate::linux::common::{FALSE, TRUE};
-use crate::linux::keycodes::code_from_key;
-use crate::rdev::{Button, EventType, SimulateError};
 use std::convert::TryInto;
 use std::os::raw::c_int;
 use std::ptr::null;
+
 use x11::xlib;
 use x11::xtest;
+
+use crate::linux::common::{FALSE, TRUE};
+use crate::linux::keycodes::code_from_key;
+use crate::rdev::{Button, EventType, SimulateError};
 
 unsafe fn send_native(event_type: &EventType, display: *mut xlib::Display) -> Option<()> {
     let res = match event_type {
@@ -21,6 +23,17 @@ unsafe fn send_native(event_type: &EventType, display: *mut xlib::Display) -> Op
             Button::Left => xtest::XTestFakeButtonEvent(display, 1, TRUE, 0),
             Button::Middle => xtest::XTestFakeButtonEvent(display, 2, TRUE, 0),
             Button::Right => xtest::XTestFakeButtonEvent(display, 3, TRUE, 0),
+
+            // FIXME button mapping
+            Button::Side => xtest::XTestFakeButtonEvent(display, 10, TRUE, 0),
+            Button::Extra => xtest::XTestFakeButtonEvent(display, 11, TRUE, 0),
+            Button::Forward => xtest::XTestFakeButtonEvent(display, 9, TRUE, 0),
+            Button::Back => xtest::XTestFakeButtonEvent(display, 8, TRUE, 0),
+            Button::Task => xtest::XTestFakeButtonEvent(display, 12, TRUE, 0),
+            Button::Trigger => xtest::XTestFakeButtonEvent(display, 13, TRUE, 0),
+            Button::Thumb => xtest::XTestFakeButtonEvent(display, 14, TRUE, 0),
+            Button::Thumb2 => xtest::XTestFakeButtonEvent(display, 15, TRUE, 0),
+
             Button::Unknown(code) => {
                 xtest::XTestFakeButtonEvent(display, (*code).try_into().ok()?, TRUE, 0)
             }
@@ -29,6 +42,17 @@ unsafe fn send_native(event_type: &EventType, display: *mut xlib::Display) -> Op
             Button::Left => xtest::XTestFakeButtonEvent(display, 1, FALSE, 0),
             Button::Middle => xtest::XTestFakeButtonEvent(display, 2, FALSE, 0),
             Button::Right => xtest::XTestFakeButtonEvent(display, 3, FALSE, 0),
+
+            // FIXME button mapping
+            Button::Side => xtest::XTestFakeButtonEvent(display, 10, FALSE, 0),
+            Button::Extra => xtest::XTestFakeButtonEvent(display, 11, FALSE, 0),
+            Button::Forward => xtest::XTestFakeButtonEvent(display, 9, FALSE, 0),
+            Button::Back => xtest::XTestFakeButtonEvent(display, 8, FALSE, 0),
+            Button::Task => xtest::XTestFakeButtonEvent(display, 12, FALSE, 0),
+            Button::Trigger => xtest::XTestFakeButtonEvent(display, 13, FALSE, 0),
+            Button::Thumb => xtest::XTestFakeButtonEvent(display, 14, FALSE, 0),
+            Button::Thumb2 => xtest::XTestFakeButtonEvent(display, 15, FALSE, 0),
+
             Button::Unknown(code) => {
                 xtest::XTestFakeButtonEvent(display, (*code).try_into().ok()?, FALSE, 0)
             }

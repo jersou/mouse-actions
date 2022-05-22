@@ -1,7 +1,8 @@
-#[cfg(feature = "serialize")]
-use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 use std::{fmt, fmt::Display};
+
+#[cfg(feature = "serialize")]
+use serde::{Deserialize, Serialize};
 
 // /// Callback type to send to listen function.
 // pub type Callback = dyn FnMut(Event) -> ();
@@ -57,6 +58,7 @@ pub enum GrabError {
     SimulateError,
     IoError(std::io::Error),
 }
+
 /// Errors that occur when trying to get display size.
 #[non_exhaustive]
 #[derive(Debug)]
@@ -220,6 +222,14 @@ pub enum Button {
     Left,
     Right,
     Middle,
+    Side,
+    Extra,
+    Forward,
+    Back,
+    Task,
+    Trigger,
+    Thumb,
+    Thumb2,
     Unknown(u8),
 }
 
