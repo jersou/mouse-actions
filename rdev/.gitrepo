@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/Narsil/rdev
+	branch = master
+	commit = fd0ca9670f3de294e2de16fbe0398e1538af1782
+	parent = a6b7bb3bb28fda03be6c50c261da1c46762388d8
+	method = merge
+	cmdver = 0.4.1
