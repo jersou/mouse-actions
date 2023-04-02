@@ -1,6 +1,6 @@
 [package]
 name = "mouse_actions"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Jerem <jersou@gmail.com>"]
 edition = "2021"
 
@@ -17,3 +17,4 @@ notify = "5.1.0"
 clap = { version = "4.2.0", features = ["derive"] }
 regex = "1.7.3"
 anyhow = "1.0.70"
+single-instance = "0.3.3"

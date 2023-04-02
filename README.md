@@ -306,69 +306,66 @@ Easystoke screenshot :
   mouse_actions: ../../src/xcb_io.c:163: dequeue_pending_request: Assertion `!xcb_xlib_unknown_req_in_deq' failed.
   ```
 
-* several patterns for a binding ?
-
 ### High
 
-* process TODO and FIXME, especially "inotify CREATE but not DELETE in grab::
-  inotify_devices()" rdev/src/linux/grab.rs:493
+* single instance
+* the FIXME "inotify CREATE but not DELETE in grab::inotify_devices()" in
+  rdev/src/linux/grab.rs:493
 * reset the modifiers/button state at root loop restart
 
 ### Medium
 
+* process TODO and FIXME
 * refactor
     * reduce clone() usages
     * remove panic
-    * remove unwrap
+    * reduce unwrap
     * refactor/use Rust best practices
     * refactor Arc/Mutex usages
     * refactor/change the pressState usage
     * dev doc, tests
     * handle errors correctly
     * use anyhow ?
-* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
 * add more tests
+* cancel shape if no move after few ms (400 ms ?)
+* only one instance, kill,
+* ability to kill old instance
 
 ### Low
 
+* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
 * several event for binding{}
 * record : limit float precision
 * record : fix cmd split
-* pull request/ contribute/modify rdev without checkout it in this repo
-* use autopilot-rs in bindings cmd (cmd script or key action)
+* pull request/contribute/modify rdev without checkout it in this repo (mouse
+  btn add & fix devices setup/Delete notify)
+* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
+  keyboard event as action (avoid xdotool usage in
+  cmd) : https://github.com/Narsil/rdev#sending-some-events
+* hide/freeze cursor while shape drawing ?
+* better Readme
+* detach subprocess (close mouse_actions must not close sub process)
+    * workaround : `"cmd": [ "bash", "-c",  "nohup gedit &" ]`
 
 ### Maybe
 
 * change config : if shape → no need button
-* cancel shape if no move after few ms (400 ms ?)
-* trigger keyboard event as action (avoid xdotool usage in
-  cmd) : https://github.com/Narsil/rdev#sending-some-events
-* vendors (in a separate branch)
-* hide/freeze cursor while shape drawing ?
-* better Readme
-* find better a project name
+* find a better project name
 * remove shape_button from config : filter the config bindings to set this value
-* build & test on Windows
 * GUI (Tauri ?)
-* full support Wayland (mouse position?) & Windows & MacOS
-
-### Abandoned (?)
-
-* get the mouse position on wayland → impossible ?
+* support Wayland & Windows & macOS (get the mouse position on wayland
+  impossible ?)
 * notif/sound/cursor change on action trigger (configurable) ?
-* detach subprocess (close mouse_actions must not close sub process)
-    * "cmd": [ "bash", "-c",  "nohup gedit &" ]
 * mouse move edge event ?
-* use RwLock
 
 ## Dev notes
 
-Shape recognition : compare angles get the average of the angles differences :
+Shape recognition : compare angles, get the average of the angles differences :
 
 ![shape-recognition.svg](shape-recognition.svg)
 
 The calculated difference is approximately the area between the 2 curves of
-angles (mod 2𝜋).
+angles (mod 2𝜋) visible on the right of the above image.
 
-Get the minimum difference : try with "horizontal" offset +/- 10 % (max 20 try).
-
+Get the minimum difference by shifting a curve horizontally: try removing the
+beginning or the end, by +/- 10 % max offset (max 20 try).
