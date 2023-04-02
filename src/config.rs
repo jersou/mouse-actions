@@ -6,9 +6,10 @@ use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
 
-use log::{error, info};
-use notify::op::CLOSE_WRITE;
-use notify::{raw_watcher, RawEvent, RecursiveMode, Watcher};
+use log::{error, info, trace};
+use notify::event::AccessKind::Close;
+use notify::EventKind::Access;
+use notify::{RecommendedWatcher, RecursiveMode, Watcher};
 use serde::{Deserialize, Serialize};
 
 use crate::binding::Binding;
@@ -45,27 +46,24 @@ pub fn get_config() -> Config {
 pub fn watch_config(config: Arc<Mutex<Config>>) {
     thread::spawn(move || {
         let (tx, rx) = channel();
-        let mut watcher = raw_watcher(tx).unwrap();
+        let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).unwrap();
         watcher
-            .watch(get_config_path(), RecursiveMode::NonRecursive)
+            .watch(get_config_path().as_path(), RecursiveMode::NonRecursive)
             .unwrap();
 
         loop {
             match rx.recv() {
-                Ok(RawEvent {
-                    path: Some(_),
-                    op: Ok(op),
-                    cookie: _,
-                }) => {
-                    if op == CLOSE_WRITE {
-                        info!("Reload the config !");
-                        *config.lock().unwrap() = get_config();
-                    }
+                Ok(Ok(notify::Event {
+                    kind: Access(Close(notify::event::AccessMode::Write)),
+                    ..
+                })) => {
+                    info!("Reload the config !");
+                    *config.lock().unwrap() = get_config();
                 }
-                Ok(event) => info!("watcher: broken event: {:?}", event),
+                Ok(event) => trace!("watcher: broken event: {:?}", event),
                 Err(e) => {
                     error!("watcher: watch error: {:?}", e);
-                    std::thread::sleep(std::time::Duration::from_secs(1));
+                    thread::sleep(std::time::Duration::from_secs(1));
                 }
             }
         }
@@ -83,14 +81,15 @@ pub fn init_config_file_if_not_exists() {
 
         let mut config_file = match File::create(&config_path) {
             Err(err) => panic!(
-                "couldn't create config file {}: {err}",
-                config_path.display()
+                "couldn't create config file {}: {}",
+                config_path.display(),
+                err
             ),
             Ok(file) => file,
         };
 
         match config_file.write_all(serialized.as_bytes()) {
-            Err(err) => panic!("couldn't write to {}: {err}", config_path.display()),
+            Err(err) => panic!("couldn't write to {}: {}", config_path.display(), err),
             Ok(_) => println!("successfully wrote to {}", config_path.display()),
         }
     }
@@ -106,8 +105,8 @@ pub fn save_config(config: &Config) {
         .unwrap();
 
     match config_file.write_all(serialized.as_bytes()) {
-        Err(err) => panic!("couldn't write to {}: {err}", config_path.display()),
-        Ok(_) => println!("successfully wrote to {}", config_path.display()),
+        Err(err) => panic!("couldn't write to {}: {}", config_path.display(), err),
+        Ok(_) => println!("successfully save to {}", config_path.display()),
     }
 }
 
@@ -140,6 +139,7 @@ mod tests {
                     shape: vec![0.0, 1.0, 2.0],
                 },
                 cmd: vec![String::from("xlogo")],
+                comment: String::new(),
             }],
         };
 
@@ -148,6 +148,7 @@ mod tests {
   "shape_button": "Right",
   "bindings": [
     {
+      "comment": "",
       "event": {
         "button": "Left",
         "edges": [

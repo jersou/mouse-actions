@@ -1,11 +1,11 @@
 use clap::{Parser, Subcommand};
 
+/// mouse_actions allows to execute some command from mouse events such as
+/// clicks on the side / corners of the screen, or drawing shapes.
+/// It's a mix between Easystroke and Compiz edge commands.
 /// https://github.com/jersou/mouse-actions
-/// mouse_actions allows to execute some command from mouse events such as clicks on
-/// the side / corners of the screen, or drawing shapes. It's a mix between
-/// Easystroke and Compiz edge commands.
 #[derive(Parser, Debug)]
-#[clap(author, version, about, long_about = None)]
+#[clap(author, version, about, verbatim_doc_comment)]
 pub struct Args {
     /// don't run the listen thread (for Wayland), the edge bindings might not work
     #[clap(short, long)]
@@ -32,4 +32,8 @@ pub enum MouseActionsCommands {
     /// Start record mode to add some mouse bindings
     #[clap()]
     Record,
+
+    /// List the current config bindings
+    #[clap()]
+    ListBindings,
 }

@@ -1,6 +1,7 @@
 use std::ffi::{OsStr, OsString};
 use std::fs::{read_dir, File};
 use std::io;
+use std::io::ErrorKind;
 use std::os::unix::{
     ffi::OsStrExt,
     fs::FileTypeExt,
@@ -351,67 +352,79 @@ pub fn filter_map_events<F>(mut func: F) -> io::Result<()>
 where
     F: FnMut(InputEvent) -> (Option<InputEvent>, GrabStatus),
 {
-    let (epoll_fd, mut devices, output_devices) = setup_devices()?;
-    let mut inotify = setup_inotify(epoll_fd, &devices)?;
+    // TODO detecter perm err, supp des device
+    'root_loop: loop {
+        println!("root_loop");
+        let (epoll_fd, mut devices, output_devices) = setup_devices()?;
+        let mut inotify = setup_inotify(epoll_fd, &devices)?;
 
-    //grab devices
-    let _grab = devices
-        .iter_mut()
-        .try_for_each(|device| device.grab(evdev_rs::GrabMode::Grab))?;
+        //grab devices
+        let _grab = devices
+            .iter_mut()
+            .try_for_each(|device| device.grab(evdev_rs::GrabMode::Grab))?;
 
-    // create buffer for epoll to fill
-    let mut epoll_buffer = [epoll::Event::new(epoll::Events::empty(), 0); 4];
-    let mut inotify_buffer = vec![0_u8; 4096];
-    'event_loop: loop {
-        let num_events = epoll::wait(epoll_fd, -1, &mut epoll_buffer)?;
+        // create buffer for epoll to fill
+        let mut epoll_buffer = [epoll::Event::new(epoll::Events::empty(), 0); 4];
+        let mut inotify_buffer = vec![0_u8; 4096];
+        'event_loop: loop {
+            let num_events = epoll::wait(epoll_fd, -1, &mut epoll_buffer)?;
 
-        //map and simulate events, dealing with
-        'events: for event in &epoll_buffer[0..num_events] {
-            // new device file created
-            if event.data == INOTIFY_DATA {
-                for event in inotify.read_events(&mut inotify_buffer)? {
-                    assert!(
-                        event.mask.contains(inotify::EventMask::CREATE),
-                        "inotify is listening for events other than file creation"
-                    );
-                    add_device_to_epoll_from_inotify_event(epoll_fd, event, &mut devices)?;
-                }
-            } else {
-                // Input device recieved event
-                let device_idx = event.data as usize;
-                let device = devices.get(device_idx).unwrap();
-                while device.has_event_pending() {
-                    //TODO: deal with EV_SYN::SYN_DROPPED
-                    let (_, event) = match device.next_event(evdev_rs::ReadFlag::NORMAL) {
-                        Ok(event) => event,
-                        Err(_) => {
-                            let device_fd = device.fd().unwrap().into_raw_fd();
-                            let empty_event = epoll::Event::new(epoll::Events::empty(), 0);
-                            epoll::ctl(epoll_fd, EPOLL_CTL_DEL, device_fd, empty_event)?;
-                            continue 'events;
+            //map and simulate events, dealing with
+            'events: for event in &epoll_buffer[0..num_events] {
+                // new device file created
+                if event.data == INOTIFY_DATA {
+                    for event in inotify.read_events(&mut inotify_buffer)? {
+                        assert!(
+                            event.mask.contains(inotify::EventMask::CREATE),
+                            "inotify is listening for events other than file creation"
+                        );
+                        let r =
+                            add_device_to_epoll_from_inotify_event(epoll_fd, event, &mut devices);
+                        println!("r = {:#?}", r);
+                        if r.is_err() && r.err().unwrap().kind().eq(&ErrorKind::PermissionDenied) {
+                            println!("ErrorKind::PermissionDenied");
+                            // FIXME use inotify::EventMask::DELETE
+                            continue 'root_loop;
                         }
-                    };
-                    let (event, grab_status) = func(event);
-
-                    if let (Some(event), Some(out_device)) = (event, output_devices.get(device_idx))
-                    {
-                        out_device.write_event(&event)?;
                     }
-                    if grab_status == GrabStatus::Stop {
-                        break 'event_loop;
+                } else {
+                    // Input device recieved event
+                    let device_idx = event.data as usize;
+                    let device = devices.get(device_idx).unwrap();
+                    while device.has_event_pending() {
+                        //TODO: deal with EV_SYN::SYN_DROPPED
+                        let (_, event) = match device.next_event(evdev_rs::ReadFlag::NORMAL) {
+                            Ok(event) => event,
+                            Err(_) => {
+                                let device_fd = device.fd().unwrap().into_raw_fd();
+                                let empty_event = epoll::Event::new(epoll::Events::empty(), 0);
+                                epoll::ctl(epoll_fd, EPOLL_CTL_DEL, device_fd, empty_event)?;
+                                continue 'events;
+                            }
+                        };
+                        let (event, grab_status) = func(event);
+
+                        if let (Some(event), Some(out_device)) =
+                            (event, output_devices.get(device_idx))
+                        {
+                            out_device.write_event(&event)?;
+                        }
+                        if grab_status == GrabStatus::Stop {
+                            break 'event_loop;
+                        }
                     }
                 }
             }
         }
-    }
 
-    for device in devices.iter_mut() {
-        //ungrab devices, ignore errors
-        device.grab(evdev_rs::GrabMode::Ungrab).ok();
-    }
+        for device in devices.iter_mut() {
+            //ungrab devices, ignore errors
+            device.grab(evdev_rs::GrabMode::Ungrab).ok();
+        }
 
-    epoll::close(epoll_fd)?;
-    Ok(())
+        epoll::close(epoll_fd)?;
+        return Ok(());
+    }
 }
 
 static DEV_PATH: &str = "/dev/input";

@@ -2,6 +2,8 @@ use std::io::stdin;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+use log::{debug, error};
+
 use crate::args::Args;
 use crate::binding::Binding;
 use crate::cmd_from_string::cmd_from_str;
@@ -27,24 +29,42 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
         {
             *RECORD_IN_PROGRESS.lock().unwrap() = true;
             thread::spawn(move || {
-                println!("record_event : {:?}", event);
-                println!("command to bind (empty to cancel) : ");
+                debug!("record_event : {:?}", event);
+                println!("command to bind (empty to stop the record) : ");
                 let mut input_string = String::new();
                 stdin()
                     .read_line(&mut input_string)
-                    .ok()
                     .expect("Failed to read line");
-                let input_string = input_string.trim();
-                *RECORD_IN_PROGRESS.lock().unwrap() = false;
-                if !input_string.is_empty() {
-                    println!("input_string : {}", input_string);
-                    let binding = Binding {
-                        event,
-                        cmd: cmd_from_str(input_string),
-                    };
+                let cmd_string = input_string.trim();
 
-                    config.lock().unwrap().bindings.push(binding);
-                    save_config(&config.lock().unwrap());
+                *RECORD_IN_PROGRESS.lock().unwrap() = false;
+                if !cmd_string.is_empty() {
+                    println!("comment : ");
+                    let mut input_string = String::new();
+                    stdin()
+                        .read_line(&mut input_string)
+                        .expect("Failed to read line");
+                    let comment = input_string.trim().to_string();
+
+                    match cmd_from_str(cmd_string) {
+                        Ok(cmd) => {
+                            let binding = Binding {
+                                comment,
+                                event,
+                                cmd,
+                            };
+                            config.lock().unwrap().bindings.push(binding);
+                            save_config(&config.lock().unwrap());
+                            // FIXME
+                            println!(
+                                "\nStart record event : draw a shape with the {:?} button :",
+                                config.lock().unwrap().shape_button
+                            );
+                        }
+                        Err(err) => error!("Error while command parsing : {:#?}", err),
+                    };
+                } else {
+                    std::process::exit(0);
                 }
             });
         }

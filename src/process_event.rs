@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::ops::{Deref, Mul};
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
@@ -13,7 +13,8 @@ use crate::compare_angles::compare_angles_with_offset;
 use crate::config::Config;
 use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent, PressState};
 
-const DIFF_MAX: f64 = 200.0;
+const DIFF_MAX: f64 = 0.6;
+const DIFF_MIN_WITH_SECOND: f64 = 0.05;
 const DIFF_MAX_PRINT: f64 = 300.0;
 const SHAPE_MIN_SIZE: usize = 10;
 
@@ -48,6 +49,7 @@ pub fn find_candidates_with_shape_with_offset<'a>(
             .map(|a| format!("{:.2}, ", a))
             .collect::<String>()
     );
+    let start = Instant::now();
     let mut candidates_with_shape = candidates
         .iter()
         .filter(|b| !b.event.shape.is_empty())
@@ -55,6 +57,10 @@ pub fn find_candidates_with_shape_with_offset<'a>(
         .filter(|(_, diff)| *diff < DIFF_MAX_PRINT)
         .collect::<Vec<_>>();
     candidates_with_shape.sort_by(|(_, d1), (_, d2)| d1.partial_cmp(d2).unwrap());
+    debug!(
+        "find_candidates_with_shape_with_offset duration : {:?}",
+        start.elapsed()
+    );
     candidates_with_shape
 }
 
@@ -68,9 +74,22 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
             debug!("shape candidates=");
             candidates_with_shape
                 .iter()
-                .for_each(|(binding, diff)| debug!("        {diff} : {:?}", binding.cmd));
+                .take(5)
+                .for_each(|(binding, diff)| {
+                    let pc = f64::max(0., 100.0 - diff.powi(2).mul(100.));
+                    debug!(
+                        "   {:05.2} %    {diff:.2} : {}    {:?}",
+                        pc, binding.comment, binding.cmd
+                    )
+                });
+
+            // FIXME
             if !candidates_with_shape.is_empty()
                 && candidates_with_shape.first().unwrap().1 < DIFF_MAX
+                && (candidates_with_shape.len() > 1
+                    && candidates_with_shape.get(1).unwrap().1
+                        - candidates_with_shape.get(0).unwrap().1
+                        > DIFF_MIN_WITH_SECOND)
             {
                 return Some(candidates_with_shape.first().unwrap().0);
             }

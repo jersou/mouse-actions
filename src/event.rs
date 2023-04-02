@@ -5,7 +5,8 @@ use std::sync::{Arc, Mutex};
 
 pub const HISTO_SIZE: usize = 10000;
 
-pub type PointHistory = Arc<Mutex<ArrayVec<Point, HISTO_SIZE>>>;
+pub type PointHistory = ArrayVec<Point, HISTO_SIZE>;
+pub type PointHistoryArcMutex = Arc<Mutex<PointHistory>>;
 
 #[derive(Debug, Copy, Clone, Default)]
 pub struct KeyboardState {

@@ -1,5 +1,6 @@
 use std::cmp;
 use std::f64::consts::PI;
+use std::ops::Div;
 
 use log::trace;
 
@@ -9,8 +10,8 @@ pub fn compare_angles_with_offset(vec_a: &Vec<f64>, vec_b: &Vec<f64>) -> f64 {
     let vec1: &Vec<f64>;
     let vec2: &Vec<f64>;
 
-    // iter on the bigger
-    if vec_a.len() > vec_b.len() {
+    // iter on the smaller
+    if vec_a.len() < vec_b.len() {
         vec1 = vec_a;
         vec2 = vec_b;
     } else {
@@ -20,10 +21,10 @@ pub fn compare_angles_with_offset(vec_a: &Vec<f64>, vec_b: &Vec<f64>) -> f64 {
     let offset_max = cmp::min(20, vec1.len() / 10);
 
     for i in (2..offset_max).step_by(2) {
-        diff_values.push(compare_angles(&vec1[i..].to_vec(), vec2));
+        diff_values.push(compare_angles(&vec1[i..], vec2));
     }
     for i in (2..offset_max).step_by(2) {
-        diff_values.push(compare_angles(&vec1[0..vec1.len() - i].to_vec(), vec2));
+        diff_values.push(compare_angles(&vec1[0..vec1.len() - i], vec2));
     }
     trace!("diff_values {:?}", diff_values);
     diff_values
@@ -32,24 +33,25 @@ pub fn compare_angles_with_offset(vec_a: &Vec<f64>, vec_b: &Vec<f64>) -> f64 {
         .unwrap()
 }
 
-pub fn compare_angles(vec_a: &Vec<f64>, vec_b: &Vec<f64>) -> f64 {
-    let vec1: &Vec<f64>;
-    let vec2: &Vec<f64>;
+pub fn compare_angles(vec_a: &[f64], vec_b: &[f64]) -> f64 {
+    let smaller_vec: &[f64];
+    let bigger_vec: &[f64];
 
-    // iter on the bigger
-    if vec_a.len() > vec_b.len() {
-        vec1 = vec_a;
-        vec2 = vec_b;
+    // iter on the smaller
+    if vec_a.len() < vec_b.len() {
+        smaller_vec = vec_a;
+        bigger_vec = vec_b;
     } else {
-        vec1 = vec_b;
-        vec2 = vec_a;
+        smaller_vec = vec_b;
+        bigger_vec = vec_a;
     };
+    // TODO check vet1 len > min accept
 
-    let mut diff = 1.0;
-    for i in 0..vec1.len() {
-        let angle_ref: &f64 = vec1.get(i).unwrap();
-        let progress: f64 = (i as f64) / (vec1.len() as f64);
-        let angle_opt = vec2.get(((vec2.len() as f64) * progress) as usize);
+    let mut diff = 0.0;
+    for i in 0..smaller_vec.len() {
+        let angle_ref: &f64 = smaller_vec.get(i).unwrap();
+        let progress: f64 = (i as f64) / (smaller_vec.len() as f64);
+        let angle_opt = bigger_vec.get(((bigger_vec.len() as f64) * progress) as usize);
         if let Some(angle) = angle_opt {
             let mut raw_diff = (angle_ref - angle).abs();
             raw_diff = if raw_diff > PI {
@@ -57,10 +59,13 @@ pub fn compare_angles(vec_a: &Vec<f64>, vec_b: &Vec<f64>) -> f64 {
             } else {
                 raw_diff
             };
-            diff *= (1.0 + raw_diff).powi(4);
+            diff += raw_diff;
+        } else {
+            // TODO
+            diff += PI;
         }
     }
-    diff.ln()
+    diff.div(smaller_vec.len() as f64)
 }
 
 #[cfg(test)]
@@ -96,15 +101,16 @@ mod tests {
         ];
 
         let start = Instant::now();
-        println!(
-            "compare_angles_check_offset : {}",
-            compare_angles_with_offset(&vect1, &vect2)
-        );
-        println!("Time elapsed : {:?}", start.elapsed());
 
         let diff = compare_angles(&vect1, &vect2);
-        assert_eq!(diff as i64, 117);
+        println!("compare_angles : {diff}");
+        assert_eq!(diff, 0.28338365815675726);
+        println!("Time elapsed : {:?}", start.elapsed());
+
+        let start = Instant::now();
         let diff = compare_angles_with_offset(&vect1, &vect2);
-        assert_eq!(diff as i64, 87);
+        println!("compare_angles_check_offset : {diff}");
+        assert_eq!(diff, 0.159040066692836);
+        println!("Time elapsed : {:?}", start.elapsed());
     }
 }

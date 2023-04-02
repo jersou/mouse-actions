@@ -31,33 +31,48 @@ for
 now, you add to write the json config yourself or use `mouse_actions record`.
 
 I have been using mouse_actions for several days (since 15/05/2022) and X11 has
-not crashed (Unlike Easystroke which made X11 crash every day before on my l
-aptop), but
-actually, mouse_actions exit on error when a device is added or removed.
+not crashed (Unlike Easystroke which made X11 crash every day before on my
+laptop).
 
-With my usage, mouse_actions triggers commands about once per minute, and half
-of which by form shape bindings.
+With my usage, mouse_actions triggers commands about once/twice per minute,
+and half of which by form shape bindings.
 
-The shape recognition is still not as good as Easystroke's, it can be improved.
+My feedback : after 10 month of daily use and 300'000 triggers,
+it's works well.
+
+### Known bugs
+
+* when a device (like mouse or bluetooth earphone ) is added, the mouse/keyboard
+  modifier are locked !
+* mouse action crash sometimes on trigger xdotool and ... ?
 
 ## Install
 
+Download the release, or with Cargo, run directly :
+
+```bash
+cargo run
+```
+
+or build the binary:
+
+```bash
+cargo build --release
+```
+
 ### Requirement :
 
-Add the current user to `input` & `plugdev` group :
+To use the main feature "grab event", you need to add the current user
+to `input` & `plugdev` group :
 
 ```
 sudo usermod -a -G plugdev $USER
 sudo usermod -a -G input $USER
 ```
 
-## Run
+### Config
 
-`cargo run`
-
-## Build
-
-`cargo build --release`
+Run `mouse_actions record` to init the configuration.
 
 ### Configuration
 
@@ -95,6 +110,7 @@ mouse_actions trace
 
 ```json
 {
+  "comment": "Extra click → script: Alt + Tab",
   "shape_button": "Right",
   "bindings": [
     {
@@ -112,6 +128,7 @@ mouse_actions trace
       }
     },
     {
+      "comment": "Right click in the top right corner → script: go to the top right desktop",
       "event": {
         "button": "Right",
         "edges": [
@@ -129,6 +146,7 @@ mouse_actions trace
       ]
     },
     {
+      "comment": "Draw T shape with the right button → launch the terminal",
       "event": {
         "button": "Right",
         "edges": [],
@@ -164,11 +182,13 @@ OPTIONS:
     -V, --version      Print version information
 
 SUBCOMMANDS:
-    help           Print this message or the help of the given subcommand(s)
-    open-config    Open the config file (xdg-open)
-    record         Start record mode to add some mouse bindings
-    start          Default command, use mouse_actions bindings
-    trace          Trace events
+    help             Print this message or the help of the given subcommand(s)
+    list-bindings    List the current config bindings
+    open-config      Open the config file (xdg-open)
+    record           Start record mode to add some mouse bindings
+    start            Default command, use mouse_actions bindings
+    trace            Trace events
+
 ```
 
 ## Development
@@ -196,26 +216,128 @@ function is used to detect edge of screen click.
 The goal of this project is then to have these 2 features without having
 OS crash (X11 crash).
 
+CCSM screenshot (Compiz Config Setting Manager) :
+![ccsm.png](ccsm.png)
+
+Easystoke screenshot :
+![easystroke.png](easystroke.png)
+
+## Exemple : big config
+
+* mouse button bindings:
+    * Super+Left click → screenshot script
+    * Side click → script: Alt + Left mouse down
+    * Extra click → script: Alt + Tab
+
+* edges and corners bindings:
+    * Middle click in the top left corner → script: key ² → open Tilda
+    * Middle click in the top right corner → script: lock the screen
+    * Middle click in the top edge → script: play/pause
+    * Right click in the top left corner → script: go to the top left desktop
+    * Right click in the top right corner → script: go to the top right desktop
+    * Right click in the bottom left corner → script: go to the bottom left
+      desktop
+    * Right click in the bottom right corner → script: go to the bottom right
+      desktop
+    * Wheel up in the top left corner → script: increase volume
+    * Wheel up in the top right corner → script: increase volume
+    * Wheel up in the bottom left corner → script: increase volume
+    * Wheel up in the bottom right corner → script: increase volume
+    * Wheel down in the top left corner → script: decrease volume
+    * Wheel down in the top right corner → script: decrease volume
+    * Wheel down in the bottom left corner → script: decrease volume
+    * Wheel down in the bottom right corner → script: decrease volume
+    * Ctrl + Wheel up in the top edge → script: audio next
+    * Ctrl + Wheel up in the top edge → script: audio previous
+    * Wheel up in the left edge → script: increase brightness 1%
+    * Ctrl + Wheel up in the top edge → script: increase brightness 10%
+    * Wheel down in the top edge → script: decrease brightness 1%
+    * Ctrl + Wheel down in the top edge → script: decrease brightness 10%
+    * Right click in the left edge → script: go to desktop on the left
+    * Right click in the top edge → script: go to desktop on the top
+    * Right click in the right edge → script: go to desktop on the right
+    * Right click in the bottom edge → script: go to desktop on the bottom
+
+* Shape biding with the right button :
+    * Draw G shape → launch gedit (text editor)
+    * Draw T shape → launch the terminal
+    * Draw C shape → key Ctrl+C (Copy)
+    * Draw V shape → key Ctrl+V (Paste)
+    * Draw ↑ (vertical line to the top) shape → go to the desktop on the top
+    * Draw ↓ (vertical line to the bottom) shape → go to the desktop on the top
+    * Draw → (horizontal line to the right) shape → go to the desktop on the
+      right
+    * Draw ← (horizontal line to the left) shape → go to the desktop on the left
+    * Draw N shape → open the Note tool
+    * Draw ↗ (line to the top right) shape → F2 key (rename)
+    * Draw ↖ (line to the top left) shape → F2 key (rename)
+    * Draw ↙ (line to the left bottom) shape → Alt+Tab key
+    * Draw n shape → launch nemo (file explorer)
+    * Draw m shape → launch nautilus (file explorer)
+    * Draw ↘ (line to the bottom right) shape → Alt+F8 key (resize the window)
+    * Draw S shape → Ctrl+S key (save)
+    * Draw ∝ (alpha) shape → Ctrl+X key (cut)
+    * Draw ɣ (gamma) shape → Ctrl+X key (cut)
+    * Draw ↵ (bottom then left) shape → Ctrl+X key (cut)
+    * Draw ↶ (reverse n) shape → show/hide hamster time tracker
+    * Draw Z shape → Ctrl+Z key (undo)
+    * Draw F shape → Ctrl+F key (search)
+    * Draw H shape → Ctrl+H key (toggle hide)
+    * Draw D shape → Ctrl+Alt+D key (show the window on all desktops)
+    * Draw B shape → script to remove the window decoration
+    * Draw 2 shape → Shift+F9 key clear draw on screen (Gromit-MPX)
+    * Draw 𝛥 shape (↗↘←) → F9 key toggle draw on screen (Gromit-MPX)
+
+----
+
 ## TODO
 
-### next
+### critical
 
-* reset modifier at start ?
-* enhance shape detection
-    * use coef for shape.len() : bigger shape disadvantage ?
-    * several patterns for a binding ?
-* fix exit on laptop sleep/device add/remove (loop+sleep inc), detect/reboot
-  app : `Grab Error: IoError(Os { code: 13, kind: PermissionDenied, message: "Permission denied" })`
-* record : fix cmd split
-* record : limit float precision
+* mouse_action crash sometimes with xdotool command :
+  ```
+  [INFO  mouse_actions::process_event]      → cmd ["xdotool", "key", "49"]
+  [xcb] Unknown request in queue while dequeuing
+  [xcb] Most likely this is a multi-threaded client and XInitThreads has not been called
+  [xcb] Aborting, sorry about that.
+  [xcb] Unknown request in queue while dequeuing
+  [xcb] Most likely this is a multi-threaded client and XInitThreads has not been called
+  [xcb] Aborting, sorry about that.
+  mouse_actions: ../../src/xcb_io.c:163: dequeue_pending_request: Assertion `!xcb_xlib_unknown_req_in_deq' failed.
+  ```
+
+* several patterns for a binding ?
+
+### High
+
+* process TODO and FIXME, especially "inotify CREATE but not DELETE in grab::
+  inotify_devices()" rdev/src/linux/grab.rs:493
+* reset the modifiers/button state at root loop restart
+
+### Medium
+
 * refactor
+    * reduce clone() usages
     * remove panic
+    * remove unwrap
     * refactor/use Rust best practices
     * refactor Arc/Mutex usages
     * refactor/change the pressState usage
     * dev doc, tests
+    * handle errors correctly
+    * use anyhow ?
+* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
+* add more tests
 
-### maybe
+### Low
+
+* several event for binding{}
+* record : limit float precision
+* record : fix cmd split
+* pull request/ contribute/modify rdev without checkout it in this repo
+* use autopilot-rs in bindings cmd (cmd script or key action)
+
+### Maybe
 
 * change config : if shape → no need button
 * cancel shape if no move after few ms (400 ms ?)
@@ -227,14 +349,26 @@ OS crash (X11 crash).
 * find better a project name
 * remove shape_button from config : filter the config bindings to set this value
 * build & test on Windows
-* GUI
+* GUI (Tauri ?)
+* full support Wayland (mouse position?) & Windows & MacOS
 
-### abandoned
+### Abandoned (?)
 
 * get the mouse position on wayland → impossible ?
 * notif/sound/cursor change on action trigger (configurable) ?
 * detach subprocess (close mouse_actions must not close sub process)
     * "cmd": [ "bash", "-c",  "nohup gedit &" ]
 * mouse move edge event ?
+* use RwLock
 
+## Dev notes
+
+Shape recognition : compare angles get the average of the angles differences :
+
+![shape-recognition.svg](shape-recognition.svg)
+
+The calculated difference is approximately the area between the 2 curves of
+angles (mod 2𝜋).
+
+Get the minimum difference : try with "horizontal" offset +/- 10 % (max 20 try).
 
