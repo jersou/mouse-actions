@@ -1,9 +1,9 @@
 #[macro_use]
 extern crate lazy_static;
 
+use std::{thread, time};
 // use std::time::Instant;
 use std::sync::{Arc, Mutex};
-use std::{thread, time};
 
 use clap::Parser;
 use env_logger::Env;
@@ -49,7 +49,7 @@ fn main() {
         }
         Some(MouseActionsCommands::Trace) => {
             let _instance = get_instance().unwrap();
-            grab::start_grab_binding(args.clone(), config.clone(), process_event::trace_event)
+            grab::start_grab_binding(args.clone(), config, process_event::trace_event)
         }
         Some(MouseActionsCommands::Record) => {
             let _instance = get_instance().unwrap();
@@ -57,11 +57,11 @@ fn main() {
                 "Start record event : draw a shape with the {:?} button :",
                 config.lock().unwrap().shape_button
             );
-            grab::start_grab_binding(args.clone(), config.clone(), record::record_event)
+            grab::start_grab_binding(args.clone(), config, record::record_event)
         }
         Some(MouseActionsCommands::Start) | None => {
             let _instance = get_instance().unwrap();
-            grab::start_grab_binding(args.clone(), config.clone(), process_event::process_event)
+            grab::start_grab_binding(args.clone(), config, process_event::process_event)
         }
         Some(MouseActionsCommands::ListBindings) => {
             config

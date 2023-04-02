@@ -308,10 +308,10 @@ Easystoke screenshot :
 
 ### High
 
-* single instance
 * the FIXME "inotify CREATE but not DELETE in grab::inotify_devices()" in
   rdev/src/linux/grab.rs:493
 * reset the modifiers/button state at root loop restart
+* cancel shape if no move after few ms (400 ms ?)
 
 ### Medium
 
@@ -327,9 +327,7 @@ Easystoke screenshot :
     * handle errors correctly
     * use anyhow ?
 * add more tests
-* cancel shape if no move after few ms (400 ms ?)
-* only one instance, kill,
-* ability to kill old instance
+* single instance → kill the old instance
 
 ### Low
 
