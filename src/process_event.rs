@@ -40,6 +40,7 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
 pub fn find_candidates_with_shape_with_offset<'a>(
     candidates: &'a [&Binding],
     event: &ClickEvent,
+    // FIXME use struct & check lifetime usages
 ) -> Vec<(&'a &'a Binding, f64)> {
     debug!(
         "angles: {}",
@@ -70,7 +71,9 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
 ) -> Option<&'a Binding> {
     if event.shape.len() > SHAPE_MIN_SIZE {
         let candidates_with_shape = find_candidates_with_shape_with_offset(candidates, event);
-        if !candidates_with_shape.is_empty() {
+
+        // check is not empty
+        if let Some(first) = candidates_with_shape.first() {
             debug!("shape candidates=");
             candidates_with_shape
                 .iter()
@@ -83,17 +86,27 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
                     )
                 });
 
-            // FIXME
-            if !candidates_with_shape.is_empty()
-                && candidates_with_shape.first().unwrap().1 < DIFF_MAX
-                && (candidates_with_shape.len() > 1
-                    && candidates_with_shape.get(1).unwrap().1
-                        - candidates_with_shape.get(0).unwrap().1
-                        > DIFF_MIN_WITH_SECOND)
-            {
-                return Some(candidates_with_shape.first().unwrap().0);
+            if first.1 < DIFF_MAX {
+                if let Some(second) = candidates_with_shape.get(1) {
+                    if second.1 - first.1 > DIFF_MIN_WITH_SECOND {
+                        return Some(first.0);
+                    } else {
+                        debug!("The first candidate is too close to the second : {} - {} < {DIFF_MIN_WITH_SECOND} → ignore this event",
+                            second.1 , first.1);
+                    }
+                } else {
+                    // only one candidate
+                    return Some(first.0);
+                }
+            } else {
+                debug!("shape difference > {DIFF_MAX} → ignore this event");
             }
         }
+    } else {
+        trace!(
+            "shape size({}) <= {SHAPE_MIN_SIZE} → ignore this event",
+            event.shape.len()
+        );
     }
     None
 }
@@ -149,6 +162,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
     trace!("candidates={:?}", candidates);
 
     if !candidates.is_empty() {
+        debug!("----------------------------------------");
         if let Some(binding) = find_the_chosen_one_among_the_candidates(&candidates, &event) {
             propagate = false;
             if !(event.event_type == PressState::Release
