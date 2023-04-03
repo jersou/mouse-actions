@@ -1,4 +1,4 @@
-<svg width="1135mm" height="191mm" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="1135mm" height="191mm" style="background-color:white" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <defs>
         <marker id="a" overflow="visible" orient="auto">
             <path transform="matrix(-.8 0 0 -.8 -10 0)" d="m0 0 5-5-17.5 5 17.5 5z" fill="context-stroke"
