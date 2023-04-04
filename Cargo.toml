@@ -17,6 +17,6 @@ notify = "5.1.0"
 clap = { version = "4.2.0", features = ["derive"] }
 regex = "1.7.3"
 anyhow = "1.0.70"
-single-instance = "0.3.3"
+fs2 = "0.4.3"
 tempfile = "3.5.0"
 rustix = { version = "0.37.7", features = ["process"] }
