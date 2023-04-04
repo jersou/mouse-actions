@@ -327,7 +327,6 @@ Easystoke screenshot :
     * handle errors correctly
     * use anyhow ?
 * add more tests
-* single instance → kill the old instance
 
 ### Low
 
@@ -342,8 +341,6 @@ Easystoke screenshot :
   cmd) : https://github.com/Narsil/rdev#sending-some-events
 * hide/freeze cursor while shape drawing ?
 * better Readme
-* detach subprocess (close mouse_actions must not close sub process)
-    * workaround : `"cmd": [ "bash", "-c",  "nohup gedit &" ]`
 
 ### Maybe
 

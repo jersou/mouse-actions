@@ -1,4 +1,5 @@
 use std::ops::{Deref, Mul};
+use std::os::unix::process::CommandExt;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
@@ -192,15 +193,37 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
     propagate
 }
 
+#[cfg(target_os = "linux")]
 fn process_cmd(cmd: Vec<String>) {
     thread::spawn(move || {
         info!("     → cmd {:?}", cmd);
-        Command::new(&cmd[0])
+        let res = Command::new(&cmd[0])
             .env("RUST_LOG", "")
             .args(&cmd[1..])
-            .status()
-            .map_err(|err| error!("Command err: {:?}", err))
-            .ok();
-        debug!("end of process_cmd thread");
+            .process_group(0)
+            .spawn();
+
+        trace!("spawn result : {:?}", res);
+    });
+}
+
+#[cfg(not(target_os = "linux"))]
+fn process_cmd(cmd: Vec<String>) {
+    thread::spawn(move || {
+        info!("     → cmd {:?}", cmd);
+
+        let p = Popen::create(
+            &cmd,
+            PopenConfig {
+                env: Some(vec![("RUST_LOG".parse().unwrap(), "".parse().unwrap())]),
+                ..Default::default()
+            },
+        );
+        let res = Command::new(&cmd[0])
+            .env("RUST_LOG", "")
+            .args(&cmd[1..])
+            .spawn();
+
+        trace!("spawn result : {:?}", p);
     });
 }
