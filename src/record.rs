@@ -46,6 +46,8 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
                         .expect("Failed to read line");
                     let comment = input_string.trim().to_string();
 
+                    let event = reduce_shape_precision(event);
+
                     match cmd_from_str(cmd_string) {
                         Ok(cmd) => {
                             let binding = Binding {
@@ -69,5 +71,16 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
             });
         }
         false
+    }
+}
+
+fn reduce_shape_precision(event: ClickEvent) -> ClickEvent {
+    ClickEvent {
+        shape: event
+            .shape
+            .iter()
+            .map(|angle| (angle * 100.0).round() / 100.0)
+            .collect(),
+        ..event
     }
 }

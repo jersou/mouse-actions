@@ -14,7 +14,7 @@ arrayvec = "0.7.2"
 log = "0.4.17"
 env_logger = "0.10.0"
 notify = "5.1.0"
-clap = { version = "4.2.0", features = ["derive"] }
+clap = { version = "4.2.1", features = ["derive"] }
 regex = "1.7.3"
 anyhow = "1.0.70"
 fs2 = "0.4.3"

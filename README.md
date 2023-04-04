@@ -292,66 +292,47 @@ Easystoke screenshot :
 
 ## TODO
 
-### critical
-
-* mouse_action crash sometimes with xdotool command :
-  ```
-  [INFO  mouse_actions::process_event]      → cmd ["xdotool", "key", "49"]
-  [xcb] Unknown request in queue while dequeuing
-  [xcb] Most likely this is a multi-threaded client and XInitThreads has not been called
-  [xcb] Aborting, sorry about that.
-  [xcb] Unknown request in queue while dequeuing
-  [xcb] Most likely this is a multi-threaded client and XInitThreads has not been called
-  [xcb] Aborting, sorry about that.
-  mouse_actions: ../../src/xcb_io.c:163: dequeue_pending_request: Assertion `!xcb_xlib_unknown_req_in_deq' failed.
-  ```
-
 ### High
 
-* the FIXME "inotify CREATE but not DELETE in grab::inotify_devices()" in
-  rdev/src/linux/grab.rs:493
+* fix rdev
+    * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
+      in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
+    * pull request/contribute/modify rdev without checkout it in this repo (
+      mouse btn add & fix devices setup/Delete notify)
 * reset the modifiers/button state at root loop restart
 * cancel shape if no move after few ms (400 ms ?)
 
 ### Medium
 
+* several event for binding{}
 * process TODO and FIXME
 * refactor
     * reduce clone() usages
-    * remove panic
-    * reduce unwrap
-    * refactor/use Rust best practices
+    * handle errors correctly : remove panic, reduce unwrap
     * refactor Arc/Mutex usages
     * refactor/change the pressState usage
     * dev doc, tests
-    * handle errors correctly
-    * use anyhow ?
-* add more tests
 
 ### Low
 
-* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
-* several event for binding{}
-* record : limit float precision
-* record : fix cmd split
-* pull request/contribute/modify rdev without checkout it in this repo (mouse
-  btn add & fix devices setup/Delete notify)
-* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
-  keyboard event as action (avoid xdotool usage in
-  cmd) : https://github.com/Narsil/rdev#sending-some-events
-* hide/freeze cursor while shape drawing ?
-* better Readme
+* a better Readme
 
 ### Maybe
 
-* change config : if shape → no need button
 * find a better project name
-* remove shape_button from config : filter the config bindings to set this value
+* create an icon for the project
 * GUI (Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
   impossible ?)
 * notif/sound/cursor change on action trigger (configurable) ?
 * mouse move edge event ?
+* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
+  keyboard event as action (avoid xdotool usage in
+  cmd) : https://github.com/Narsil/rdev#sending-some-events
+* change config : if shape → no need button
+* move shape_button from root config to bindings
+* hide/freeze cursor while shape drawing ?
+* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
 
 ## Dev notes
 
@@ -364,3 +345,12 @@ angles (mod 2𝜋) visible on the right of the above image.
 
 Get the minimum difference by shifting a curve horizontally: try removing the
 beginning or the end, by +/- 10 % max offset (max 20 try).
+
+### upgrade
+
+```bash
+cargo update
+cargo audit
+cargo test
+cargo build --release
+```
