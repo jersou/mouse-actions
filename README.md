@@ -1,14 +1,16 @@
 # Mouse actions
 
-## Description
+![mouse_actions_logo.svg](mouse_actions_logo.svg)
 
 mouse_actions allows to execute some command from mouse events such as
 clicks/wheel on the side / corners of the screen, or drawing shapes. It's a mix
-between Easystroke and Compiz edge commands.
+between [Easystroke](https://github.com/thjaeger/easystroke) and [Compiz edge
+commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
 You can click on the top left corder of the screen to go to the first desktop,
-or scroll on the top corner to increase/decrease the brightness of the screen,
-change the volume... Or draw a T with the right button of the mouse down to
+or scroll from the top corner to increase/decrease the brightness of the screen
+or
+change the volume... Or draw a T with the mouse right button pressed to
 open a terminal, ...
 
 ## Features
@@ -35,7 +37,7 @@ not crashed (Unlike Easystroke which made X11 crash every day before on my
 laptop).
 
 With my usage, mouse_actions triggers commands about once/twice per minute,
-and half of which by form shape bindings.
+and half of which by shape bindings.
 
 My feedback : after 10 month of daily use and 300'000 triggers,
 it's works well.
@@ -43,8 +45,10 @@ it's works well.
 ### Known bugs
 
 * when a device (like mouse or bluetooth earphone ) is added, the mouse/keyboard
-  modifier are locked !
-* mouse action crash sometimes on trigger xdotool and ... ?
+  modifier are locked : if Ctrl is pressed during this plug, Ctrl keep pressed.
+  A workaround for me is to switch : Ctrl+Alt+F1 & Ctrl+Alt+F7.
+* when a device (like mouse or bluetooth earphone ) is added, the cursor freeze
+  2 seconds.
 
 ## Install
 
@@ -69,6 +73,8 @@ to `input` & `plugdev` group :
 sudo usermod -a -G plugdev $USER
 sudo usermod -a -G input $USER
 ```
+
+You need to open a new terminal/session to apply this user changes.
 
 ### Config
 
@@ -294,6 +300,9 @@ Easystoke screenshot :
 
 ### High
 
+* several event for binding{}
+* store normalized shape positions instead of angles
+* a release : 0.3.0
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -304,7 +313,7 @@ Easystoke screenshot :
 
 ### Medium
 
-* several event for binding{}
+* command : grab_one_event, stop, status
 * process TODO and FIXME
 * refactor
     * reduce clone() usages
@@ -316,11 +325,11 @@ Easystoke screenshot :
 ### Low
 
 * a better Readme
+* POC : config tool with deno
 
 ### Maybe
 
-* find a better project name
-* create an icon for the project
+* find a better project name and icon
 * GUI (Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
   impossible ?)
