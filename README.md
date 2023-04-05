@@ -313,7 +313,6 @@ Easystoke screenshot :
 
 ### Medium
 
-* command : grab_one_event, stop, status
 * process TODO and FIXME
 * refactor
     * reduce clone() usages

@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use arrayvec::ArrayVec;
 use log::Level::Trace;
-use log::{debug, log_enabled};
+use log::{debug, log_enabled, trace};
 use rdev::{grab, Event, EventType, GrabError, Key};
 
 use crate::args::Args;
@@ -106,7 +106,10 @@ pub fn grab_event_fn(
         }
         EventType::ButtonRelease(btn) => {
             let angles = points_to_angles::points_to_angles(&point_history.lock().unwrap());
+
             if log_enabled!(Trace) {
+                let normalized_points = normalize_points(&point_history.lock().unwrap(), false);
+                trace!("normalized_points = {normalized_points:?}");
                 trace_svg::trace_svg(&point_history.lock().unwrap(), &angles);
             }
             let last_point_clone = *last_point.lock().unwrap();
@@ -170,7 +173,10 @@ pub fn grab_event_fn(
     }
 }
 
-pub fn normalize_points(input_points: &ArrayVec<Point, HISTO_SIZE>) -> ArrayVec<Point, HISTO_SIZE> {
+pub fn normalize_points(
+    input_points: &ArrayVec<Point, HISTO_SIZE>,
+    use_avg: bool,
+) -> ArrayVec<Point, HISTO_SIZE> {
     let mut out = ArrayVec::<Point, HISTO_SIZE>::new();
     if !input_points.is_empty() {
         let min_x = input_points.iter().map(|p| p.x).min().unwrap();
@@ -182,15 +188,24 @@ pub fn normalize_points(input_points: &ArrayVec<Point, HISTO_SIZE>) -> ArrayVec<
         let height = max_y - min_y;
 
         if width > 0 && height > 0 {
-            let avg_x: i32 =
-                input_points.iter().map(|p| p.x).sum::<i32>() / (input_points.len() as i32);
-            let avg_y: i32 =
-                input_points.iter().map(|p| p.y).sum::<i32>() / (input_points.len() as i32);
-            for p in input_points.iter() {
-                out.push(Point {
-                    x: 100 * (p.x - avg_x) / width,
-                    y: 100 * (p.y - avg_y) / height,
-                });
+            if use_avg {
+                let avg_x: i32 =
+                    input_points.iter().map(|p| p.x).sum::<i32>() / (input_points.len() as i32);
+                let avg_y: i32 =
+                    input_points.iter().map(|p| p.y).sum::<i32>() / (input_points.len() as i32);
+                for p in input_points.iter() {
+                    out.push(Point {
+                        x: 100 * (p.x - avg_x) / width,
+                        y: 100 * (p.y - avg_y) / height,
+                    });
+                }
+            } else {
+                for p in input_points.iter() {
+                    out.push(Point {
+                        x: 100 * p.x / width,
+                        y: 100 * p.y / height,
+                    });
+                }
             }
         }
     }

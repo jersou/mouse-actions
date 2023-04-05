@@ -10,7 +10,7 @@ pub fn trace_svg(point_history: &PointHistory, angles: &Vec<f64>) {
     {
         let ph = point_history;
 
-        points = grab::normalize_points(&ph);
+        points = grab::normalize_points(&ph, true);
     }
     let histo_str = points
         .iter()
