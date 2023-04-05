@@ -74,7 +74,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
     }
 }
 
-fn reduce_shape_precision(event: ClickEvent) -> ClickEvent {
+pub fn reduce_shape_precision(event: ClickEvent) -> ClickEvent {
     ClickEvent {
         shape: event
             .shape

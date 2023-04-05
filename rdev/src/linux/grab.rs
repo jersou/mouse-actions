@@ -354,7 +354,7 @@ where
 {
     // TODO detecter perm err, supp des device
     'root_loop: loop {
-        println!("root_loop");
+        eprintln!("root_loop");
         let (epoll_fd, mut devices, output_devices) = setup_devices()?;
         let mut inotify = setup_inotify(epoll_fd, &devices)?;
 
@@ -380,9 +380,9 @@ where
                         );
                         let r =
                             add_device_to_epoll_from_inotify_event(epoll_fd, event, &mut devices);
-                        println!("r = {:#?}", r);
+                        eprintln!("r = {:#?}", r);
                         if r.is_err() && r.err().unwrap().kind().eq(&ErrorKind::PermissionDenied) {
-                            println!("ErrorKind::PermissionDenied");
+                            eprintln!("ErrorKind::PermissionDenied");
                             // FIXME use inotify::EventMask::DELETE
                             continue 'root_loop;
                         }

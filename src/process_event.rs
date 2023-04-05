@@ -1,6 +1,6 @@
 use std::ops::{Deref, Mul};
 use std::os::unix::process::CommandExt;
-use std::process::Command;
+use std::process::{exit, Command};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use std::{thread, time};
@@ -12,7 +12,9 @@ use crate::args::Args;
 use crate::binding::Binding;
 use crate::compare_angles::compare_angles_with_offset;
 use crate::config::Config;
+use crate::event::PressState::Press;
 use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent, PressState};
+use crate::record::reduce_shape_precision;
 
 const DIFF_MAX: f64 = 0.6;
 const DIFF_MIN_WITH_SECOND: f64 = 0.05;
@@ -28,7 +30,7 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .filter(|binding| {
             (binding.event.shape.is_empty()
                 || shape_button != &binding.event.button
-                || event.event_type != PressState::Press)
+                || event.event_type != Press)
                 && binding.event.button == event.button
                 && (binding.event.event_type == event.event_type
                     || binding.event.event_type == PressState::Click)
@@ -148,6 +150,23 @@ pub fn find_the_chosen_one_among_the_candidates<'a>(
 
 pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     println!("event={:?}", event);
+    true
+}
+
+pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
+    if config.lock().unwrap().shape_button != event.button
+        || !event.shape.is_empty()
+        || event.event_type != Press
+        || !event.edges.is_empty()
+        || !event.modifiers.is_empty()
+    {
+        eprintln!("event=");
+        let event = reduce_shape_precision(event);
+        let serialized = serde_json::to_string_pretty(&event).unwrap();
+        println!("{serialized}");
+        eprintln!("====exit");
+        exit(0);
+    }
     true
 }
 

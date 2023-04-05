@@ -2,15 +2,14 @@
 
 ![mouse_actions_logo.svg](mouse_actions_logo.svg)
 
-mouse_actions allows to execute some command from mouse events such as
+mouse_actions allows to execute some commands from mouse events such as
 clicks/wheel on the side / corners of the screen, or drawing shapes. It's a mix
 between [Easystroke](https://github.com/thjaeger/easystroke) and [Compiz edge
 commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
 You can click on the top left corder of the screen to go to the first desktop,
 or scroll from the top corner to increase/decrease the brightness of the screen
-or
-change the volume... Or draw a T with the mouse right button pressed to
+or change the volume... Or draw a T with the mouse right button pressed to
 open a terminal, ...
 
 ## Features
@@ -29,8 +28,8 @@ are optional):
 **/!\ Alpha version !**
 
 It's works (tested on Linux/X11) but there is no GUI to configure the bindings
-for
-now, you add to write the json config yourself or use `mouse_actions record`.
+for now, you add to write the json config yourself or
+use `mouse_actions record`.
 
 I have been using mouse_actions for several days (since 15/05/2022) and X11 has
 not crashed (Unlike Easystroke which made X11 crash every day before on my
@@ -179,22 +178,23 @@ mouse_actions trace
 ## CLI usage
 
 ```
-USAGE:
-    mouse_actions [OPTIONS] [SUBCOMMAND]
+Usage: mouse_actions [OPTIONS] [COMMAND]
 
-OPTIONS:
-    -h, --help         Print help information
-    -n, --no-listen    don't run the listen thread (for Wayland), the edge bindings might not work
-    -V, --version      Print version information
+Commands:
+  start           Default command, use mouse_actions bindings
+  open-config     Open the config file (xdg-open)
+  trace           Trace events
+  record          Start record mode to add some mouse bindings
+  list-bindings   List the current config bindings
+  grab-one-event  Grab one event, print it and exit
+  stop            Stop mouse action
+  status          Get mouse action status : exit 0 if running
+  help            Print this message or the help of the given subcommand(s)
 
-SUBCOMMANDS:
-    help             Print this message or the help of the given subcommand(s)
-    list-bindings    List the current config bindings
-    open-config      Open the config file (xdg-open)
-    record           Start record mode to add some mouse bindings
-    start            Default command, use mouse_actions bindings
-    trace            Trace events
-
+Options:
+  -n, --no-listen  don't run the listen thread (for Wayland), the edge bindings might not work
+  -h, --help       Print help
+  -V, --version    Print version
 ```
 
 ## Development

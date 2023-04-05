@@ -152,7 +152,7 @@ impl Keyboard {
         state: c_uint,
     ) -> Option<String> {
         if self.display.is_null() || self.xic.is_null() {
-            println!("We don't seem to have a display or a xic");
+            eprintln!("We don't seem to have a display or a xic");
             return None;
         }
         const BUF_LEN: usize = 4;

@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-/// mouse_actions allows to execute some command from mouse events such as
+/// mouse_actions allows to execute some commands from mouse events such as
 /// clicks on the side / corners of the screen, or drawing shapes.
 /// It's a mix between Easystroke and Compiz edge commands.
 /// https://github.com/jersou/mouse-actions
@@ -36,4 +36,16 @@ pub enum MouseActionsCommands {
     /// List the current config bindings
     #[clap()]
     ListBindings,
+
+    /// Grab one event, print it and exit
+    #[clap()]
+    GrabOneEvent,
+
+    /// Stop mouse action
+    #[clap()]
+    Stop,
+
+    /// Get mouse action status : exit 0 if running
+    #[clap()]
+    Status,
 }

@@ -1,13 +1,14 @@
 #[macro_use]
 extern crate lazy_static;
 
+use std::process::exit;
 use std::{thread, time};
 // use std::time::Instant;
 use std::sync::{Arc, Mutex};
 
 use clap::Parser;
 use env_logger::Env;
-use log::{debug, error, trace};
+use log::{debug, error, info, trace};
 use rdev::GrabError;
 
 use crate::args::MouseActionsCommands;
@@ -45,7 +46,7 @@ fn main() {
     let res: Result<(), GrabError> = match args.command {
         Some(MouseActionsCommands::OpenConfig) => {
             config::open_config();
-            std::process::exit(0);
+            exit(0);
         }
         Some(MouseActionsCommands::Trace) => {
             let _instance = get_instance().unwrap();
@@ -70,23 +71,33 @@ fn main() {
                 .bindings
                 .iter()
                 .for_each(|b| println!(" - {}\n    {:?}\n", b.comment, b.cmd));
-            std::process::exit(0);
+            exit(0);
+        }
+
+        Some(MouseActionsCommands::GrabOneEvent) => {
+            let _instance = get_instance().unwrap();
+            grab::start_grab_binding(args.clone(), config, process_event::grab_one_event)
+        }
+        Some(MouseActionsCommands::Stop) => {
+            if single_instance::kill().unwrap_or(false) {
+                info!("mouse_actions successfully stopped");
+                exit(0);
+            } else {
+                error!("mouse_actions stop error !");
+                exit(1);
+            }
+        }
+        Some(MouseActionsCommands::Status) => {
+            if single_instance::is_running() {
+                info!("mouse_actions is running");
+                exit(0);
+            } else {
+                info!("mouse_actions is stopped");
+                exit(1);
+            }
         }
     };
     if let Err(error) = res {
         error!("Grab Error: {:?}", error);
     }
-    // match last_loop {
-    //     None => thread::sleep(time::Duration::from_millis(100)),
-    //     Some(last) => {
-    //         let ms_elapsed = last.elapsed();
-    //         if ms_elapsed.lt(&time::Duration::from_millis(1000)) {
-    //             thread::sleep(time::Duration::from_millis(5000));
-    //         } else {
-    //             thread::sleep(time::Duration::from_millis(100))
-    //         }
-    //     }
-    // }
-    //     last_loop = Some(Instant::now());
-    // }
 }
