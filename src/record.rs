@@ -18,7 +18,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
     // ignore events if record in progress, or left click
     if *RECORD_IN_PROGRESS.lock().unwrap()
         || event.button == MouseButton::Left
-            && event.shape.is_empty()
+            && event.shape_angles.is_empty()
             && event.edges.is_empty()
             && event.modifiers.is_empty()
     {
@@ -76,8 +76,8 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
 
 pub fn reduce_shape_precision(event: ClickEvent) -> ClickEvent {
     ClickEvent {
-        shape: event
-            .shape
+        shape_angles: event
+            .shape_angles
             .iter()
             .map(|angle| (angle * 100.0).round() / 100.0)
             .collect(),

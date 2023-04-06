@@ -174,7 +174,7 @@ pub struct ClickEvent {
     pub event_type: PressState,
 
     #[serde(default)]
-    pub shape: Vec<f64>,
+    pub shape_angles: Vec<f64>,
 }
 
 pub fn edges_are_equals(edges1: &[Edge], edges2: &[Edge]) -> bool {

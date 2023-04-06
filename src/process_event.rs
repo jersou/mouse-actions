@@ -28,7 +28,7 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .bindings
         .iter()
         .filter(|binding| {
-            (binding.event.shape.is_empty()
+            (binding.event.shape_angles.is_empty()
                 || shape_button != &binding.event.button
                 || event.event_type != Press)
                 && binding.event.button == event.button
@@ -48,7 +48,7 @@ pub fn find_candidates_with_shape_with_offset<'a>(
     debug!(
         "angles: {}",
         event
-            .shape
+            .shape_angles
             .iter()
             .map(|a| format!("{:.2}, ", a))
             .collect::<String>()
@@ -56,8 +56,13 @@ pub fn find_candidates_with_shape_with_offset<'a>(
     let start = Instant::now();
     let mut candidates_with_shape = candidates
         .iter()
-        .filter(|b| !b.event.shape.is_empty())
-        .map(|b| (b, compare_angles_with_offset(&event.shape, &b.event.shape)))
+        .filter(|b| !b.event.shape_angles.is_empty())
+        .map(|b| {
+            (
+                b,
+                compare_angles_with_offset(&event.shape_angles, &b.event.shape_angles),
+            )
+        })
         .filter(|(_, diff)| *diff < DIFF_MAX_PRINT)
         .collect::<Vec<_>>();
     candidates_with_shape.sort_by(|(_, d1), (_, d2)| d1.partial_cmp(d2).unwrap());
@@ -72,7 +77,7 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
     candidates: &'a [&Binding],
     event: &ClickEvent,
 ) -> Option<&'a Binding> {
-    if event.shape.len() > SHAPE_MIN_SIZE {
+    if event.shape_angles.len() > SHAPE_MIN_SIZE {
         let candidates_with_shape = find_candidates_with_shape_with_offset(candidates, event);
 
         // check is not empty
@@ -108,7 +113,7 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
     } else {
         trace!(
             "shape size({}) <= {SHAPE_MIN_SIZE} → ignore this event",
-            event.shape.len()
+            event.shape_angles.len()
         );
     }
     None
@@ -120,7 +125,7 @@ pub fn find_the_chosen_one_among_the_candidates_without_shape<'a>(
 ) -> Option<&'a Binding> {
     let candidates_without_shape = candidates
         .iter()
-        .filter(|b| b.event.shape.is_empty())
+        .filter(|b| b.event.shape_angles.is_empty())
         .collect::<Vec<_>>();
 
     match candidates_without_shape.len() {
@@ -155,7 +160,7 @@ pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
 
 pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     if config.lock().unwrap().shape_button != event.button
-        || !event.shape.is_empty()
+        || !event.shape_angles.is_empty()
         || event.event_type != Press
         || !event.edges.is_empty()
         || !event.modifiers.is_empty()
@@ -187,7 +192,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
             propagate = false;
             if !(event.event_type == PressState::Release
                 && binding.event.event_type == PressState::Click
-                && binding.event.shape.is_empty())
+                && binding.event.shape_angles.is_empty())
             {
                 process_cmd(binding.cmd.clone());
             }

@@ -86,7 +86,7 @@ pub fn grab_event_fn(
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Press,
-                shape: vec![],
+                shape_angles: vec![],
             };
             if config.lock().unwrap().shape_button.to_rdev_event() == pressed_btn {
                 let mut histo = point_history.lock().unwrap();
@@ -118,7 +118,7 @@ pub fn grab_event_fn(
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Release,
-                shape: angles,
+                shape_angles: angles,
             };
             point_history.lock().unwrap().clear();
             *button_state.lock().unwrap() = ButtonState::None;
@@ -136,7 +136,7 @@ pub fn grab_event_fn(
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Release,
-                shape: vec![],
+                shape_angles: vec![],
             };
             if process_event_fn(config, click_event, args) {
                 Some(event)

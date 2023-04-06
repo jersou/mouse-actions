@@ -140,7 +140,7 @@ mod tests {
                     edges: vec![Edge::Top, Edge::Left],
                     modifiers: vec![KeyboardModifier::ControlLeft],
                     event_type: PressState::Press,
-                    shape: vec![0.0, 1.0, 2.0],
+                    shape_angles: vec![0.0, 1.0, 2.0],
                 },
                 cmd: vec![String::from("xlogo")],
                 comment: String::new(),
@@ -228,6 +228,6 @@ mod tests {
         assert_eq!(binding.event.edges[1], Edge::Left);
         assert_eq!(binding.event.modifiers[0], KeyboardModifier::ControlLeft);
         assert_eq!(binding.event.event_type, PressState::Press);
-        assert_eq!(binding.event.shape, vec![0.0, 1.0, 2.0]);
+        assert_eq!(binding.event.shape_angles, vec![0.0, 1.0, 2.0]);
     }
 }
