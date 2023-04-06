@@ -70,6 +70,8 @@ pub fn grab_event_fn(
                     let mut histo = point_history.lock().unwrap();
                     if !histo.is_full() {
                         histo.push(*last_point.lock().unwrap());
+                    } else {
+                        trace!("point_history is full !")
                     }
                 }
             }
@@ -85,11 +87,14 @@ pub fn grab_event_fn(
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Press,
                 shape_angles: vec![],
+                shape_xy: PointHistory::new(),
             };
             if config.lock().unwrap().shape_button.to_rdev_event() == pressed_btn {
                 let mut histo = point_history.lock().unwrap();
                 if !histo.is_full() {
                     histo.push(last_point_clone);
+                } else {
+                    trace!("point_history is full !")
                 }
                 if histo.len() < 10 {
                     process_event_fn(config, click_event, args);
@@ -117,6 +122,7 @@ pub fn grab_event_fn(
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Release,
                 shape_angles: angles,
+                shape_xy: point_history.lock().unwrap().clone(),
             };
             point_history.lock().unwrap().clear();
             *button_state.lock().unwrap() = ButtonState::None;
@@ -135,6 +141,7 @@ pub fn grab_event_fn(
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
                 event_type: PressState::Release,
                 shape_angles: vec![],
+                shape_xy: PointHistory::new(),
             };
             if process_event_fn(config, click_event, args) {
                 Some(event)
@@ -197,8 +204,8 @@ pub fn normalize_points(input_points: &PointHistory, use_avg: bool) -> PointHist
             } else {
                 for p in input_points.iter() {
                     out.push(Point {
-                        x: 100 * p.x / width,
-                        y: 100 * p.y / height,
+                        x: 100 * (p.x - min_x) / width,
+                        y: 100 * (p.y - min_y) / height,
                     });
                 }
             }

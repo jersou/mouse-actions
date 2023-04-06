@@ -344,6 +344,7 @@ cargo build --release
 
 ### Medium
 
+* ne pas utiliser arrayvec ?
 * process TODO and FIXME
 * refactor
     * reduce clone() usages

@@ -2,13 +2,14 @@ use std::io::stdin;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use log::{debug, error};
+use log::{debug, error, info};
 
 use crate::args::Args;
 use crate::binding::Binding;
 use crate::cmd_from_string::cmd_from_str;
 use crate::config::{save_config, Config};
 use crate::event::{ClickEvent, MouseButton, PressState};
+use crate::grab::normalize_points;
 
 lazy_static! {
     static ref RECORD_IN_PROGRESS: Mutex<bool> = Mutex::new(false);
@@ -48,7 +49,8 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
                             .expect("Failed to read line");
                         let comment = input_string.trim().to_string();
 
-                        let event = reduce_shape_precision(event);
+                        let mut event = reduce_shape_precision(event);
+                        event.shape_xy = normalize_points(&event.shape_xy, false);
 
                         match cmd_from_str(cmd_string) {
                             Ok(cmd) => {
@@ -57,6 +59,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
                                     event,
                                     cmd,
                                 };
+                                info!("push : {binding:#?}");
                                 config.lock().unwrap().bindings.push(binding);
                                 save_config(&config.lock().unwrap(), &args.config_path);
                                 // FIXME

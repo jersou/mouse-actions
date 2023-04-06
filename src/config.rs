@@ -141,6 +141,7 @@ mod tests {
                     modifiers: vec![KeyboardModifier::ControlLeft],
                     event_type: PressState::Press,
                     shape_angles: vec![0.0, 1.0, 2.0],
+                    shape_xy: PointHistory::new(),
                 },
                 cmd: vec![String::from("xlogo")],
                 comment: String::new(),

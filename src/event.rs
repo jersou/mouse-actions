@@ -8,7 +8,7 @@ use serde::de::{SeqAccess, Visitor};
 use serde::ser::SerializeSeq;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-pub const HISTO_SIZE: usize = 10000;
+pub const HISTO_SIZE: usize = 1000;
 
 // pub type PointHistory = ArrayVec<Point, HISTO_SIZE>;
 #[derive(Default, Debug, Clone)]
@@ -252,6 +252,10 @@ pub struct ClickEvent {
 
     #[serde(default)]
     pub shape_angles: Vec<f64>,
+
+    // shape points X1, Y1, X2, Y2, X3, Y3, ...
+    #[serde(default)]
+    pub shape_xy: PointHistory,
 }
 
 pub fn edges_are_equals(edges1: &[Edge], edges2: &[Edge]) -> bool {
