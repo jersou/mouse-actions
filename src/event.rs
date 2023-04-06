@@ -1,11 +1,88 @@
+use std::fmt;
+use std::ops::{Deref, DerefMut};
+use std::sync::{Arc, Mutex};
+
 use arrayvec::ArrayVec;
 use rdev::{display_size, Button};
-use serde::{Deserialize, Serialize};
-use std::sync::{Arc, Mutex};
+use serde::de::{SeqAccess, Visitor};
+use serde::ser::SerializeSeq;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 pub const HISTO_SIZE: usize = 10000;
 
-pub type PointHistory = ArrayVec<Point, HISTO_SIZE>;
+// pub type PointHistory = ArrayVec<Point, HISTO_SIZE>;
+#[derive(Default, Debug, Clone)]
+pub struct PointHistory(ArrayVec<Point, HISTO_SIZE>);
+
+impl PointHistory {
+    pub fn new() -> PointHistory {
+        PointHistory(ArrayVec::<Point, HISTO_SIZE>::new())
+    }
+}
+
+impl Deref for PointHistory {
+    type Target = ArrayVec<Point, HISTO_SIZE>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for PointHistory {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl Serialize for PointHistory {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut seq = serializer.serialize_seq(Some(self.len() * 2))?;
+        for p in &self.0 {
+            seq.serialize_element(&p.x)?;
+            seq.serialize_element(&p.y)?;
+        }
+        seq.end()
+    }
+}
+
+impl<'de> Visitor<'de> for PointHistory {
+    type Value = PointHistory;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        // FIXME
+        formatter.write_str("PointHistory")
+    }
+
+    fn visit_seq<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+    where
+        M: SeqAccess<'de>,
+    {
+        let mut ph = PointHistory::new();
+
+        // While there are entries remaining in the input, add them
+        // into our map.
+        while let Some(x) = access.next_element()? {
+            if let Some(y) = access.next_element()? {
+                ph.push(Point { x, y });
+            }
+        }
+
+        Ok(ph)
+    }
+}
+
+impl<'de> Deserialize<'de> for PointHistory {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_seq(PointHistory::new())
+    }
+}
+
 pub type PointHistoryArcMutex = Arc<Mutex<PointHistory>>;
 
 #[derive(Debug, Copy, Clone, Default)]
@@ -204,5 +281,28 @@ impl Point {
     pub fn set(&mut self, x: i32, y: i32) {
         self.x = x;
         self.y = y;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::event::{Point, PointHistory};
+
+    #[test]
+    fn test_point_history_serialize() {
+        let mut points = PointHistory::new();
+        points.push(Point { x: 0, y: 0 });
+        points.push(Point { x: 1, y: 1 });
+        points.push(Point { x: 2, y: 2 });
+        points.push(Point { x: 3, y: 3 });
+        let serialized = serde_json::to_string(&points).unwrap();
+        assert_eq!(serialized, "[0,0,1,1,2,2,3,3]");
+    }
+
+    #[test]
+    fn test_point_history_deserialize() {
+        let ph: PointHistory = serde_json::from_str("[0,0,1,1,2,2,3,3]").unwrap();
+        let v: Vec<i32> = ph.to_vec().iter().flat_map(|p| vec![p.x, p.y]).collect();
+        assert_eq!(v, vec![0, 0, 1, 1, 2, 2, 3, 3]);
     }
 }

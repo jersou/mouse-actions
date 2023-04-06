@@ -1,6 +1,5 @@
 use std::sync::{Arc, Mutex};
 
-use arrayvec::ArrayVec;
 use log::Level::Trace;
 use log::{debug, log_enabled, trace};
 use rdev::{grab, Event, EventType, GrabError, Key};
@@ -9,7 +8,7 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::event::{
     ButtonState, ClickEvent, Edge, KeyboardModifier, KeyboardState, MouseButton, Point,
-    PointHistoryArcMutex, PressState, HISTO_SIZE,
+    PointHistory, PointHistoryArcMutex, PressState,
 };
 use crate::{listen, points_to_angles, trace_svg};
 
@@ -27,8 +26,7 @@ pub fn start_grab_binding(
     config: Arc<Mutex<Config>>,
     process_event_fn: fn(Arc<Mutex<Config>>, ClickEvent, Arc<Args>) -> bool,
 ) -> Result<(), GrabError> {
-    let point_history: PointHistoryArcMutex =
-        Arc::new(Mutex::new(ArrayVec::<Point, HISTO_SIZE>::new()));
+    let point_history: PointHistoryArcMutex = Arc::new(Mutex::new(PointHistory::new()));
     let button_state: Arc<Mutex<ButtonState>> = Arc::new(Mutex::new(ButtonState::None));
     let keyboard_state: Arc<Mutex<KeyboardState>> = Arc::new(Mutex::new(KeyboardState::default()));
     let last_point: Arc<Mutex<Point>> = Arc::new(Mutex::new(Point { x: 0, y: 0 }));
@@ -173,11 +171,8 @@ pub fn grab_event_fn(
     }
 }
 
-pub fn normalize_points(
-    input_points: &ArrayVec<Point, HISTO_SIZE>,
-    use_avg: bool,
-) -> ArrayVec<Point, HISTO_SIZE> {
-    let mut out = ArrayVec::<Point, HISTO_SIZE>::new();
+pub fn normalize_points(input_points: &PointHistory, use_avg: bool) -> PointHistory {
+    let mut out = PointHistory::new();
     if !input_points.is_empty() {
         let min_x = input_points.iter().map(|p| p.x).min().unwrap();
         let max_x = input_points.iter().map(|p| p.x).max().unwrap();

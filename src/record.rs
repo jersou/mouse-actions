@@ -28,47 +28,50 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
             || event.event_type != PressState::Press
         {
             *RECORD_IN_PROGRESS.lock().unwrap() = true;
-            thread::spawn(move || {
-                debug!("record_event : {:?}", event);
-                println!("command to bind (empty to stop the record) : ");
-                let mut input_string = String::new();
-                stdin()
-                    .read_line(&mut input_string)
-                    .expect("Failed to read line");
-                let cmd_string = input_string.trim();
-
-                *RECORD_IN_PROGRESS.lock().unwrap() = false;
-                if !cmd_string.is_empty() {
-                    println!("comment : ");
+            thread::Builder::new()
+                .name("record_event".to_string())
+                .spawn(move || {
+                    debug!("record_event : {:?}", event);
+                    println!("command to bind (empty to stop the record) : ");
                     let mut input_string = String::new();
                     stdin()
                         .read_line(&mut input_string)
                         .expect("Failed to read line");
-                    let comment = input_string.trim().to_string();
+                    let cmd_string = input_string.trim();
 
-                    let event = reduce_shape_precision(event);
+                    *RECORD_IN_PROGRESS.lock().unwrap() = false;
+                    if !cmd_string.is_empty() {
+                        println!("comment : ");
+                        let mut input_string = String::new();
+                        stdin()
+                            .read_line(&mut input_string)
+                            .expect("Failed to read line");
+                        let comment = input_string.trim().to_string();
 
-                    match cmd_from_str(cmd_string) {
-                        Ok(cmd) => {
-                            let binding = Binding {
-                                comment,
-                                event,
-                                cmd,
-                            };
-                            config.lock().unwrap().bindings.push(binding);
-                            save_config(&config.lock().unwrap(), &args.config_path);
-                            // FIXME
-                            println!(
-                                "\nStart record event : draw a shape with the {:?} button :",
-                                config.lock().unwrap().shape_button
-                            );
-                        }
-                        Err(err) => error!("Error while command parsing : {:#?}", err),
-                    };
-                } else {
-                    std::process::exit(0);
-                }
-            });
+                        let event = reduce_shape_precision(event);
+
+                        match cmd_from_str(cmd_string) {
+                            Ok(cmd) => {
+                                let binding = Binding {
+                                    comment,
+                                    event,
+                                    cmd,
+                                };
+                                config.lock().unwrap().bindings.push(binding);
+                                save_config(&config.lock().unwrap(), &args.config_path);
+                                // FIXME
+                                println!(
+                                    "\nStart record event : draw a shape with the {:?} button :",
+                                    config.lock().unwrap().shape_button
+                                );
+                            }
+                            Err(err) => error!("Error while command parsing : {:#?}", err),
+                        };
+                    } else {
+                        std::process::exit(0);
+                    }
+                })
+                .unwrap();
         }
         false
     }

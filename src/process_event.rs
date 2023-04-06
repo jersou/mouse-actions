@@ -167,7 +167,7 @@ pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<
     {
         eprintln!("event=");
         let event = reduce_shape_precision(event);
-        let serialized = serde_json::to_string_pretty(&event).unwrap();
+        let serialized = serde_json::to_string(&event).unwrap();
         println!("{serialized}");
         eprintln!("====exit");
         exit(0);
@@ -219,16 +219,19 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
 
 #[cfg(target_os = "linux")]
 fn process_cmd(cmd: Vec<String>) {
-    thread::spawn(move || {
-        info!("     → cmd {:?}", cmd);
-        let res = Command::new(&cmd[0])
-            .env("RUST_LOG", "")
-            .args(&cmd[1..])
-            .process_group(0)
-            .spawn();
+    thread::Builder::new()
+        .name("process_cmd".to_string())
+        .spawn(move || {
+            info!("     → cmd {:?}", cmd);
+            let res = Command::new(&cmd[0])
+                .env("RUST_LOG", "")
+                .args(&cmd[1..])
+                .process_group(0)
+                .spawn();
 
-        trace!("spawn result : {:?}", res);
-    });
+            trace!("spawn result : {:?}", res);
+        })
+        .unwrap();
 }
 
 #[cfg(not(target_os = "linux"))]
@@ -249,5 +252,6 @@ fn process_cmd(cmd: Vec<String>) {
             .spawn();
 
         trace!("spawn result : {:?}", p);
-    });
+    })
+    .unwrap();
 }

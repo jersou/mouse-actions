@@ -43,14 +43,12 @@ pub fn points_to_angles(point_history: &PointHistory) -> Vec<f64> {
 mod tests {
     use std::f64::consts::FRAC_PI_4;
 
-    use arrayvec::ArrayVec;
-
-    use crate::event::{Point, HISTO_SIZE};
+    use crate::event::{Point, PointHistory};
     use crate::points_to_angles::points_to_angles;
 
     #[test]
     fn test_points_to_angles() {
-        let mut points = ArrayVec::<Point, HISTO_SIZE>::new();
+        let mut points = PointHistory::new();
         points.push(Point { x: 0, y: 0 });
         points.push(Point { x: 10, y: 10 });
         points.push(Point { x: 20, y: 20 });
