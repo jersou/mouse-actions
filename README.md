@@ -73,7 +73,14 @@ sudo usermod -a -G plugdev $USER
 sudo usermod -a -G input $USER
 ```
 
-You need to open a new terminal/session to apply this user changes.
+You need to restart your desktop session to apply this user changes.
+
+To check the user groups:
+
+```bash
+$ groups
+... plugdev ... input ...
+```
 
 ### Config
 
@@ -294,54 +301,6 @@ Easystoke screenshot :
     * Draw 2 shape → Shift+F9 key clear draw on screen (Gromit-MPX)
     * Draw 𝛥 shape (↗↘←) → F9 key toggle draw on screen (Gromit-MPX)
 
-----
-
-## TODO
-
-### High
-
-* several event for binding{}
-* store normalized shape positions instead of angles
-* a release : 0.3.0
-* fix rdev
-    * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
-      in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
-    * pull request/contribute/modify rdev without checkout it in this repo (
-      mouse btn add & fix devices setup/Delete notify)
-* reset the modifiers/button state at root loop restart
-* cancel shape if no move after few ms (400 ms ?)
-
-### Medium
-
-* process TODO and FIXME
-* refactor
-    * reduce clone() usages
-    * handle errors correctly : remove panic, reduce unwrap
-    * refactor Arc/Mutex usages
-    * refactor/change the pressState usage
-    * dev doc, tests
-
-### Low
-
-* a better Readme
-* POC : config tool with deno
-
-### Maybe
-
-* find a better project name and icon
-* GUI (Tauri ?)
-* support Wayland & Windows & macOS (get the mouse position on wayland
-  impossible ?)
-* notif/sound/cursor change on action trigger (configurable) ?
-* mouse move edge event ?
-* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
-  keyboard event as action (avoid xdotool usage in
-  cmd) : https://github.com/Narsil/rdev#sending-some-events
-* change config : if shape → no need button
-* move shape_button from root config to bindings
-* hide/freeze cursor while shape drawing ?
-* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
-
 ## Dev notes
 
 Shape recognition : compare angles, get the average of the angles differences :
@@ -362,3 +321,55 @@ cargo audit
 cargo test
 cargo build --release
 ```
+
+----
+
+## TODO
+
+### High
+
+* several event for binding{}
+* store normalized shape positions instead of angles
+* a release : 0.3.0
+* fix rdev
+    * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
+      in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
+    * pull request/contribute/modify rdev without checkout it in this repo (
+      mouse btn add & fix devices setup/Delete notify)
+* reset the modifiers/button state at root loop restart
+* cancel shape if no move after few ms (400 ms ?)
+* Add group check on Linux and error
+  message `sudo usermod -a -G plugdev $USER && sudo usermod -a -G input $USER && restart session`
+* add config file version
+
+### Medium
+
+* process TODO and FIXME
+* refactor
+    * reduce clone() usages
+    * handle errors correctly : remove panic, reduce unwrap
+    * refactor Arc/Mutex usages
+    * refactor/change the pressState usage
+    * dev doc, tests
+
+### Low
+
+* a better Readme
+* POC : config tool with deno
+* use https://github.com/hoodie/notify-rust
+
+### Maybe
+
+* find a better project name and icon
+* GUI (Tauri ?)
+* support Wayland & Windows & macOS (get the mouse position on wayland
+  impossible ?)
+* notif/sound/cursor change on action trigger (configurable) ?
+* mouse move edge event ?
+* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
+  keyboard event as action (avoid xdotool usage in
+  cmd) : https://github.com/Narsil/rdev#sending-some-events
+* change config : if shape → no need button
+* move shape_button from root config to bindings
+* hide/freeze cursor while shape drawing ?
+* Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,

@@ -33,7 +33,7 @@ pub fn kill_from_pid_file(pid_file: &mut fs::File) -> anyhow::Result<String> {
     unsafe {
         let _ = kill_process(
             Pid::from_raw(pid).context("pid conversion error")?,
-            Signal::Int,
+            Signal::Kill,
         );
     }
     Ok(pid_str)
