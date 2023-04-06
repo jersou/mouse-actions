@@ -34,18 +34,21 @@ fn main() {
     thread::sleep(time::Duration::from_millis(300));
 
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    config::init_config_file_if_not_exists();
     let args: Arc<args::Args> = Arc::new(args::Args::parse());
     trace!("args = {args:#?}!");
 
-    let config: Arc<Mutex<config::Config>> = Arc::new(Mutex::new(config::get_config()));
-    config::watch_config(config.clone());
+    let config_path_from_args = args.config_path.clone();
+    let config_path = config::get_config_path(&config_path_from_args);
+    config::init_config_file_if_not_exists(&config_path);
+
+    let config: Arc<Mutex<config::Config>> = Arc::new(Mutex::new(config::get_config(&config_path)));
+    config::watch_config(config.clone(), config_path.clone());
 
     // let mut last_loop: Option<Instant> = None;
     // loop {
     let res: Result<(), GrabError> = match args.command {
         Some(MouseActionsCommands::OpenConfig) => {
-            config::open_config();
+            config::open_config(config_path);
             exit(0);
         }
         Some(MouseActionsCommands::Trace) => {

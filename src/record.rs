@@ -14,7 +14,7 @@ lazy_static! {
     static ref RECORD_IN_PROGRESS: Mutex<bool> = Mutex::new(false);
 }
 
-pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
+pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Args>) -> bool {
     // ignore events if record in progress, or left click
     if *RECORD_IN_PROGRESS.lock().unwrap()
         || event.button == MouseButton::Left
@@ -56,7 +56,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
                                 cmd,
                             };
                             config.lock().unwrap().bindings.push(binding);
-                            save_config(&config.lock().unwrap());
+                            save_config(&config.lock().unwrap(), &args.config_path);
                             // FIXME
                             println!(
                                 "\nStart record event : draw a shape with the {:?} button :",

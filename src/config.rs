@@ -1,7 +1,8 @@
 use std::fs::File;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
@@ -27,51 +28,55 @@ pub fn load(file_path: &str) -> Config {
     config
 }
 
-pub fn get_config_path() -> PathBuf {
-    let config_path: PathBuf = [
-        dirs_sys::home_dir().unwrap().to_str().unwrap(),
-        ".config",
-        "mouse-actions.json",
-    ]
-    .iter()
-    .collect();
-    config_path
+pub fn get_config_path(config_path_from_args: &str) -> PathBuf {
+    if config_path_from_args.is_empty() {
+        [
+            dirs_sys::home_dir().unwrap().to_str().unwrap(),
+            ".config",
+            "mouse-actions.json",
+        ]
+        .iter()
+        .collect()
+    } else {
+        PathBuf::from_str(config_path_from_args).unwrap()
+    }
 }
 
-pub fn get_config() -> Config {
-    let config_path = get_config_path();
+pub fn get_config(config_path: &Path) -> Config {
     load(config_path.to_str().unwrap())
 }
 
-pub fn watch_config(config: Arc<Mutex<Config>>) {
-    thread::spawn(move || {
-        let (tx, rx) = channel();
-        let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).unwrap();
-        watcher
-            .watch(get_config_path().as_path(), RecursiveMode::NonRecursive)
-            .unwrap();
+pub fn watch_config(config: Arc<Mutex<Config>>, config_path: PathBuf) {
+    thread::Builder::new()
+        .name("watch_config".to_string())
+        .spawn(move || {
+            let (tx, rx) = channel();
+            let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).unwrap();
+            watcher
+                .watch(config_path.as_path(), RecursiveMode::NonRecursive)
+                .unwrap();
 
-        loop {
-            match rx.recv() {
-                Ok(Ok(notify::Event {
-                    kind: Access(Close(notify::event::AccessMode::Write)),
-                    ..
-                })) => {
-                    info!("Reload the config !");
-                    *config.lock().unwrap() = get_config();
-                }
-                Ok(event) => trace!("watcher: broken event: {:?}", event),
-                Err(e) => {
-                    error!("watcher: watch error: {:?}", e);
-                    thread::sleep(std::time::Duration::from_secs(1));
+            loop {
+                match rx.recv() {
+                    Ok(Ok(notify::Event {
+                        kind: Access(Close(notify::event::AccessMode::Write)),
+                        ..
+                    })) => {
+                        info!("Reload the config !");
+                        *config.lock().unwrap() = get_config(&config_path);
+                    }
+                    Ok(event) => trace!("watcher: broken event: {:?}", event),
+                    Err(e) => {
+                        error!("watcher: watch error: {:?}", e);
+                        thread::sleep(std::time::Duration::from_secs(1));
+                    }
                 }
             }
-        }
-    });
+        })
+        .unwrap();
 }
 
-pub fn init_config_file_if_not_exists() {
-    let config_path = get_config_path();
+pub fn init_config_file_if_not_exists(config_path: &Path) {
     if !config_path.exists() {
         let empty_config = Config {
             shape_button: MouseButton::Right,
@@ -95,8 +100,8 @@ pub fn init_config_file_if_not_exists() {
     }
 }
 
-pub fn save_config(config: &Config) {
-    let config_path = get_config_path();
+pub fn save_config(config: &Config, config_path: &str) {
+    let config_path = get_config_path(config_path);
     let serialized = serde_json::to_string_pretty(&config).unwrap();
 
     let mut config_file = fs::OpenOptions::new()
@@ -110,8 +115,7 @@ pub fn save_config(config: &Config) {
     }
 }
 
-pub fn open_config() {
-    let config_path = get_config_path();
+pub fn open_config(config_path: PathBuf) {
     println!("Open config file with xdg-open : {:?}", config_path);
     Command::new("xdg-open")
         .args(config_path.to_str())
@@ -122,7 +126,7 @@ pub fn open_config() {
 
 #[cfg(test)]
 mod tests {
-    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, PressState};
+    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, PointHistory, PressState};
 
     use super::*;
 
