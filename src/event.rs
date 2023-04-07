@@ -15,8 +15,11 @@ pub const HISTO_SIZE: usize = 1000;
 pub struct PointHistory(ArrayVec<Point, HISTO_SIZE>);
 
 impl PointHistory {
-    pub fn new() -> PointHistory {
+    pub fn new() -> Self {
         PointHistory(ArrayVec::<Point, HISTO_SIZE>::new())
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 }
 
@@ -241,20 +244,20 @@ impl MouseButton {
 pub struct ClickEvent {
     pub button: MouseButton,
 
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub edges: Vec<Edge>,
 
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub modifiers: Vec<KeyboardModifier>,
 
     #[serde(default)]
     pub event_type: PressState,
 
-    #[serde(default)]
+    #[serde(skip)]
     pub shape_angles: Vec<f64>,
 
     // shape points X1, Y1, X2, Y2, X3, Y3, ...
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "PointHistory::is_empty")]
     pub shape_xy: PointHistory,
 }
 
@@ -275,7 +278,7 @@ pub enum ButtonState {
     None,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Point {
     pub x: i32,
     pub y: i32,

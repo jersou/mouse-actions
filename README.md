@@ -328,8 +328,7 @@ cargo build --release
 
 ### High
 
-* several event for binding{}
-* store normalized shape positions instead of angles
+* several events in binding
 * a release : 0.3.0
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
@@ -344,7 +343,9 @@ cargo build --release
 
 ### Medium
 
-* ne pas utiliser arrayvec ?
+* POC : config editor server with deno
+* use https://github.com/hoodie/notify-rust
+* don't use arrayvec ?
 * process TODO and FIXME
 * refactor
     * reduce clone() usages
@@ -356,8 +357,6 @@ cargo build --release
 ### Low
 
 * a better Readme
-* POC : config tool with deno
-* use https://github.com/hoodie/notify-rust
 
 ### Maybe
 

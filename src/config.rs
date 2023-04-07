@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::binding::Binding;
 use crate::event::MouseButton;
+use crate::points_to_angles::points_to_angles;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
@@ -23,8 +24,13 @@ pub struct Config {
 }
 
 pub fn load(file_path: &str) -> Config {
-    let content = fs::read_to_string(file_path).unwrap();
-    let config: Config = serde_json::from_str(&content).unwrap();
+    let json_config = fs::read_to_string(file_path).unwrap();
+    let mut config: Config = serde_json::from_str(&json_config).unwrap();
+    // xy → angles
+    for mut binding in &mut config.bindings {
+        binding.event.shape_angles = points_to_angles(&binding.event.shape_xy);
+    }
+
     config
 }
 
