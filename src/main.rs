@@ -101,6 +101,6 @@ fn main() {
         }
     };
     if let Err(error) = res {
-        error!("Grab Error: {:?}", error);
+        error!("Grab Error: {:#?}", error);
     }
 }

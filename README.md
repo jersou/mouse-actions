@@ -333,8 +333,9 @@ cargo build --release
 
 ### High
 
+* fix #1: permission denied on Xubuntu 22.04 without sudo
 * several events in binding
-* a release : 0.3.0
+* a release
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -345,6 +346,8 @@ cargo build --release
 * Add group check on Linux and error
   message `sudo usermod -a -G plugdev $USER && sudo usermod -a -G input $USER && restart session`
 * add config file version
+* create ~/.config if it doesn't exist
+* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace --no-listen
 
 ### Medium
 
