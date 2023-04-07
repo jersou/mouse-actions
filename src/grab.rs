@@ -188,6 +188,7 @@ pub fn normalize_points(input_points: &PointHistory, use_avg: bool) -> PointHist
         let min_y = input_points.iter().map(|p| p.y).min().unwrap();
         let max_y = input_points.iter().map(|p| p.y).max().unwrap();
         let height = max_y - min_y;
+        let size = width.max(height);
 
         if width > 0 && height > 0 {
             if use_avg {
@@ -197,19 +198,39 @@ pub fn normalize_points(input_points: &PointHistory, use_avg: bool) -> PointHist
                     input_points.iter().map(|p| p.y).sum::<i32>() / (input_points.len() as i32);
                 for p in input_points.iter() {
                     out.push(Point {
-                        x: 100 * (p.x - avg_x) / width,
-                        y: 100 * (p.y - avg_y) / height,
+                        x: 1000 * (p.x - avg_x) / size,
+                        y: 1000 * (p.y - avg_y) / size,
                     });
                 }
             } else {
                 for p in input_points.iter() {
                     out.push(Point {
-                        x: 100 * (p.x - min_x) / width,
-                        y: 100 * (p.y - min_y) / height,
+                        x: 1000 * (p.x - min_x) / size,
+                        y: 1000 * (p.y - min_y) / size,
                     });
                 }
             }
         }
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::event::{Point, PointHistory};
+    use crate::grab::normalize_points;
+
+    #[test]
+    fn test_normalize_points() {
+        let mut points = PointHistory::new();
+        points.push(Point { x: 0, y: 0 });
+        points.push(Point { x: 10, y: 0 });
+        points.push(Point { x: 5, y: 4 });
+        points.push(Point { x: 5, y: 2 });
+        let norm = normalize_points(&points, false);
+        assert_eq!(norm.get(0).unwrap(), &Point { x: 0, y: 0 });
+        assert_eq!(norm.get(1).unwrap(), &Point { x: 1000, y: 0 });
+        assert_eq!(norm.get(2).unwrap(), &Point { x: 500, y: 400 });
+        assert_eq!(norm.get(3).unwrap(), &Point { x: 500, y: 200 });
+    }
 }
