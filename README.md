@@ -185,6 +185,9 @@ mouse_actions trace
 ## CLI usage
 
 ```
+Use RUST_LOG to set the log level : error, warn, info, debug, trace,
+Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
+
 Usage: mouse_actions [OPTIONS] [COMMAND]
 
 Commands:
@@ -199,9 +202,11 @@ Commands:
   help            Print this message or the help of the given subcommand(s)
 
 Options:
-  -n, --no-listen  don't run the listen thread (for Wayland), the edge bindings might not work
-  -h, --help       Print help
-  -V, --version    Print version
+  -n, --no-listen                  don't run the listen thread (for Wayland), the edge bindings might not work
+  -c, --config-path <CONFIG_PATH>  config path, default : ~/.config/mouse-actions.json
+  -h, --help                       Print help
+  -V, --version                    Print version
+
 ```
 
 ## Development

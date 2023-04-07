@@ -4,6 +4,8 @@ use clap::{Parser, Subcommand};
 /// clicks on the side / corners of the screen, or drawing shapes.
 /// It's a mix between Easystroke and Compiz edge commands.
 /// https://github.com/jersou/mouse-actions
+/// Use RUST_LOG to set the log level : error, warn, info, debug, trace,
+/// Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
 #[derive(Parser, Debug)]
 #[clap(author, version, about, verbatim_doc_comment)]
 pub struct Args {
