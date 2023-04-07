@@ -34,8 +34,10 @@ pub fn load(file_path: &str) -> Config {
     config
 }
 
-pub fn get_config_path(config_path_from_args: &str) -> PathBuf {
-    if config_path_from_args.is_empty() {
+pub fn get_config_path(config_path_from_args: &Option<String>) -> PathBuf {
+    if let Some(config_path) = config_path_from_args {
+        PathBuf::from_str(config_path).unwrap()
+    } else {
         [
             dirs_sys::home_dir().unwrap().to_str().unwrap(),
             ".config",
@@ -43,8 +45,6 @@ pub fn get_config_path(config_path_from_args: &str) -> PathBuf {
         ]
         .iter()
         .collect()
-    } else {
-        PathBuf::from_str(config_path_from_args).unwrap()
     }
 }
 
@@ -106,8 +106,8 @@ pub fn init_config_file_if_not_exists(config_path: &Path) {
     }
 }
 
-pub fn save_config(config: &Config, config_path: &str) {
-    let config_path = get_config_path(config_path);
+pub fn save_config(config: &Config, config_path_from_args: &Option<String>) {
+    let config_path = get_config_path(config_path_from_args);
     let serialized = serde_json::to_string_pretty(&config).unwrap();
 
     let mut config_file = fs::OpenOptions::new()

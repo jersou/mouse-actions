@@ -13,7 +13,7 @@ pub struct Args {
 
     /// config path, default : ~/.config/mouse-actions.json
     #[clap(short, long)]
-    pub config_path: String,
+    pub config_path: Option<String>,
 
     #[clap(subcommand)]
     pub command: Option<MouseActionsCommands>,
