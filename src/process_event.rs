@@ -61,7 +61,7 @@ pub fn find_candidates_with_shape_with_offset<'a>(
     let start = Instant::now();
     let mut candidates_with_shape = candidates
         .iter()
-        .filter(|binding| !binding.event.shapes_angles.first().is_some())
+        .filter(|binding| binding.event.shapes_angles.first().is_some())
         .map(|binding| {
             trace!("compare_angles_with_offset of {}", binding.comment);
             (
