@@ -333,7 +333,8 @@ cargo build --release
 ### High
 
 * fix #1: permission denied on Xubuntu 22.04 without sudo
-* fix exec cmd error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
+* fix exec cmd
+  error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * a release 0.3.0
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
@@ -350,6 +351,7 @@ cargo build --release
 
 ### Medium
 
+* backup the config before save (record)
 * POC : config editor server with deno
 * use https://github.com/hoodie/notify-rust
 * don't use arrayvec ?

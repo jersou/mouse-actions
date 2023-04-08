@@ -16,6 +16,7 @@ use crate::single_instance::get_instance;
 
 mod args;
 mod binding;
+mod check_input_perm;
 mod cmd_from_string;
 mod compare_angles;
 mod config;

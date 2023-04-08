@@ -20,3 +20,4 @@ anyhow = "1.0.70"
 fs2 = "0.4.3"
 tempfile = "3.5.0"
 rustix = { version = "0.37.7", features = ["process"] }
+users = "0.11.0"
