@@ -108,7 +108,8 @@ The config file path `~/.config/mouse-actions.json`
         * `event_type`: `Press` | `Release`| `Click`
         * `modifiers`: array of :  `ShiftLeft`, `ShiftRight`, `ControlLeft`,
           `ControlRight`, `MetaLeft`, `Alt`, `AltGr`
-        * `shape`: array of number, the shape angles (radian)...
+        * `shapes_xy`: the shapes, array of arrays of coordinates. The best
+          shape match will be used.
 
 #### Get shape values
 
@@ -133,10 +134,7 @@ mouse_actions trace
       ],
       "event": {
         "button": "Extra",
-        "edges": [],
-        "event_type": "Click",
-        "modifiers": [],
-        "shape": []
+        "event_type": "Click"
       }
     },
     {
@@ -147,9 +145,7 @@ mouse_actions trace
           "Right",
           "Top"
         ],
-        "modifiers": [],
-        "event_type": "Click",
-        "shape": []
+        "event_type": "Click"
       },
       "cmd": [
         "wmctrl",
@@ -164,14 +160,17 @@ mouse_actions trace
         "edges": [],
         "modifiers": [],
         "event_type": "Click",
-        "shape": [
-          0.04,
-          0.11,
-          -0.08,
-          -1.64,
-          -2.20,
-          -1.96,
-          -1.65
+        "shapes_xy": [
+          0,
+          0,
+          500,
+          0,
+          1000,
+          0,
+          500,
+          0,
+          500,
+          1000
         ]
       },
       "cmd": [
