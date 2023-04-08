@@ -28,7 +28,12 @@ pub fn load(file_path: &str) -> Config {
     let mut config: Config = serde_json::from_str(&json_config).unwrap();
     // xy → angles
     for mut binding in &mut config.bindings {
-        binding.event.shape_angles = points_to_angles(&binding.event.shape_xy);
+        binding.event.shapes_angles = binding
+            .event
+            .shapes_xy
+            .iter()
+            .map(|shape_xy| points_to_angles(&shape_xy))
+            .collect();
     }
 
     config
@@ -132,7 +137,7 @@ pub fn open_config(config_path: PathBuf) {
 
 #[cfg(test)]
 mod tests {
-    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, PointHistory, PressState};
+    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, Point, PressState};
 
     use super::*;
 
@@ -146,8 +151,8 @@ mod tests {
                     edges: vec![Edge::Top, Edge::Left],
                     modifiers: vec![KeyboardModifier::ControlLeft],
                     event_type: PressState::Press,
-                    shape_angles: vec![0.0, 1.0, 2.0],
-                    shape_xy: PointHistory::new(),
+                    shapes_angles: vec![vec![0.0, 1.0, 2.0]],
+                    shapes_xy: vec![],
                 },
                 cmd: vec![String::from("xlogo")],
                 comment: String::new(),
@@ -169,12 +174,7 @@ mod tests {
         "modifiers": [
           "ControlLeft"
         ],
-        "event_type": "Press",
-        "shape": [
-          0.0,
-          1.0,
-          2.0
-        ]
+        "event_type": "Press"
       },
       "cmd": [
         "xlogo"
@@ -213,11 +213,12 @@ mod tests {
           "ControlLeft"
         ],
         "event_type": "Press",
-        "shape": [
-          0.0,
-          1.0,
-          2.0
-        ]
+        "shapes_xy": [[
+          0,
+          1,
+          2,
+          3
+        ]]
       },
       "cmd": [
         "xlogo"
@@ -235,6 +236,9 @@ mod tests {
         assert_eq!(binding.event.edges[1], Edge::Left);
         assert_eq!(binding.event.modifiers[0], KeyboardModifier::ControlLeft);
         assert_eq!(binding.event.event_type, PressState::Press);
-        assert_eq!(binding.event.shape_angles, vec![0.0, 1.0, 2.0]);
+        assert_eq!(
+            binding.event.shapes_xy.first().unwrap().to_vec(),
+            vec![Point { x: 0, y: 1 }, Point { x: 2, y: 3 }]
+        );
     }
 }

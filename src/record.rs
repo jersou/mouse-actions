@@ -19,7 +19,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
     // ignore events if record in progress, or left click
     if *RECORD_IN_PROGRESS.lock().unwrap()
         || event.button == MouseButton::Left
-            && event.shape_angles.is_empty()
+            && event.shapes_angles.is_empty()
             && event.edges.is_empty()
             && event.modifiers.is_empty()
     {
@@ -50,7 +50,9 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
                         let comment = input_string.trim().to_string();
 
                         let mut event = reduce_shape_precision(event);
-                        event.shape_xy = normalize_points(&event.shape_xy, false);
+                        if let Some(shapes_xy) = event.shapes_xy.first() {
+                            event.shapes_xy = vec![normalize_points(&shapes_xy, false)];
+                        }
 
                         match cmd_from_str(cmd_string) {
                             Ok(cmd) => {
@@ -82,10 +84,15 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
 
 pub fn reduce_shape_precision(event: ClickEvent) -> ClickEvent {
     ClickEvent {
-        shape_angles: event
-            .shape_angles
+        shapes_angles: event
+            .shapes_angles
             .iter()
-            .map(|angle| (angle * 100.0).round() / 100.0)
+            .map(|shape_angles| {
+                shape_angles
+                    .iter()
+                    .map(|angle| (angle * 100.0).round() / 100.0)
+                    .collect()
+            })
             .collect(),
         ..event
     }

@@ -21,6 +21,8 @@ const DIFF_MIN_WITH_SECOND: f64 = 0.05;
 const DIFF_MAX_PRINT: f64 = 300.0;
 const SHAPE_MIN_SIZE: usize = 10;
 
+// TODO refactor
+
 /// filter the binding[] of config : keep bindings that have the same button, edges and modifiers
 pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Binding> {
     let shape_button = &config.shape_button;
@@ -28,7 +30,7 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .bindings
         .iter()
         .filter(|binding| {
-            (binding.event.shape_angles.is_empty()
+            (binding.event.shapes_angles.is_empty()
                 || shape_button != &binding.event.button
                 || event.event_type != Press)
                 && binding.event.button == event.button
@@ -48,19 +50,36 @@ pub fn find_candidates_with_shape_with_offset<'a>(
     debug!(
         "angles: {}",
         event
-            .shape_angles
-            .iter()
-            .map(|a| format!("{:.2}, ", a))
-            .collect::<String>()
+            .shapes_angles
+            .first()
+            .map(|angles| angles
+                .iter()
+                .map(|a| format!("{:.2}, ", a))
+                .collect::<String>())
+            .unwrap_or_default()
     );
     let start = Instant::now();
     let mut candidates_with_shape = candidates
         .iter()
-        .filter(|b| !b.event.shape_angles.is_empty())
-        .map(|b| {
+        .filter(|binding| !binding.event.shapes_angles.first().is_some())
+        .map(|binding| {
+            trace!("compare_angles_with_offset of {}", binding.comment);
             (
-                b,
-                compare_angles_with_offset(&event.shape_angles, &b.event.shape_angles),
+                binding,
+                binding
+                    .event
+                    .shapes_angles
+                    .iter()
+                    .map(|angles| {
+                        let res = compare_angles_with_offset(
+                            &event.shapes_angles.first().unwrap(),
+                            &angles,
+                        );
+                        trace!("  res = {res}");
+                        res
+                    })
+                    .min_by(|a, b| a.partial_cmp(b).unwrap())
+                    .unwrap(),
             )
         })
         .filter(|(_, diff)| *diff < DIFF_MAX_PRINT)
@@ -77,7 +96,13 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
     candidates: &'a [&Binding],
     event: &ClickEvent,
 ) -> Option<&'a Binding> {
-    if event.shape_angles.len() > SHAPE_MIN_SIZE {
+    let shape_size = event
+        .shapes_angles
+        .first()
+        .map(|angles| angles.len())
+        .unwrap_or_default();
+
+    if shape_size > SHAPE_MIN_SIZE {
         let candidates_with_shape = find_candidates_with_shape_with_offset(candidates, event);
 
         // check is not empty
@@ -111,10 +136,7 @@ pub fn find_the_chosen_one_among_the_candidates_with_shape<'a>(
             }
         }
     } else {
-        trace!(
-            "shape size({}) <= {SHAPE_MIN_SIZE} → ignore this event",
-            event.shape_angles.len()
-        );
+        trace!("shape size({shape_size}) <= {SHAPE_MIN_SIZE} → ignore this event");
     }
     None
 }
@@ -125,7 +147,7 @@ pub fn find_the_chosen_one_among_the_candidates_without_shape<'a>(
 ) -> Option<&'a Binding> {
     let candidates_without_shape = candidates
         .iter()
-        .filter(|b| b.event.shape_angles.is_empty())
+        .filter(|b| b.event.shapes_angles.is_empty())
         .collect::<Vec<_>>();
 
     match candidates_without_shape.len() {
@@ -160,7 +182,7 @@ pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
 
 pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     if config.lock().unwrap().shape_button != event.button
-        || !event.shape_angles.is_empty()
+        || !event.shapes_angles.is_empty()
         || event.event_type != Press
         || !event.edges.is_empty()
         || !event.modifiers.is_empty()
@@ -192,7 +214,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
             propagate = false;
             if !(event.event_type == PressState::Release
                 && binding.event.event_type == PressState::Click
-                && binding.event.shape_angles.is_empty())
+                && binding.event.shapes_angles.is_empty())
             {
                 process_cmd(binding.cmd.clone());
             }

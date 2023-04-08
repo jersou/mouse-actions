@@ -334,7 +334,6 @@ cargo build --release
 ### High
 
 * fix #1: permission denied on Xubuntu 22.04 without sudo
-* several events in binding
 * a release
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE

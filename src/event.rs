@@ -11,7 +11,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub const HISTO_SIZE: usize = 1000;
 
 // pub type PointHistory = ArrayVec<Point, HISTO_SIZE>;
-#[derive(Default, Debug, Clone)]
+#[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct PointHistory(ArrayVec<Point, HISTO_SIZE>);
 
 impl PointHistory {
@@ -254,11 +254,11 @@ pub struct ClickEvent {
     pub event_type: PressState,
 
     #[serde(skip)]
-    pub shape_angles: Vec<f64>,
+    pub shapes_angles: Vec<Vec<f64>>,
 
     // shape points X1, Y1, X2, Y2, X3, Y3, ...
-    #[serde(default, skip_serializing_if = "PointHistory::is_empty")]
-    pub shape_xy: PointHistory,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub shapes_xy: Vec<PointHistory>,
 }
 
 pub fn edges_are_equals(edges1: &[Edge], edges2: &[Edge]) -> bool {
