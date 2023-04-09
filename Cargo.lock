@@ -631,6 +631,7 @@ dependencies = [
  "inotify 0.8.3",
  "lazy_static",
  "libc",
+ "log",
  "winapi",
  "x11",
 ]
