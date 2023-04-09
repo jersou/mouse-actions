@@ -1,6 +1,6 @@
 [package]
 name = "mouse_actions"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Jerem <jersou@gmail.com>"]
 edition = "2021"
 

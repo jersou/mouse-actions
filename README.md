@@ -347,10 +347,11 @@ cargo build --release
   message `sudo usermod -a -G plugdev $USER && sudo usermod -a -G input $USER && restart session`
 * add config file version
 * create ~/.config if it doesn't exist
-* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
+* commit hash in version
 
 ### Medium
 
+* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * backup the config before save (record)
 * POC : config editor server with deno
 * use https://github.com/hoodie/notify-rust
