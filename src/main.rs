@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate lazy_static;
 
+use std::io::ErrorKind;
 use std::process::exit;
 use std::{thread, time};
 // use std::time::Instant;
@@ -16,7 +17,6 @@ use crate::single_instance::get_instance;
 
 mod args;
 mod binding;
-mod check_input_perm;
 mod cmd_from_string;
 mod compare_angles;
 mod config;
@@ -28,6 +28,9 @@ mod process_event;
 mod record;
 mod single_instance;
 mod trace_svg;
+
+#[cfg(target_os = "linux")]
+static DEV_PATH: &str = "/dev/input";
 
 fn main() {
     debug!("Start main");
@@ -103,5 +106,18 @@ fn main() {
     };
     if let Err(error) = res {
         error!("Grab Error: {:#?}", error);
+
+        #[cfg(target_os = "linux")]
+        {
+            if let GrabError::IoError(io_err) = error {
+                if io_err.kind() == ErrorKind::PermissionDenied {
+                    error!("The user must be in the file group of {DEV_PATH} files, usually 'input' or 'plugdev' :");
+                    error!("  $ sudo usermod -a -G input $USER");
+                    error!("  $ sudo usermod -a -G plugdev $USER");
+                    error!("Then restart the desktop session to apply this user modifications.");
+                }
+            }
+        }
+        exit(4);
     }
 }
