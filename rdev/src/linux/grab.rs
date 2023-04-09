@@ -16,7 +16,7 @@ use evdev_rs::{
     Device, InputEvent, UInputDevice,
 };
 use inotify::{Inotify, WatchMask};
-use log::{error, trace};
+use log::trace;
 
 use crate::linux::common::Display;
 use crate::linux::keyboard::Keyboard;
@@ -358,21 +358,17 @@ where
         eprintln!("root_loop");
         trace!("setup_devices");
         let (epoll_fd, mut devices, output_devices) = setup_devices()?;
-        trace!("setup_inotify");
         let mut inotify = setup_inotify(epoll_fd, &devices)?;
 
         //grab devices
-        trace!("grab devices");
-        let _grab = devices.iter_mut().try_for_each(|device| {
-            trace!("grab devices: {:?}", device.fd());
-            device.grab(evdev_rs::GrabMode::Grab)
-        })?;
+        let _grab = devices
+            .iter_mut()
+            .try_for_each(|device| device.grab(evdev_rs::GrabMode::Grab))?;
 
         // create buffer for epoll to fill
         let mut epoll_buffer = [epoll::Event::new(epoll::Events::empty(), 0); 4];
         let mut inotify_buffer = vec![0_u8; 4096];
         'event_loop: loop {
-            trace!("epoll::wait");
             let num_events = epoll::wait(epoll_fd, -1, &mut epoll_buffer)?;
 
             //map and simulate events, dealing with
@@ -404,7 +400,6 @@ where
                             Err(_) => {
                                 let device_fd = device.fd().unwrap().into_raw_fd();
                                 let empty_event = epoll::Event::new(epoll::Events::empty(), 0);
-                                trace!("epoll::ctl");
                                 epoll::ctl(epoll_fd, EPOLL_CTL_DEL, device_fd, empty_event)?;
                                 continue 'events;
                             }
@@ -414,7 +409,6 @@ where
                         if let (Some(event), Some(out_device)) =
                             (event, output_devices.get(device_idx))
                         {
-                            trace!("out_device.write_event");
                             out_device.write_event(&event)?;
                         }
                         if grab_status == GrabStatus::Stop {
@@ -454,12 +448,9 @@ where
     T: AsRef<Path>,
 {
     let mut res = Vec::new();
-    trace!("get_device_files: read_dir");
     for entry in read_dir(path)? {
-        trace!("get_device_files: entry");
         let entry = entry?;
         // /dev/input files are character devices
-        trace!("get_device_files: entry.file_type()");
         if !entry.file_type()?.is_char_device() {
             continue;
         }
@@ -484,10 +475,7 @@ where
         {
             continue;
         }
-        trace!("get_device_files: File::open({})", path.display());
-        let file = File::open(&path);
-        trace!("file open of {} : {:?}", path.display(), file);
-        res.push(file?);
+        res.push(File::open(path)?);
     }
     Ok(res)
 }
@@ -534,37 +522,15 @@ fn add_device_to_epoll_from_inotify_event(
 /// a libevdev copy of its corresponding device.The epoll_fd is level-triggered
 /// on any available data in the original devices.
 fn setup_devices() -> io::Result<(RawFd, Vec<Device>, Vec<UInputDevice>)> {
-    trace!("setup_devices: get_device_files");
     let device_files = get_device_files(DEV_PATH)?;
-    trace!("setup_devices: epoll_watch_all");
     let epoll_fd = epoll_watch_all(device_files.iter())?;
-    trace!("setup_devices: iter Device::new_from_fd");
     let devices = device_files
         .into_iter()
         .map(Device::new_from_fd)
         .collect::<io::Result<Vec<Device>>>()?;
-    trace!("setup_devices: create_from_device");
     let output_devices = devices
         .iter()
-        .map(|device| {
-            let res = UInputDevice::create_from_device(device);
-            if let Err(error) = &res {
-                error!(
-                    "setup_devices: create_from_device: {} {:?} : {:?}",
-                    device.name().unwrap_or_default(),
-                    device.fd().unwrap(),
-                    error
-                );
-            } else {
-                trace!(
-                    "setup_devices: create_from_device: {} {:?} : OK",
-                    device.name().unwrap_or_default(),
-                    device.fd().unwrap(),
-                );
-            }
-            res
-        })
-        // .filter(|d| d.is_ok())
+        .map(|device| UInputDevice::create_from_device(device))
         .collect::<io::Result<Vec<UInputDevice>>>()?;
     Ok((epoll_fd, devices, output_devices))
 }
