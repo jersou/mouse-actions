@@ -2,15 +2,27 @@
 
 ![mouse_actions_logo.svg](mouse_actions_logo.svg)
 
-mouse_actions allows to execute some commands from mouse events such as
-clicks/wheel on the side / corners of the screen, or drawing shapes. It's a mix
-between [Easystroke](https://github.com/thjaeger/easystroke) and [Compiz edge
+mouse_actions allows to execute some commands from mouse events such as:
+
+* clicks / wheel on the side / corners of the screen,
+* or drawing shapes.
+
+It's a mix between [Easystroke](https://github.com/thjaeger/easystroke)
+and [Compiz edge
 commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
-You can click on the top left corder of the screen to go to the first desktop,
-or scroll from the top corner to increase/decrease the brightness of the screen
-or change the volume... Or draw a T with the mouse right button pressed to
-open a terminal, ...
+For instance, you can configure:
+
+* a click on the top left corder of the screen to go to the first desktop,
+* a middle click on the top side of the screen to play/pause the media,
+* or scroll from the left side to increase/decrease the brightness of the
+  screen,
+* or scroll from the top-left corner to increase/decrease the volume,
+* or draw a `T` with the mouse right button pressed to open a terminal,
+* or draw a `G` with the mouse right button pressed to open a text editor (
+  gedit),
+
+![mouse_actions_logo.gif](mouse_actions_logo.gif)
 
 ## Features
 
@@ -18,9 +30,9 @@ Bind command execution with mouse button/wheel events (this conditions bellow
 are optional):
 
 * shape drawing with the mouse (like Easystroke)
-* Press/Release only or click (don't propagate the press & release event)
-* with some modifiers : shift/Ctrl/...
-* with screen edge : Top/Left ...
+* press/release only or click (don't propagate the press & release event)
+* with some modifiers : shift/Ctrl/Alt...
+* with screen edge : Top/Left...
 * auto reload config on changes
 
 ## Project status
@@ -31,37 +43,26 @@ It's works (tested on Linux/X11) but there is no GUI to configure the bindings
 for now, you add to write the json config yourself or
 use `mouse_actions record`.
 
-I have been using mouse_actions for several days (since 15/05/2022) and X11 has
-not crashed (Unlike Easystroke which made X11 crash every day before on my
-laptop).
-
-With my usage, mouse_actions triggers commands about once/twice per minute,
-and half of which by shape bindings.
-
-My feedback : after 10 month of daily use and 300'000 triggers,
-it's works well.
+My feedback : after 10 month of daily use (since 15/05/2022) and 300'000
+triggers, it's works well and X11 has not crashed (Unlike Easystroke which made
+X11 crash every day before on my laptop).
+With my usage, mouse_actions triggers commands about once/twice per minute, and
+half of which by shape bindings.
 
 ### Known bugs
 
-* when a device (like mouse or bluetooth earphone ) is added, the mouse/keyboard
+* when a device (like mouse or bluetooth earphone) is added, the mouse/keyboard
   modifier are locked : if Ctrl is pressed during this plug, Ctrl keep pressed.
   A workaround for me is to switch : Ctrl+Alt+F1 & Ctrl+Alt+F7.
 * when a device (like mouse or bluetooth earphone ) is added, the cursor freeze
-  2 seconds.
+  while 2 seconds.
 
-## Install
+## Install / run / build
 
-Download the release, or with Cargo, run directly :
+[Download the release](https://github.com/jersou/mouse-actions/releases), or run
+it directly with Cargo : `cargo run`
 
-```bash
-cargo run
-```
-
-or build the binary:
-
-```bash
-cargo build --release
-```
+or build the binary: `cargo build --release`
 
 ### Requirement :
 
@@ -82,7 +83,7 @@ sudo usermod -a -G plugdev $USER
 sudo usermod -a -G input $USER
 ```
 
-Furthermore, you must have the R/W right on /dev/uinput, you can check with:
+Furthermore, you must have the R/W right on `/dev/uinput`, you can check with:
 
 ```bash
 getfacl /dev/uinput
@@ -91,7 +92,8 @@ getfacl /dev/uinput
 # ...
 ```
 
-If this permission is not available on the user, to add it temporary : `sudo setfacl -m u:$USER:rw /dev/uinput` or persistent :
+If this permission is not available on the user, to add it
+temporary : `sudo setfacl -m u:$USER:rw /dev/uinput` or persistent :
 
 ```bash
 sudo tee /etc/udev/rules.d/80-mouse-actions.rules <<<'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"'
@@ -106,13 +108,23 @@ $ groups
 ... plugdev ... input ...
 ```
 
-### Config
+### Platform compatibility
 
-Run `mouse_actions record` to init the configuration.
+I only tested on Linux & X11, but it should work on Mac, Windows as well as
+Linux+Wayland (with --no-listen option for Wayland).
+
+The `grab` function from rdev give an inaccurate mouse position, so I used
+the `listen` function from rdev. This function not works on Wayland, but the
+mouse shape detection should work (with little modification of code), the listen
+function is used to detect edge of screen click.
 
 ### Configuration
 
-The config file path `~/.config/mouse-actions.json`
+Run `mouse_actions record` to init the configuration.
+
+### Configuration file format
+
+The config file default path `~/.config/mouse-actions.json`
 
 #### Structure
 
@@ -232,37 +244,6 @@ Options:
 
 ```
 
-## Development
-
-This project use [rdev crate](https://crates.io/crates/rdev) that
-use [Evdev](https://en.wikipedia.org/wiki/Evdev) to grab mouse Event.
-
-### Platform compatibility
-
-I only tested on Linux & X11 but it should work on Mac, Windows as well as
-Linux+Wayland (with --no-listen option for Wayland).
-
-The `grab` function from rdev give an inaccurate mouse position, so I used
-the `listen` function from rdev. This function not works on Wayland, but the
-mouse shape detection should work (with little modification of code), the listen
-function is used to detect edge of screen click.
-
-## Motivations
-
-* I used [Easystroke](https://github.com/thjaeger/easystroke) a lot but its
-  development stopped in 2014, and it causes my system to crash regularly.
-* Besides, I was also using a lot Compiz screen corner command bindings, and I
-  wanted to have these bindings without necessarily using compiz.
-
-The goal of this project is then to have these 2 features without having
-OS crash (X11 crash).
-
-CCSM screenshot (Compiz Config Setting Manager) :
-![ccsm.png](ccsm.png)
-
-Easystoke screenshot :
-![easystroke.png](easystroke.png)
-
 ## Exemple : big config
 
 * mouse button bindings:
@@ -329,7 +310,28 @@ Easystoke screenshot :
     * Draw 2 shape → Shift+F9 key clear draw on screen (Gromit-MPX)
     * Draw 𝛥 shape (↗↘←) → F9 key toggle draw on screen (Gromit-MPX)
 
-## Dev notes
+## Development
+
+This project use [rdev crate](https://crates.io/crates/rdev) that
+use [Evdev](https://en.wikipedia.org/wiki/Evdev) to grab mouse Event.
+
+### Motivations
+
+* I used [Easystroke](https://github.com/thjaeger/easystroke) a lot but its
+  development stopped in 2014, and it causes my system to crash regularly.
+* Besides, I was also using a lot Compiz screen corner command bindings, and I
+  wanted to have these bindings without necessarily using compiz.
+
+The goal of this project is then to have these 2 features without having
+OS crash (X11 crash).
+
+CCSM screenshot (Compiz Config Setting Manager) :
+![ccsm.png](ccsm.png)
+
+Easystoke screenshot :
+![easystroke.png](easystroke.png)
+
+### Dev notes : Shape recognition
 
 Shape recognition : compare angles, get the average of the angles differences :
 
@@ -356,6 +358,7 @@ cargo build --release
 
 ### High
 
+* move config to v0.3.0 format
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * fix rdev
@@ -373,6 +376,7 @@ cargo build --release
 
 ### Medium
 
+* changelog
 * dry-run option
 * min diff shape option
 * min score shape option
@@ -382,6 +386,7 @@ cargo build --release
 * use https://github.com/hoodie/notify-rust
 * don't use arrayvec ?
 * process TODO and FIXME
+* improve shape recognition
 * refactor
     * reduce clone() usages
     * handle errors correctly : remove panic, reduce unwrap
