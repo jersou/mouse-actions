@@ -373,7 +373,6 @@ cargo build --release
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
-* backup the config before save (record)
 * use https://github.com/hoodie/notify-rust
 * process TODO and FIXME
 

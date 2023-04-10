@@ -112,11 +112,18 @@ pub fn init_config_file_if_not_exists(config_path: &Path) {
 }
 
 pub fn save_config(config: &Config, config_path_from_args: &Option<String>) {
-    let config_path = get_config_path(config_path_from_args);
     let serialized = serde_json::to_string_pretty(&config).unwrap();
-
+    let config_path = get_config_path(config_path_from_args);
+    let config_path_bak = config_path.parent().unwrap().join(format!(
+        "{}.bak",
+        config_path.file_name().unwrap().to_str().unwrap()
+    ));
+    let _ = fs::remove_file(&config_path_bak);
+    fs::rename(&config_path, &config_path_bak)
+        .expect("Error while backup the previous config file");
     let mut config_file = fs::OpenOptions::new()
         .write(true)
+        .create(true)
         .open(&config_path)
         .unwrap();
 
