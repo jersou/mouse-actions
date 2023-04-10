@@ -1,4 +1,5 @@
 use std::sync::{Arc, Mutex};
+use std::{thread, time};
 
 use log::Level::Trace;
 use log::{debug, log_enabled, trace};
@@ -26,6 +27,8 @@ pub fn start_grab_binding(
     config: Arc<Mutex<Config>>,
     process_event_fn: fn(Arc<Mutex<Config>>, ClickEvent, Arc<Args>) -> bool,
 ) -> Result<(), GrabError> {
+    // FIXME : to avoid "Release Enter key event" to be lost (if run the script by Enter press in a terminal)
+    thread::sleep(time::Duration::from_millis(300));
     let point_history: PointHistoryArcMutex = Arc::new(Mutex::new(PointHistory::new()));
     let button_state: Arc<Mutex<ButtonState>> = Arc::new(Mutex::new(ButtonState::None));
     let keyboard_state: Arc<Mutex<KeyboardState>> = Arc::new(Mutex::new(KeyboardState::default()));

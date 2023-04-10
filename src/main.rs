@@ -3,8 +3,6 @@ extern crate lazy_static;
 
 use std::io::ErrorKind;
 use std::process::exit;
-use std::{thread, time};
-// use std::time::Instant;
 use std::sync::{Arc, Mutex};
 
 use clap::Parser;
@@ -32,14 +30,26 @@ mod trace_svg;
 #[cfg(target_os = "linux")]
 static DEV_PATH: &str = "/dev/input";
 
-fn main() {
-    debug!("Start main");
-    // FIXME : to avoid "Release Enter key event" to be lost (if run the script by Enter press in a terminal)
-    thread::sleep(time::Duration::from_millis(300));
+// FIXME refactor
 
+fn main() {
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    debug!("Start main");
+    let version: String = format!(
+        "{}-{} ({})",
+        env!("CARGO_PKG_VERSION"),
+        env!("VERGEN_GIT_DESCRIBE"),
+        env!("VERGEN_BUILD_DATE")
+    );
+    trace!("version : {version}");
+
     let args: Arc<args::Args> = Arc::new(args::Args::parse());
     trace!("args = {args:#?}!");
+    // FIXME refactor
+    if args.version {
+        println!("{version}");
+        exit(0);
+    }
 
     let config_path_from_args = args.config_path.clone();
     let config_path = config::get_config_path(&config_path_from_args);

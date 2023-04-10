@@ -239,9 +239,8 @@ Commands:
 Options:
   -n, --no-listen                  don't run the listen thread (for Wayland), the edge bindings might not work
   -c, --config-path <CONFIG_PATH>  config path, default : ~/.config/mouse-actions.json
+  -v, --version                    print version
   -h, --help                       Print help
-  -V, --version                    Print version
-
 ```
 
 ## Exemple : big config
@@ -358,7 +357,6 @@ cargo build --release
 
 ### High
 
-* move config to v0.3.0 format
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * fix rdev
@@ -372,7 +370,6 @@ cargo build --release
   message `sudo usermod -a -G plugdev $USER && sudo usermod -a -G input $USER && restart session`
 * add config file version
 * create ~/.config if it doesn't exist
-* commit hash in version
 
 ### Medium
 

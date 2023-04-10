@@ -7,7 +7,7 @@ use clap::{Parser, Subcommand};
 /// Use RUST_LOG to set the log level : error, warn, info, debug, trace,
 /// Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
 #[derive(Parser, Debug)]
-#[clap(author, version, about, verbatim_doc_comment)]
+#[clap(author, about, verbatim_doc_comment)]
 pub struct Args {
     /// don't run the listen thread (for Wayland), the edge bindings might not work
     #[clap(short, long)]
@@ -19,6 +19,10 @@ pub struct Args {
 
     #[clap(subcommand)]
     pub command: Option<MouseActionsCommands>,
+
+    /// print version
+    #[clap(short, long)]
+    pub version: bool,
 }
 
 #[derive(Debug, Subcommand, PartialEq)]

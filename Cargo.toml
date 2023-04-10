@@ -3,6 +3,7 @@ name = "mouse_actions"
 version = "0.3.1"
 authors = ["Jerem <jersou@gmail.com>"]
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 rdev = { path = "rdev", features = ["unstable_grab"] }
@@ -21,3 +22,6 @@ fs2 = "0.4.3"
 tempfile = "3.5.0"
 rustix = { version = "0.37.7", features = ["process"] }
 users = "0.11.0"
+
+[build-dependencies]
+vergen = { version = "8.1.1", features = ["build", "git", "gitcl", "cargo"] }
