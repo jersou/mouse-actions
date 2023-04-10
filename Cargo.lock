@@ -541,7 +541,7 @@ dependencies = [
 
 [[package]]
 name = "mouse_actions"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "anyhow",
  "arrayvec",
