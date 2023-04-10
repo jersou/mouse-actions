@@ -14,6 +14,7 @@ use crate::compare_angles::compare_angles_with_offset;
 use crate::config::Config;
 use crate::event::PressState::Press;
 use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent, PressState};
+use crate::grab::normalize_points;
 use crate::record::reduce_shape_precision;
 
 const DIFF_MAX: f64 = 0.6;
@@ -177,6 +178,15 @@ pub fn find_the_chosen_one_among_the_candidates<'a>(
 
 pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     println!("event={:?}", event);
+    if let Some(shapes_xy) = event.shapes_xy.first() {
+        let normalized_points = normalize_points(&shapes_xy, false);
+        trace!("normalized_points = {normalized_points:?}");
+        println!(
+            "shapes_xy={}",
+            serde_json::to_string(&normalized_points).unwrap()
+        );
+    }
+
     true
 }
 
