@@ -114,7 +114,10 @@ fn main() {
                     error!("The user must be in the file group of {DEV_PATH} files, usually 'input' or 'plugdev' :");
                     error!("  $ sudo usermod -a -G input $USER");
                     error!("  $ sudo usermod -a -G plugdev $USER");
-                    error!("Then restart the desktop session to apply this user modifications.");
+                    error!(
+                        r#"  $ sudo tee /etc/udev/rules.d/80-mouse-actions.rules <<<'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"'"#
+                    );
+                    error!("Then restart to apply this user modifications.");
                 }
             }
         }

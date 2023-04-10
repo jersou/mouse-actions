@@ -65,15 +65,39 @@ cargo build --release
 
 ### Requirement :
 
-To use the main feature "grab event", you need to add the current user
-to `input` & `plugdev` group :
+To use the main feature "grab event", you need to have the read&write permission
+on /dev/input/event*. Check the group of `/dev/input/event*` files :
 
+```bash
+ls -al /dev/input/event*
+# > crw-rw---- 1 root input /dev/input/event5
+#                     ^^^^^
 ```
+
+You need to add the current user to this group, usually `input` or `plugdev` :
+
+```bash
 sudo usermod -a -G plugdev $USER
+# or
 sudo usermod -a -G input $USER
 ```
 
-You need to restart your desktop session to apply this user changes.
+Furthermore, you must have the R/W right on /dev/uinput, you can check with:
+
+```bash
+getfacl /dev/uinput
+# ...
+# user:<the current user>:rw-
+# ...
+```
+
+If this permission is not available on the user, to add it temporary : `sudo setfacl -m u:$USER:rw /dev/uinput` or persistent :
+
+```bash
+sudo tee /etc/udev/rules.d/80-mouse-actions.rules <<<'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"'
+```
+
+You need to restart your desktop session to apply these changes.
 
 To check the user groups:
 
@@ -332,10 +356,8 @@ cargo build --release
 
 ### High
 
-* fix #1: permission denied on Xubuntu 22.04 without sudo
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
-* a release 0.3.0
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -351,9 +373,12 @@ cargo build --release
 
 ### Medium
 
+* dry-run option
+* min diff shape option
+* min score shape option
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * backup the config before save (record)
-* POC : config editor server with deno
+* POC : config editor server with deno fresh
 * use https://github.com/hoodie/notify-rust
 * don't use arrayvec ?
 * process TODO and FIXME
