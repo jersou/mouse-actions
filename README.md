@@ -370,7 +370,9 @@ cargo build --release
 
 ### Medium
 
-* POC : config editor server with deno fresh, (+draw shape from fontend)
+* POC : config editor server with deno fresh
+    * cli config path
+    * cli bin path
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`

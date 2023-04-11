@@ -6,6 +6,8 @@
 
 - Add commit & build date to version
 - Backup config before save
+- Add ShowConfig subcommand
+- Config editor: init
 
 ## [0.3.1] - 2023-04-10
 
