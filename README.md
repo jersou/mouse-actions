@@ -368,7 +368,6 @@ cargo build --release
 ### Medium
 
 * POC : config editor server with deno fresh
-* changelog
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
@@ -399,7 +398,8 @@ cargo build --release
 * GUI (Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
   impossible ?)
-* notif/sound/cursor change on action trigger (configurable) ?
+* notif/sound/cursor change on action trigger (
+  configurable) ? https://crates.io/crates/rodio
 * mouse move edge event ?
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
   keyboard event as action (avoid xdotool usage in
