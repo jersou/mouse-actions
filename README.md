@@ -234,6 +234,7 @@ Commands:
   grab-one-event  Grab one event, print it and exit
   stop            Stop mouse action
   status          Get mouse action status : exit 0 if running
+  show-config     print the json config
   help            Print this message or the help of the given subcommand(s)
 
 Options:
@@ -357,6 +358,8 @@ cargo build --release
 
 ### High
 
+* save config (from stdin) subcommand
+* add "enable" in bindings
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -367,7 +370,7 @@ cargo build --release
 
 ### Medium
 
-* POC : config editor server with deno fresh
+* POC : config editor server with deno fresh, (+draw shape from fontend)
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
@@ -377,6 +380,7 @@ cargo build --release
 
 ### Low
 
+* shape type instead of shapes.is_empty() ?
 * add config file version
 * a better Readme
 * options

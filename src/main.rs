@@ -2,6 +2,7 @@
 extern crate lazy_static;
 
 use std::io::ErrorKind;
+use std::ops::Deref;
 use std::process::exit;
 use std::sync::{Arc, Mutex};
 
@@ -112,6 +113,12 @@ fn main() {
                 info!("mouse_actions is stopped");
                 exit(1);
             }
+        }
+        Some(MouseActionsCommands::ShowConfig) => {
+            let c = config.lock().unwrap();
+            let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
+            println!("{serialized}");
+            exit(0);
         }
     };
     if let Err(error) = res {

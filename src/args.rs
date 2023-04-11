@@ -58,4 +58,8 @@ pub enum MouseActionsCommands {
     /// Get mouse action status : exit 0 if running
     #[clap()]
     Status,
+
+    /// print the json config
+    #[clap()]
+    ShowConfig,
 }
