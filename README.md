@@ -41,7 +41,8 @@ are optional):
 
 It's works (tested on Linux/X11) but there is no GUI to configure the bindings
 for now, you add to write the json config yourself or
-use `mouse_actions record`.
+use `mouse_actions record`. A basic GUI is in progress, see
+bellow `Mouse Action Configuration Editor`.
 
 My feedback : after 10 month of daily use (since 15/05/2022) and 300'000
 triggers, it's works well and X11 has not crashed (Unlike Easystroke which made
@@ -118,9 +119,20 @@ the `listen` function from rdev. This function not works on Wayland, but the
 mouse shape detection should work (with little modification of code), the listen
 function is used to detect edge of screen click.
 
-### Configuration
+## Configuration
 
 Run `mouse_actions record` to init the configuration.
+
+### Mouse Action Configuration Editor
+
+This tool is "work in progress" state, for now, it only displays the
+configuration. The modify feature should arrive soon.
+
+You must install [deno](https://deno.land/manual/getting_started/installation)
+and then, to open this GUI, run `deno task start` from `config-editor/` and go
+to http://localhost:8000/ with a web browser.
+
+![mace.png](config-editor/mace.png)
 
 ### Configuration file format
 
@@ -358,8 +370,6 @@ cargo build --release
 
 ### High
 
-* save config (from stdin) subcommand
-* add "enable" in bindings
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -370,25 +380,35 @@ cargo build --release
 
 ### Medium
 
-* POC : config editor server with deno fresh
-    * cli config path
-    * cli bin path
+* save config (from stdin) subcommand
+* add "enable" in bindings
+* shape type instead of shapes.is_empty() ?
+* run config editor subcommand
+* **basic config editor** : config editor server with deno fresh
+    * auto open the web browser (with xdg-open or
+      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L14)
+    * cli help
+    * doc
+    * close config editor button to stop server/use websocket to detect browser
+      close,
+      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L25
+    * add/edit binding
+    * edit the other config values
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
-* use https://github.com/hoodie/notify-rust
 * process TODO and FIXME
 
 ### Low
 
-* shape type instead of shapes.is_empty() ?
+* use https://github.com/hoodie/notify-rust
 * add config file version
 * a better Readme
 * options
     * dry-run option
-    * min diff shape option
-    * min score shape option
+    * min diff shape config option
+    * min score shape config option
 * improve shape recognition
 * refactor
     * don't use arrayvec ?
@@ -401,9 +421,9 @@ cargo build --release
 ### Maybe
 
 * find a better project name and icon
-* GUI (Tauri ?)
+* GUI (with Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
-  impossible ?)
+  is impossible ?)
 * notif/sound/cursor change on action trigger (
   configurable) ? https://crates.io/crates/rodio
 * mouse move edge event ?
