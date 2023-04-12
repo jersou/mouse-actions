@@ -13,14 +13,13 @@ commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
 For instance, you can configure:
 
-* a click on the top left corder of the screen to go to the first desktop,
+* a click on the top left corner of the screen to go to the first desktop,
 * a middle click on the top side of the screen to play/pause the media,
-* or scroll from the left side to increase/decrease the brightness of the
+* scroll from the left side to increase/decrease the brightness of the
   screen,
-* or scroll from the top-left corner to increase/decrease the volume,
-* or draw a `T` with the mouse right button pressed to open a terminal,
-* or draw a `G` with the mouse right button pressed to open a text editor (
-  gedit),
+* scroll from the top-left corner to increase/decrease the volume,
+* draw a `T` with the mouse right button pressed to open a terminal,
+* draw a `G` with the mouse right button pressed to open a text editor (gedit),
 
 ![mouse_actions_logo.gif](mouse_actions_logo.gif)
 
@@ -40,9 +39,9 @@ are optional):
 **/!\ Alpha version !**
 
 It's works (tested on Linux/X11) but there is no GUI to configure the bindings
-for now, you add to write the json config yourself or
+for now, you must write the json config yourself or
 use `mouse_actions record`. A basic GUI is in progress, see
-bellow `Mouse Action Configuration Editor`.
+bellow [Mouse Action Configuration Editor](#mouse-action-configuration-editor).
 
 My feedback : after 10 month of daily use (since 15/05/2022) and 300'000
 triggers, it's works well and X11 has not crashed (Unlike Easystroke which made
@@ -61,14 +60,12 @@ half of which by shape bindings.
 ## Install / run / build
 
 [Download the release](https://github.com/jersou/mouse-actions/releases), or run
-it directly with Cargo : `cargo run`
-
-or build the binary: `cargo build --release`
+it directly with Cargo `cargo run` or build the binary `cargo build --release`.
 
 ### Requirement :
 
 To use the main feature "grab event", you need to have the read&write permission
-on /dev/input/event*. Check the group of `/dev/input/event*` files :
+on `/dev/input/event*`. Check the group of `/dev/input/event*` files :
 
 ```bash
 ls -al /dev/input/event*
@@ -84,7 +81,8 @@ sudo usermod -a -G plugdev $USER
 sudo usermod -a -G input $USER
 ```
 
-Furthermore, you must have the R/W right on `/dev/uinput`, you can check with:
+Furthermore, you must have the read&write permission on `/dev/uinput`, you can
+check with:
 
 ```bash
 getfacl /dev/uinput
@@ -102,11 +100,15 @@ sudo tee /etc/udev/rules.d/80-mouse-actions.rules <<<'KERNEL=="uinput", SUBSYSTE
 
 You need to restart your desktop session to apply these changes.
 
-To check the user groups:
+To check the user groups and the ACL after the session restart or the reboot:
 
 ```bash
 $ groups
-... plugdev ... input ...
+... input ...
+$ getfacl /dev/uinput
+# ...
+# user:<the current user>:rw-
+# ...
 ```
 
 ### Platform compatibility
@@ -114,22 +116,24 @@ $ groups
 I only tested on Linux & X11, but it should work on Mac, Windows as well as
 Linux+Wayland (with --no-listen option for Wayland).
 
-The `grab` function from rdev give an inaccurate mouse position, so I used
-the `listen` function from rdev. This function not works on Wayland, but the
+The `grab` feature from rdev give an inaccurate mouse position, so I used
+the `listen` feature from rdev. This function not works on Wayland, but the
 mouse shape detection should work (with little modification of code), the listen
-function is used to detect edge of screen click.
+feature is used to detect edge of screen clik.
 
 ## Configuration
 
-Run `mouse_actions record` to init the configuration.
+### record subcommand
+
+Run `mouse_actions record` to init the configuration. It's a basic CLI editor.
 
 ### Mouse Action Configuration Editor
 
-This tool is "work in progress" state, for now, it only displays the
-configuration. The modify feature should arrive soon.
+This GUI tool is "work in progress" state ! For now, it only displays the
+configuration. The modify feature should be release soon.
 
 You must install [deno](https://deno.land/manual/getting_started/installation)
-and then, to open this GUI, run `deno task start` from `config-editor/` and go
+and then, run `deno task start` from `config-editor/` and go
 to http://localhost:8000/ with a web browser.
 
 ![mace.png](config-editor/mace.png)
@@ -209,16 +213,18 @@ mouse_actions trace
         "modifiers": [],
         "event_type": "Click",
         "shapes_xy": [
-          0,
-          0,
-          500,
-          0,
-          1000,
-          0,
-          500,
-          0,
-          500,
-          1000
+          [
+            0,
+            0,
+            500,
+            0,
+            1000,
+            0,
+            500,
+            0,
+            500,
+            1000
+          ]
         ]
       },
       "cmd": [
@@ -285,8 +291,8 @@ Options:
     * Ctrl + Wheel up in the top edge → script: audio previous
     * Wheel up in the left edge → script: increase brightness 1%
     * Ctrl + Wheel up in the top edge → script: increase brightness 10%
-    * Wheel down in the top edge → script: decrease brightness 1%
-    * Ctrl + Wheel down in the top edge → script: decrease brightness 10%
+    * Wheel down in the left edge → script: decrease brightness 1%
+    * Ctrl + Wheel down in the left edge → script: decrease brightness 10%
     * Right click in the left edge → script: go to desktop on the left
     * Right click in the top edge → script: go to desktop on the top
     * Right click in the right edge → script: go to desktop on the right
