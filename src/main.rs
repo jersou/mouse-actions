@@ -1,7 +1,8 @@
 #[macro_use]
 extern crate lazy_static;
 
-use std::io::ErrorKind;
+use std::io;
+use std::io::{ErrorKind, Read};
 use std::ops::Deref;
 use std::process::exit;
 use std::sync::{Arc, Mutex};
@@ -118,6 +119,14 @@ fn main() {
             let c = config.lock().unwrap();
             let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
             println!("{serialized}");
+            exit(0);
+        }
+        Some(MouseActionsCommands::SetConfig) => {
+            let mut stdin_str = String::new();
+            io::stdin().read_to_string(&mut stdin_str).unwrap();
+            // check the deserialization
+            let config = config::load_from_str(&stdin_str);
+            config::save_config(&config, &args.config_path);
             exit(0);
         }
     };

@@ -4,10 +4,11 @@
 
 ### Features
 
+- Config editor: init
 - Add commit & build date to version
 - Backup config before save
 - Add ShowConfig subcommand
-- Config editor: init
+- save config (from stdin) subcommand
 
 ## [0.3.1] - 2023-04-10
 

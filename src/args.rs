@@ -62,4 +62,8 @@ pub enum MouseActionsCommands {
     /// print the json config
     #[clap()]
     ShowConfig,
+
+    /// the the json config from stdin
+    #[clap()]
+    SetConfig,
 }

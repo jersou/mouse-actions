@@ -25,6 +25,10 @@ pub struct Config {
 
 pub fn load(file_path: &str) -> Config {
     let json_config = fs::read_to_string(file_path).unwrap();
+    load_from_str(&json_config)
+}
+
+pub fn load_from_str(json_config: &str) -> Config {
     let mut config: Config = serde_json::from_str(&json_config).unwrap();
     // xy → angles
     for mut binding in &mut config.bindings {
@@ -35,7 +39,6 @@ pub fn load(file_path: &str) -> Config {
             .map(|shape_xy| points_to_angles(&shape_xy))
             .collect();
     }
-
     config
 }
 

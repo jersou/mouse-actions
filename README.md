@@ -386,7 +386,7 @@ cargo build --release
 
 ### Medium
 
-* save config (from stdin) subcommand
+* block event "left click only" without modifier/shape...
 * add "enable" in bindings
 * shape type instead of shapes.is_empty() ?
 * run config editor subcommand
@@ -400,6 +400,11 @@ cargo build --release
       like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L25
     * add/edit binding
     * edit the other config values
+    * use Preact, bundle the editor in mouse_actions binary, add config-editor
+      subcommand
+        * https://gist.github.com/developit/3631edd9033df8df5975786b19f16bd8
+        * https://github.com/developit/htm
+        * https://unpkg.com/browse/preact@10.13.2/dist/
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
