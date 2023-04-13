@@ -11,7 +11,7 @@ use crate::config::{save_config, Config};
 use crate::event::{ClickEvent, MouseButton, PressState};
 use crate::grab::normalize_points;
 
-lazy_static! {
+lazy_static::lazy_static! {
     static ref RECORD_IN_PROGRESS: Mutex<bool> = Mutex::new(false);
 }
 

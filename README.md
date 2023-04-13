@@ -386,31 +386,24 @@ cargo build --release
 
 ### Medium
 
+* split main to lib (or ?) to use in the config editor
+* **config editor** :
+    * finish the migration Deno Fresh → Tauri
+    * cli help
+    * doc
+    * add/edit binding
+    * edit the other config values
 * block event "left click only" without modifier/shape...
 * add "enable" in bindings
 * shape type instead of shapes.is_empty() ?
 * run config editor subcommand
-* **basic config editor** : config editor server with deno fresh
-    * auto open the web browser (with xdg-open or
-      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L14)
-    * cli help
-    * doc
-    * close config editor button to stop server/use websocket to detect browser
-      close,
-      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L25
-    * add/edit binding
-    * edit the other config values
-    * use Preact, bundle the editor in mouse_actions binary, add config-editor
-      subcommand
-        * https://gist.github.com/developit/3631edd9033df8df5975786b19f16bd8
-        * https://github.com/developit/htm
-        * https://unpkg.com/browse/preact@10.13.2/dist/
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * process TODO and FIXME
 * github actions : tests, build
+* merge the config editor and the main binary : add config-gui subcommand ?
 
 ### Low
 
@@ -433,10 +426,9 @@ cargo build --release
 ### Maybe
 
 * find a better project name and icon
-* GUI (with Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
   is impossible ?)
-* notif/sound/cursor change on action trigger (
+* notif/sound/cursor change on action trigger success/failure (
   configurable) ? https://crates.io/crates/rodio
 * mouse move edge event ?
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger

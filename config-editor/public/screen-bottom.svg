@@ -1,0 +1,33 @@
+<svg width="55.5mm" height="39.6mm" version="1.1" viewBox="0 0 55.5 39.6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <linearGradient id="b" x1="86.7" x2="86.7" y1="209" y2="213" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#b8b8b8" offset="0"/>
+   <stop stop-color="#f1f1f1" offset="1"/>
+  </linearGradient>
+  <radialGradient id="a" cx="71.5" cy="179" r="25.1" gradientTransform="matrix(1.64 .758 -.348 .756 14 -5.47)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#c9efff" offset="0"/>
+   <stop stop-color="#29a4f2" offset="1"/>
+  </radialGradient>
+ </defs>
+ <g transform="translate(-58.8 -176)" stroke-dashoffset="3.41" stroke-linecap="round">
+  <g stroke-width=".2">
+   <path d="m94.5 208c0 5.12 4.95 1.51 4.95 5.76h-25.8c0-4.26 4.95-0.646 4.95-5.76" color="#000000" fill="url(#b)" stroke="#808080"/>
+   <rect x="59.9" y="177" width="53.3" height="31.9" rx="2" ry="2" color="#000000" fill="#e6e6e6" stroke="#808080"/>
+   <rect x="61.6" y="179" width="49.9" height="28.1" color="#000000" fill="url(#a)" stroke="#5f5f5f"/>
+  </g>
+  <g fill="#da0000" stroke="#4d4d4d" stroke-width=".146">
+   <g>
+    <path d="m66.6 179a5.03 5.03 0 0 1-5.03 5.03v-5.03z" color="#000000"/>
+    <path transform="scale(-1,1)" d="m-106 179a5.03 5.03 0 0 1-5.03 5.03v-5.03z" color="#000000"/>
+    <path transform="scale(1,-1)" d="m66.6-207a5.03 5.03 0 0 1-5.03 5.03v-5.03z" color="#000000"/>
+    <path transform="scale(-1)" d="m-106-207a5.03 5.03 0 0 1-5.03 5.03v-5.03z" color="#000000"/>
+   </g>
+   <path d="m73.5 184c-2.78 0-5.03-2.25-5.03-5.03h36.2c0 2.78-2.25 5.03-5.03 5.03z"/>
+  </g>
+  <g stroke="#4d4d4d" stroke-width=".146">
+   <path d="m73.5 202c-2.78 0-5.03 2.25-5.03 5.03h36.2c0-2.78-2.25-5.03-5.03-5.03z" fill="#0f0"/>
+   <path d="m66.6 190c-3e-6 -2.78-2.25-5.03-5.03-5.03v15.1c2.78 0 5.03-2.25 5.03-5.03z" fill="#da0000"/>
+   <path d="m106 190c0-2.78 2.25-5.03 5.03-5.03v15.1c-2.78 0-5.03-2.25-5.03-5.03z" fill="#da0000"/>
+  </g>
+ </g>
+</svg>
