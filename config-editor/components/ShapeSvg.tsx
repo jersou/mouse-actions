@@ -37,7 +37,7 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
       viewBox="-100 -100 1200 1200"
       width="150"
       height="150"
-      style={{ border: "black solid 1px" }}
+      style={{ border: "black solid 1px", borderRadius:10, margin:4 }}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>

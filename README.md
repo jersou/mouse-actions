@@ -410,6 +410,7 @@ cargo build --release
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * process TODO and FIXME
+* github actions : tests, build
 
 ### Low
 

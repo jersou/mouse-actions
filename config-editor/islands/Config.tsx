@@ -1,38 +1,9 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Button } from "../components/Button.tsx";
 import { ShapeSvg } from "../components/ShapeSvg.tsx";
+import { Binding } from "../components/Binding.tsx";
 
 export type Point = { x: number; y: number };
-
-function ScreenEdges({ edges }: { edges: string[] }) {
-  if (edges.length == 1) {
-    switch (edges[0]) {
-      case "Left":
-        return <img src="/screen-left.svg" width="150" alt="left" />;
-      case "Right":
-        return <img src="/screen-right.svg" width="150" alt="right" />;
-      case "Top":
-        return <img src="/screen-top-left.svg" width="150" alt="top" />;
-      case "Bottom":
-        return <img src="/screen-bottom.svg" width="150" alt="bottom" />;
-    }
-  } else if (edges.length == 2) {
-    if (edges.includes("Top")) {
-      if (edges.includes("Left")) {
-        return <img src="/screen-top-left.svg" width="150" alt="top" />;
-      } else if (edges.includes("Right")) {
-        return <img src="/screen-top-right.svg" width="150" alt="top" />;
-      }
-    } else if (edges.includes("Bottom")) {
-      if (edges.includes("Left")) {
-        return <img src="/screen-bottom-left.svg" width="150" alt="top" />;
-      } else if (edges.includes("Right")) {
-        return <img src="/screen-bottom-right.svg" width="150" alt="top" />;
-      }
-    }
-  }
-  return <div></div>;
-}
 
 export function useCoords(listenerEnable: boolean) {
   const [coords, setCoords] = useState<Point[]>([]);
@@ -134,47 +105,10 @@ export default function Config() {
       {config && (
         <div>
           <div>shape_button: {config.shape_button}</div>
-          <div>
-            {config.bindings.map((binding) => (
-              <div
-                class="shadow-lg"
-                style={{
-                  border: "solid black 2px",
-                  borderRadius: 15,
-                  marginBottom: 20,
-                  padding: 10,
-                }}
-              >
-                <div class="font-medium">{binding.comment}</div>
-                <div class="px-5">
-                  {binding.event.event_type} with {binding.event.button}{" "}
-                  button trigger the command
-                  {JSON.stringify(binding.cmd)}
-                </div>
-                {binding.event.modifiers && (
-                  <div class="px-5">
-                    modifiers: {JSON.stringify(binding.event.modifiers)}
-                  </div>
-                )}
-                {binding.event.edges && (
-                  <div class="px-5">
-                    <ScreenEdges edges={binding.event.edges} />
-                  </div>
-                )}
-                {binding.event.shapes_xy && (
-                  <div className="flex">
-                    {binding.event.shapes_xy?.map((coords) => (
-                      <ShapeSvg
-                        coords={coords}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          {config.bindings.map((binding) => <Binding binding={binding} />)}
         </div>
       )}
+      <pre>{JSON.stringify(config, null, "  ")}</pre>
     </div>
   );
 }
