@@ -132,10 +132,6 @@ Run `mouse_actions record` to init the configuration. It's a basic CLI editor.
 This GUI tool is "work in progress" state ! For now, it only displays the
 configuration. The modify feature should be release soon.
 
-You must install [deno](https://deno.land/manual/getting_started/installation)
-and then, run `deno task start` from `config-editor/` and go
-to http://localhost:8000/ with a web browser.
-
 ![mace.png](config-editor/mace.png)
 
 ### Configuration file format
@@ -400,11 +396,10 @@ upx --best --lzma mouse-actions-config-editor
 
 * split main to lib (or ?) to use in the config editor
 * **config editor** :
-    * finish the migration Deno Fresh → Tauri
     * cli help
-    * doc
     * add/edit binding
     * edit the other config values
+    * doc
 * block event "left click only" without modifier/shape...
 * add "enable" in bindings
 * shape type instead of shapes.is_empty() ?
