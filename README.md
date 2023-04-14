@@ -370,6 +370,18 @@ cargo test
 cargo build --release
 ```
 
+## WIP
+
+Build min size : 13Mo → 1.7Mo :
+
+```bash
+cd config-editor/
+npm run tauri build
+cd src-tauri/target/release/
+strip mouse-actions-config-editor
+upx --best --lzma mouse-actions-config-editor
+```
+
 ----
 
 ## TODO

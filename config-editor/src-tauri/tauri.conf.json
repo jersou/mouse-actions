@@ -23,7 +23,7 @@
       "icon": [
         "../../mouse_actions_logo.png"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.soulary.mouse.acions",
       "targets": "all"
     },
     "security": {

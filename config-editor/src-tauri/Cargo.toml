@@ -1,5 +1,5 @@
 [package]
-name = "mouse-actions-config-editor"
+name = "mouse_actions_config_editor"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]

@@ -1685,17 +1685,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mouse-actions-config-editor"
-version = "0.0.0"
-dependencies = [
- "mouse_actions",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
-]
-
-[[package]]
 name = "mouse_actions"
 version = "0.3.2"
 dependencies = [
@@ -1716,6 +1705,17 @@ dependencies = [
  "tempfile",
  "users",
  "vergen",
+]
+
+[[package]]
+name = "mouse_actions_config_editor"
+version = "0.0.0"
+dependencies = [
+ "mouse_actions",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
 ]
 
 [[package]]
