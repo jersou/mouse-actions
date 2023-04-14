@@ -1,7 +1,14 @@
 import { ShapeSvg } from "./ShapeSvg";
 import { ScreenEdges } from "./ScreenEdges";
+import { BindingType } from "../config.type";
 
-export function Binding({ binding }) {
+export function Binding({
+  binding,
+  setBinding,
+}: {
+  binding: BindingType;
+  setBinding?: (binding: BindingType) => unknown;
+}) {
   return (
     <div
       style={{
@@ -31,7 +38,17 @@ export function Binding({ binding }) {
       </div>
       <div>
         <div className="px-5">
-          <ScreenEdges edges={binding.event.edges ?? []} />
+          <ScreenEdges
+            edges={binding.event.edges ?? []}
+            setEdges={(edges) =>
+              setBinding?.(
+                structuredClone({
+                  ...binding,
+                  edges,
+                })
+              )
+            }
+          />
         </div>
         {binding.event.shapes_xy && (
           <div className="flex">

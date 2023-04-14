@@ -9,6 +9,7 @@
     "prettier": "prettier --write \"src/**/*\"",
     "preview": "vite preview",
     "tauri": "tauri",
+    "tauri dev": "tauri dev",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build"
   },
@@ -36,7 +37,7 @@
     "prettier": "^2.8.7",
     "prop-types": "^15.8.1",
     "storybook": "^7.0.4",
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.4",
     "vite": "^4.2.1"
   }
 }
