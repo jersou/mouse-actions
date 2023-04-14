@@ -31,10 +31,6 @@ pub enum MouseActionsCommands {
     #[clap()]
     Start,
 
-    /// Open the config file (xdg-open)
-    #[clap()]
-    OpenConfig,
-
     /// Trace events
     #[clap()]
     Trace,

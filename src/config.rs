@@ -7,6 +7,7 @@ use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
 
+use crate::args::Args;
 use log::{error, info, trace};
 use notify::event::AccessKind::Close;
 use notify::EventKind::Access;
@@ -143,6 +144,16 @@ pub fn open_config(config_path: PathBuf) {
         .status()
         .map_err(|err| error!("Command err: {:?}", err))
         .ok();
+}
+
+pub fn get_config_from_args(args: &Arc<Args>, watch_config_enabled: bool) -> Arc<Mutex<Config>> {
+    let config_path = get_config_path(&args.config_path);
+    init_config_file_if_not_exists(&config_path);
+    let config: Arc<Mutex<Config>> = Arc::new(Mutex::new(get_config(&config_path)));
+    if watch_config_enabled {
+        watch_config(config.clone(), config_path.clone());
+    }
+    config
 }
 
 #[cfg(test)]

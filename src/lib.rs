@@ -7,6 +7,7 @@ pub mod event;
 pub mod grab;
 pub mod listen;
 pub mod points_to_angles;
+pub mod process_args;
 pub mod process_event;
 pub mod record;
 pub mod single_instance;
