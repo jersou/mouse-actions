@@ -2,6 +2,7 @@ import {ShapeSvg} from "./components/ShapeSvg.tsx";
 import {Binding} from "./components/Binding.tsx";
 import {useEffect, useRef, useState} from "react";
 import {Button} from "@mui/material";
+import {invoke} from "@tauri-apps/api/tauri";
 
 export type Point = { x: number; y: number };
 
@@ -87,8 +88,8 @@ export default function Config() {
   }, [setCoords, newCoords]);
 
   const refreshConfig = async () => {
-    const res = await fetch("http://localhost:8000/api/get_config");
-    setConfig(await res.json());
+    const newVconfig = await invoke("get_json_config")
+    setConfig(JSON.parse(newVconfig));
   };
   useEffect(() => {
     refreshConfig();
@@ -96,19 +97,18 @@ export default function Config() {
 
   return (
     <div class="gap-2 w-full">
-      {coords && coords.length > 0
-        ? <ShapeSvg coords={coords}/>
-        : <ShapeCreator/>}
-
-      <Button onClick={() => setCoords([])}>reset</Button>
-      <Button onClick={() => refreshConfig()}>refreshConfig</Button>
       {config && (
         <div>
           <div>shape_button: {config.shape_button}</div>
           {config.bindings.map((binding) => <Binding binding={binding}/>)}
         </div>
       )}
-      <pre>{JSON.stringify(config, null, "  ")}</pre>
+      {coords && coords.length > 0
+        ? <ShapeSvg coords={coords}/>
+        : <ShapeCreator/>}
+
+      <Button onClick={() => setCoords([])}>reset</Button>
+      <Button onClick={() => refreshConfig()}>refreshConfig</Button>
     </div>
   );
 }

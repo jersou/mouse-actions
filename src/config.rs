@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::Write;
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str::FromStr;
@@ -146,7 +147,7 @@ pub fn open_config(config_path: PathBuf) {
         .ok();
 }
 
-pub fn get_config_from_args(args: &Arc<Args>, watch_config_enabled: bool) -> Arc<Mutex<Config>> {
+pub fn get_config_from_args(args: &Args, watch_config_enabled: bool) -> Arc<Mutex<Config>> {
     let config_path = get_config_path(&args.config_path);
     init_config_file_if_not_exists(&config_path);
     let config: Arc<Mutex<Config>> = Arc::new(Mutex::new(get_config(&config_path)));
@@ -154,6 +155,13 @@ pub fn get_config_from_args(args: &Arc<Args>, watch_config_enabled: bool) -> Arc
         watch_config(config.clone(), config_path.clone());
     }
     config
+}
+
+pub fn get_json_config(args: &Args) -> String {
+    let config = get_config_from_args(&args, false);
+    let c = config.lock().unwrap();
+    let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
+    serialized
 }
 
 #[cfg(test)]

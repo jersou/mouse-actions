@@ -1,47 +1,49 @@
 import {ShapeSvg} from "./ShapeSvg";
 import {ScreenEdges} from "./ScreenEdges";
-import {Button} from "@mui/material";
 
 export function Binding({binding}) {
-
-  const test = () => {
-    binding.test = "OK"
-  }
-
   return (
     <div
-      className="shadow-lg"
       style={{
+        textAlign: "left",
         border: "solid black 2px",
         borderRadius: 15,
         marginBottom: 20,
         padding: 10,
+        maxWidth: 700,
+        display: 'flex'
       }}
     >
-      <div className="font-medium">{binding.comment}</div>
-      <div className="px-5">
-        {binding.event.event_type} with {binding.event.button}{" "}
-        button trigger the command
-        {JSON.stringify(binding.cmd)}
+      <div style={{flex: 1}}>
+        <div>{binding.comment}</div>
+        <div>
+          {binding.event.event_type} with {binding.event.button}{" "}
+          button
+        </div>
+        <div>
+          trigger the command <br/>
+          {JSON.stringify(binding.cmd)}
+        </div>
+        {binding.event.modifiers && (
+          <div className="px-5">
+            modifiers: {JSON.stringify(binding.event.modifiers)}
+          </div>
+        )}
       </div>
-      {binding.event.modifiers && (
+      <div>
         <div className="px-5">
-          modifiers: {JSON.stringify(binding.event.modifiers)}
+          <ScreenEdges edges={binding.event.edges ?? []}/>
         </div>
-      )}
-      <div className="px-5">
-        <ScreenEdges edges={binding.event.edges ?? []}/>
+        {binding.event.shapes_xy && (
+          <div className="flex">
+            {binding.event.shapes_xy?.map((coords) => (
+              <ShapeSvg
+                coords={coords}
+              />
+            ))}
+          </div>
+        )}
       </div>
-      {binding.event.shapes_xy && (
-        <div className="flex">
-          {binding.event.shapes_xy?.map((coords) => (
-            <ShapeSvg
-              coords={coords}
-            />
-          ))}
-        </div>
-      )}
-      <Button onClick={test}>TEST</Button>
     </div>
   );
 }

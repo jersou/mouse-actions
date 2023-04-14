@@ -1,6 +1,5 @@
 use std::io;
 use std::io::{ErrorKind, Read};
-use std::ops::Deref;
 use std::process::exit;
 use std::sync::Arc;
 
@@ -120,11 +119,9 @@ pub fn status() -> Result<(), GrabError> {
 }
 
 pub fn show_config(args: &Arc<Args>) -> Result<(), GrabError> {
-    let config = get_config_from_args(&args, false);
-    let c = config.lock().unwrap();
-    let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
+    let serialized = config::get_json_config(args);
     println!("{serialized}");
-    exit(0);
+    Ok(())
 }
 
 pub fn set_config(args: &Arc<Args>) -> Result<(), GrabError> {

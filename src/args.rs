@@ -63,3 +63,7 @@ pub enum MouseActionsCommands {
     #[clap()]
     SetConfig,
 }
+
+pub fn parse() -> Args {
+    Args::parse()
+}
