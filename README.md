@@ -419,6 +419,7 @@ upx --best --lzma mouse-actions-config-editor
 
 ### Low
 
+* release a debug version and a gui-less version ?
 * use https://github.com/hoodie/notify-rust
 * add config file version
 * a better Readme

@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use mouse_actions;
+use mouse_actions::config;
 
 #[tauri::command]
 fn get_default_config_path() -> String {
@@ -17,9 +18,11 @@ fn get_version() -> String {
 }
 
 #[tauri::command]
-fn get_json_config() -> String {
+fn get_config() -> config::Config {
     let args = mouse_actions::args::parse();
-    mouse_actions::config::get_json_config(&args)
+    let config_path = config::get_config_path(&args.config_path);
+    config::init_config_file_if_not_exists(&config_path);
+    config::get_config(&config_path)
 }
 
 pub fn open_config_editor() {
@@ -27,7 +30,7 @@ pub fn open_config_editor() {
         .invoke_handler(tauri::generate_handler![
             get_default_config_path,
             get_version,
-            get_json_config
+            get_config
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
