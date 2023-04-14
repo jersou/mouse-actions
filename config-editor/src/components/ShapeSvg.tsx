@@ -7,21 +7,21 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
     const x2 = coords[i];
     const y2 = coords[i + 1];
     lines.push(
-      (<line
+      <line
         x1={x1}
         y1={y1}
         x2={x2}
         y2={y2}
-        stroke={`hsl(${Math.round(140 * i / coords.length)}deg 100% 60%)`}
+        stroke={`hsl(${Math.round((140 * i) / coords.length)}deg 100% 60%)`}
         strokeWidth="50"
-      />),
+      />
     );
     x1 = x2;
     y1 = y2;
   }
   if (coords.length > 10) {
     lines.push(
-      (<line
+      <line
         markerEnd="url(#arrow)"
         x1={coords[coords.length - 10]}
         y1={coords[coords.length - 9]}
@@ -29,7 +29,7 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
         y2={coords[coords.length - 1]}
         fill="none"
         strokeWidth="30"
-      />),
+      />
     );
   }
   return (
@@ -37,7 +37,7 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
       viewBox="-100 -100 1200 1200"
       width="150"
       height="150"
-      style={{ border: "black solid 1px", borderRadius:10, margin:4 }}
+      style={{ border: "black solid 1px", borderRadius: 10, margin: 4 }}
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>

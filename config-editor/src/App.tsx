@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {invoke} from "@tauri-apps/api/tauri";
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import MouseActionRuntime from "./MouseActionRuntime";
 import Config from "./Config";
@@ -14,8 +14,8 @@ function App() {
   }
 
   useEffect(() => {
-    invoke("get_version").then(v => setVersion(v))
-  }, [])
+    invoke("get_version").then((v) => setVersion(v));
+  }, []);
 
   return (
     <div className="container">
@@ -23,17 +23,22 @@ function App() {
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center"
-        }}>
+          justifyContent: "center",
+        }}
+      >
         <div>
-          <img src="/logo.svg" width={50}
-               alt="Mouse Actions logo" style={{marginRight: 10}}/>
+          <img
+            src="/logo.svg"
+            width={50}
+            alt="Mouse Actions logo"
+            style={{ marginRight: 10 }}
+          />
         </div>
         <h2>Mouse Action config editor {version}</h2>
       </div>
 
-      <Config/>
-      <MouseActionRuntime/>
+      <Config />
+      <MouseActionRuntime />
 
       <div className="row">
         <form

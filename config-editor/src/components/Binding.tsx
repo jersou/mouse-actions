@@ -1,7 +1,7 @@
-import {ShapeSvg} from "./ShapeSvg";
-import {ScreenEdges} from "./ScreenEdges";
+import { ShapeSvg } from "./ShapeSvg";
+import { ScreenEdges } from "./ScreenEdges";
 
-export function Binding({binding}) {
+export function Binding({ binding }) {
   return (
     <div
       style={{
@@ -11,17 +11,16 @@ export function Binding({binding}) {
         marginBottom: 20,
         padding: 10,
         maxWidth: 700,
-        display: 'flex'
+        display: "flex",
       }}
     >
-      <div style={{flex: 1}}>
+      <div style={{ flex: 1 }}>
         <div>{binding.comment}</div>
         <div>
-          {binding.event.event_type} with {binding.event.button}{" "}
-          button
+          {binding.event.event_type} with {binding.event.button} button
         </div>
         <div>
-          trigger the command <br/>
+          trigger the command <br />
           {JSON.stringify(binding.cmd)}
         </div>
         {binding.event.modifiers && (
@@ -32,14 +31,12 @@ export function Binding({binding}) {
       </div>
       <div>
         <div className="px-5">
-          <ScreenEdges edges={binding.event.edges ?? []}/>
+          <ScreenEdges edges={binding.event.edges ?? []} />
         </div>
         {binding.event.shapes_xy && (
           <div className="flex">
             {binding.event.shapes_xy?.map((coords) => (
-              <ShapeSvg
-                coords={coords}
-              />
+              <ShapeSvg coords={coords} />
             ))}
           </div>
         )}

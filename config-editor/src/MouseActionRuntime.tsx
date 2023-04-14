@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {Button} from "@mui/material";
+import { useEffect, useState } from "react";
+import { Button } from "@mui/material";
 
 export default function MouseActionRuntime() {
   const [statusIsOk, setStatusIsOk] = useState(false);
