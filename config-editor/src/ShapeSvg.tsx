@@ -2,7 +2,6 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
   const lines = [];
   let x1 = coords[0];
   let y1 = coords[1];
-  // TODO add arrow
   for (let i = 2; i < coords.length; i += 2) {
     const x2 = coords[i];
     const y2 = coords[i + 1];

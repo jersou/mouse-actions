@@ -20,9 +20,7 @@ export default function App() {
   const [defaultConfigPath, setGreetMsg] = useState("");
   const [version, setVersion] = useState("");
   const [config, setConfig] = useState<ConfigType>();
-  const [coords, setCoords] = useState<number[]>([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000,
-  ]);
+  const [shapeRecording, setShapeRecording] = useState(false);
 
   async function getDefaultConfigPath() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -33,12 +31,15 @@ export default function App() {
     invoke("get_version").then((v: any) => setVersion(v));
   }, []);
 
-  const newCoords = useCoords(!(coords && coords.length > 0));
-  useEffect(() => {
-    if (newCoords?.length) {
-      setCoords(newCoords);
-    }
-  }, [setCoords, newCoords]);
+  // const [coords, setCoords] = useState<number[]>([
+  //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000,
+  // ]);
+  // const newCoords = useCoords(shapeRecording);
+  // useEffect(() => {
+  //   if (newCoords?.length) {
+  //     setCoords(newCoords);
+  //   }
+  // }, [setCoords, newCoords]);
 
   const refreshConfig = async () => {
     const newVconfig: ConfigType = await invoke("get_config");
@@ -90,9 +91,11 @@ export default function App() {
           marginBottom: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems:"center" }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <GestureIcon />
-          <Typography style={{marginLeft :10,marginRight:10}}>Shape button :</Typography>
+          <Typography style={{ marginLeft: 10, marginRight: 10 }}>
+            Shape button :
+          </Typography>
           <ButtonSelector button={config.shape_button} />
         </div>
         <ButtonGroup>
@@ -103,7 +106,11 @@ export default function App() {
           >
             <StopIcon /> Stop
           </Button>
-          <Button variant="contained" onClick={() => invoke("start")}   color="success">
+          <Button
+            variant="contained"
+            onClick={() => invoke("start")}
+            color="success"
+          >
             <PlayArrowIcon /> Start
           </Button>
           <Button variant="contained">
@@ -111,7 +118,13 @@ export default function App() {
           </Button>
         </ButtonGroup>
       </div>
-      <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         {config.bindings.map((binding, index) => (
           <BindingMemo
             key={index}
@@ -120,6 +133,7 @@ export default function App() {
           />
         ))}
       </div>
+      <div style={{ textAlign: "center" }}>TODO Add Binding</div>
     </div>
   ) : (
     <div
