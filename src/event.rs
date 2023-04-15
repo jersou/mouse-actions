@@ -166,19 +166,6 @@ impl KeyboardModifier {
 }
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq)]
-pub enum PressState {
-    Press,
-    Release,
-    Click,
-}
-
-impl Default for PressState {
-    fn default() -> Self {
-        PressState::Click
-    }
-}
-
-#[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq)]
 pub enum MouseButton {
     Left,
     Right,
@@ -240,6 +227,20 @@ impl MouseButton {
     }
 }
 
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq)]
+pub enum EventType {
+    Press,
+    Release,
+    Click,
+    Shape,
+}
+
+impl Default for EventType {
+    fn default() -> Self {
+        EventType::Click
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ClickEvent {
     pub button: MouseButton,
@@ -251,7 +252,7 @@ pub struct ClickEvent {
     pub modifiers: Vec<KeyboardModifier>,
 
     #[serde(default)]
-    pub event_type: PressState,
+    pub event_type: EventType,
 
     #[serde(skip)]
     pub shapes_angles: Vec<Vec<f64>>,

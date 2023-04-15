@@ -16,7 +16,7 @@ use notify::{RecommendedWatcher, RecursiveMode, Watcher};
 use serde::{Deserialize, Serialize};
 
 use crate::binding::Binding;
-use crate::event::MouseButton;
+use crate::event::{EventType, MouseButton};
 use crate::points_to_angles::points_to_angles;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,7 +27,27 @@ pub struct Config {
 
 pub fn load(file_path: &str) -> Config {
     let json_config = fs::read_to_string(file_path).unwrap();
-    load_from_str(&json_config)
+    let mut config = load_from_str(&json_config);
+
+    // FIXME
+    let shape_empty_error = config
+        .bindings
+        .iter()
+        .filter(|b| b.event.event_type == EventType::Shape)
+        .any(|b| b.event.shapes_xy.is_empty());
+    // FIXME
+    assert!(
+        !shape_empty_error,
+        "event_type=Shape but shapes_xy is empty !"
+    );
+
+    config
+        .bindings
+        .iter_mut()
+        .filter(|b| b.event.event_type != EventType::Shape && !b.event.shapes_xy.is_empty())
+        .for_each(|b| b.event.event_type = EventType::Shape);
+
+    config
 }
 
 pub fn load_from_str(json_config: &str) -> Config {
@@ -166,7 +186,8 @@ pub fn get_json_config(args: &Args) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, Point, PressState};
+    use crate::event;
+    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, Point};
 
     use super::*;
 
@@ -179,7 +200,7 @@ mod tests {
                     button: MouseButton::Left,
                     edges: vec![Edge::Top, Edge::Left],
                     modifiers: vec![KeyboardModifier::ControlLeft],
-                    event_type: PressState::Press,
+                    event_type: event::EventType::Press,
                     shapes_angles: vec![vec![0.0, 1.0, 2.0]],
                     shapes_xy: vec![],
                 },
@@ -264,7 +285,7 @@ mod tests {
         assert_eq!(binding.event.edges[0], Edge::Top);
         assert_eq!(binding.event.edges[1], Edge::Left);
         assert_eq!(binding.event.modifiers[0], KeyboardModifier::ControlLeft);
-        assert_eq!(binding.event.event_type, PressState::Press);
+        assert_eq!(binding.event.event_type, event::EventType::Press);
         assert_eq!(
             binding.event.shapes_xy.first().unwrap().to_vec(),
             vec![Point { x: 0, y: 1 }, Point { x: 2, y: 3 }]

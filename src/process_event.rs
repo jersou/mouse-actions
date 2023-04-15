@@ -12,8 +12,8 @@ use crate::args::Args;
 use crate::binding::Binding;
 use crate::compare_angles::compare_angles_with_offset;
 use crate::config::Config;
-use crate::event::PressState::Press;
-use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent, PressState};
+use crate::event;
+use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent};
 use crate::grab::normalize_points;
 use crate::record::reduce_shape_precision;
 
@@ -33,10 +33,10 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .filter(|binding| {
             (binding.event.shapes_angles.is_empty()
                 || shape_button != &binding.event.button
-                || event.event_type != Press)
+                || event.event_type != event::EventType::Press)
                 && binding.event.button == event.button
                 && (binding.event.event_type == event.event_type
-                    || binding.event.event_type == PressState::Click)
+                    || binding.event.event_type == event::EventType::Click)
                 && edges_are_equals(&binding.event.edges, &event.edges)
                 && modifiers_are_equals(&binding.event.modifiers, &event.modifiers)
         })
@@ -193,7 +193,7 @@ pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
 pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     if config.lock().unwrap().shape_button != event.button
         || !event.shapes_angles.is_empty()
-        || event.event_type != Press
+        || event.event_type != event::EventType::Press
         || !event.edges.is_empty()
         || !event.modifiers.is_empty()
     {
@@ -222,13 +222,15 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
         debug!("----------------------------------------");
         if let Some(binding) = find_the_chosen_one_among_the_candidates(&candidates, &event) {
             propagate = false;
-            if !(event.event_type == PressState::Release
-                && binding.event.event_type == PressState::Click
+            if !(event.event_type == event::EventType::Release
+                && binding.event.event_type == event::EventType::Click
                 && binding.event.shapes_angles.is_empty())
             {
                 process_cmd(binding.cmd.clone());
             }
-        } else if event.event_type == PressState::Release && event.button == config.shape_button {
+        } else if event.event_type == event::EventType::Release
+            && event.button == config.shape_button
+        {
             propagate = false;
             let rdev_btn = config.shape_button.to_rdev_event();
 

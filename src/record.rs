@@ -8,7 +8,9 @@ use crate::args::Args;
 use crate::binding::Binding;
 use crate::cmd_from_string::cmd_from_str;
 use crate::config::{save_config, Config};
-use crate::event::{ClickEvent, MouseButton, PressState};
+use crate::event;
+use crate::event::EventType::Shape;
+use crate::event::{ClickEvent, MouseButton};
 use crate::grab::normalize_points;
 
 lazy_static::lazy_static! {
@@ -26,7 +28,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
         true
     } else {
         if config.lock().unwrap().shape_button != event.button
-            || event.event_type != PressState::Press
+            || event.event_type != event::EventType::Press
         {
             *RECORD_IN_PROGRESS.lock().unwrap() = true;
             thread::Builder::new()
@@ -52,6 +54,7 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
                         let mut event = reduce_shape_precision(event);
                         if let Some(shapes_xy) = event.shapes_xy.first() {
                             event.shapes_xy = vec![normalize_points(&shapes_xy, false)];
+                            event.event_type = Shape;
                         }
 
                         match cmd_from_str(cmd_string) {
