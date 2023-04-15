@@ -103,7 +103,7 @@ export default function App() {
           >
             <StopIcon /> Stop
           </Button>
-          <Button variant="contained" onClick={() => invoke("start")}>
+          <Button variant="contained" onClick={() => invoke("start")}   color="success">
             <PlayArrowIcon /> Start
           </Button>
           <Button variant="contained">
@@ -111,7 +111,7 @@ export default function App() {
           </Button>
         </ButtonGroup>
       </div>
-      <div>
+      <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
         {config.bindings.map((binding, index) => (
           <BindingMemo
             key={index}

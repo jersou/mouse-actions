@@ -4,8 +4,11 @@ import { BindingType } from "./config.type";
 import { ModifiersSelector } from "./ModifiersSelector";
 import { EventTypeSelector } from "./EventTypeSelector";
 import { ButtonSelector } from "./ButtonSelector";
-import { TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import { memo } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 
 export function Binding({
   binding,
@@ -39,6 +42,11 @@ export function Binding({
           ) {
             newBinding.event.shapes_xy = [[]];
           }
+          // if (evType === "Shape") {
+          //   newBinding.event.edges = [];
+          // } else {
+          //   newBinding.event.shapes_xy = [];
+          // }
           setBinding?.(newBinding);
         }}
       />
@@ -93,7 +101,22 @@ export function Binding({
         {binding.event.event_type === "Shape" ? (
           <div>
             {binding.event.shapes_xy?.map((coords, i) => (
-              <ShapeSvg key={i} coords={coords} />
+              <div style={{ display: "flex" }}>
+                <ShapeSvg key={i} coords={coords} />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  {i > 0 && (
+                    <IconButton color="warning">
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
+                  <IconButton color="primary">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="primary">
+                    <AddIcon />
+                  </IconButton>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
