@@ -1,36 +1,45 @@
-export type ButtonType =
-  | "eft"
-  | "Right"
-  | "iddle"
-  | "Side"
-  | "Extra"
-  | "Forward"
-  | "Back"
-  | "Task"
-  | "Trigger"
-  | "Thumb"
-  | "Thumb2"
-  | "WheelUp"
-  | "WheelDown"
-  | "Unknown"
-  | "None";
+export const Buttons = [
+  "Left",
+  "Right",
+  "iddle",
+  "Side",
+  "Extra",
+  "Forward",
+  "Back",
+  "Task",
+  "Trigger",
+  "Thumb",
+  "Thumb2",
+  "WheelUp",
+  "WheelDown",
+  "Unknown",
+  "None",
+] as const;
+export type ButtonType = (typeof Buttons)[number];
 
-export type ModifierType =
-  | "ShiftLeft"
-  | "ShiftRight"
-  | "ControlLeft"
-  | "ControlRight"
-  | "MetaLeft"
-  | "Alt"
-  | "AltGr";
-export type EventTypeType = "Press" | "Release" | "Click";
-export type Edge = "Top" | "Right" | "Bottom" | "Left";
+export const Modifiers = [
+  "ShiftLeft",
+  "ShiftRight",
+  "ControlLeft",
+  "ControlRight",
+  "MetaLeft",
+  "Alt",
+  "AltGr",
+] as const;
+
+export type ModifierType = (typeof Modifiers)[number];
+
+export const Events = ["Press", "Release", "Click"] as const;
+export type EventTypesType = (typeof Events)[number];
+
+export const Edges = ["Top", "Right", "Bottom", "Left"] as const;
+export type EdgeType = (typeof Edges)[number];
 
 export type EventType = {
   button: ButtonType;
   modifiers?: ModifierType[];
-  event_type: EventTypeType;
-  edges?: Edge[];
+  event_type: EdgeType;
+  edges?: EdgeType[];
   shapes_xy?: [number[]];
 };
 

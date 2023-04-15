@@ -14,7 +14,7 @@ function App() {
   }
 
   useEffect(() => {
-    invoke("get_version").then((v) => setVersion(v));
+    invoke("get_version").then((v: any) => setVersion(v));
   }, []);
 
   return (

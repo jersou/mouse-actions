@@ -13,7 +13,7 @@ export default function MouseActionRuntime() {
     refreshStatus();
   }, []);
   return (
-    <div class="flex gap-2 w-full">
+    <div>
       <Button onClick={() => refreshStatus()}>
         status : {statusIsOk ? "OK" : "KO"} (refresh)
       </Button>

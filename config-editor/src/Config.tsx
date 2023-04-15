@@ -1,9 +1,9 @@
-import {ShapeSvg} from "./ShapeSvg.tsx";
-import {Binding} from "./Binding.tsx";
-import {useEffect, useRef, useState} from "react";
-import {Button} from "@mui/material";
-import {invoke} from "@tauri-apps/api/tauri";
-import {ConfigType} from "./config.type";
+import { ShapeSvg } from "./ShapeSvg";
+import { Binding } from "./Binding";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@mui/material";
+import { invoke } from "@tauri-apps/api/tauri";
+import { ConfigType } from "./config.type";
 
 export type Point = { x: number; y: number };
 
@@ -12,16 +12,16 @@ export function useCoords(listenerEnable: boolean) {
   const pointsHistory = useRef<Point[]>([]);
   const mouseState = useRef(false);
 
-  const mousemove = (event) => {
+  const mousemove = (event: any) => {
     if (mouseState.current) {
-      pointsHistory.current.push({x: event.x, y: event.y});
+      pointsHistory.current.push({ x: event.x, y: event.y });
     }
   };
-  const mousedown = (event) => {
+  const mousedown = (event: any) => {
     mouseState.current = true;
     pointsHistory.current = [];
   };
-  const mouseup = (event) => {
+  const mouseup = (event: any) => {
     mouseState.current = false;
     if (pointsHistory.current.length > 10) {
       const raw: { x: number; y: number }[] = pointsHistory.current;
@@ -33,7 +33,7 @@ export function useCoords(listenerEnable: boolean) {
       const height = maxY - minY;
       const size = Math.max(width, height);
       const normalizedCoords: number[] = [];
-      for (const {x, y} of raw) {
+      for (const { x, y } of raw) {
         normalizedCoords.push(Math.round(((x - minX) * 1000) / size));
         normalizedCoords.push(Math.round(((y - minY) * 1000) / size));
       }
@@ -59,7 +59,7 @@ export function useCoords(listenerEnable: boolean) {
 
 export function ShapeCreator() {
   const coords = useCoords(true);
-  console.log({coords});
+  console.log({ coords });
 
   return (
     <div
@@ -99,19 +99,19 @@ export default function Config() {
   }, []);
 
   return (
-    <div class="gap-2 w-full">
+    <div>
       {config && (
         <div>
           <div>shape_button: {config.shape_button}</div>
           {config.bindings.map((binding) => (
-            <Binding binding={binding}/>
+            <Binding binding={binding} />
           ))}
         </div>
       )}
       {coords && coords.length > 0 ? (
-        <ShapeSvg coords={coords}/>
+        <ShapeSvg coords={coords} />
       ) : (
-        <ShapeCreator/>
+        <ShapeCreator />
       )}
 
       <Button onClick={() => setCoords([])}>reset</Button>

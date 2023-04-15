@@ -1,3 +1,5 @@
+import { EdgeType } from "./config.type";
+
 function edgesEq(edges1: string[], edges2: string[]) {
   return (
     edges1.length === edges2.length && edges1.every((e) => edges2.includes(e))
@@ -8,10 +10,10 @@ export function ScreenEdges({
   edges,
   setEdges,
 }: {
-  edges: string[];
-  setEdges?: (edges: string[]) => unknown;
+  edges: EdgeType[];
+  setEdges?: (edges: EdgeType[]) => unknown;
 }) {
-  const EdgeArea = ({ areaEdges, d }: { areaEdges: string[] }) => {
+  const EdgeArea = ({ areaEdges, d }: { areaEdges: EdgeType[]; d: string }) => {
     return (
       <path
         onClick={() =>
