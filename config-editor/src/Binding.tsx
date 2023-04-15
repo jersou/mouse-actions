@@ -2,6 +2,9 @@ import { ShapeSvg } from "./ShapeSvg";
 import { ScreenEdges } from "./ScreenEdges";
 import { BindingType } from "./config.type";
 import { ModifiersSelector } from "./ModifiersSelector";
+import { EventTypeSelector } from "./EventTypeSelector";
+import { ButtonSelector } from "./ButtonSelector";
+import { TextField } from "@mui/material";
 
 export function Binding({
   binding,
@@ -18,19 +21,52 @@ export function Binding({
         borderRadius: 15,
         marginBottom: 20,
         padding: 10,
-        maxWidth: 700,
-        display: "flex",
+        maxWidth: 800,
+        display: "grid",
+        gap: 10,
+        gridTemplateColumns: "1fr 5fr 1fr",
       }}
     >
+      <EventTypeSelector
+        eventType={binding.event.event_type}
+        setEventType={(evType) =>
+          setBinding?.(
+            structuredClone({
+              ...binding,
+              event: { ...binding.event, event_type: evType },
+            })
+          )
+        }
+      />
       <div style={{ flex: 1 }}>
-        <div>{binding.comment}</div>
-        <div>
-          {binding.event.event_type} with {binding.event.button} button
+        <div style={{ display: "flex" }}>
+          <ButtonSelector
+            button={binding.event.button}
+            setButton={(button) =>
+              setBinding?.(
+                structuredClone({
+                  ...binding,
+                  event: { ...binding.event, button },
+                })
+              )
+            }
+          />
+          <TextField
+            size="small"
+            style={{ flex: 1 }}
+            label="Comment"
+            variant="outlined"
+            value={binding.comment}
+          />
         </div>
-        <div>
-          trigger the command <br />
-          {JSON.stringify(binding.cmd)}
-        </div>
+
+        <TextField
+          size="small"
+          style={{ flex: 1, marginTop: 10, marginBottom: 10 }}
+          label="Command"
+          variant="outlined"
+          value={JSON.stringify(binding.cmd)}
+        />
         <ModifiersSelector
           modifiers={binding.event.modifiers || []}
           setModifiers={(modifiers) =>
