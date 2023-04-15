@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
-import MouseActionRuntime from "./MouseActionRuntime";
-import Config from "./Config";
+import { Binding } from "./Binding";
+import { ConfigType } from "./config.type";
+import { useCoords } from "./UseCoords";
+import {ButtonSelector} from "./ButtonSelector";
 
-function App() {
+export default function App() {
   const [defaultConfigPath, setGreetMsg] = useState("");
   const [version, setVersion] = useState("");
 
@@ -17,42 +19,52 @@ function App() {
     invoke("get_version").then((v: any) => setVersion(v));
   }, []);
 
+  const [config, setConfig] = useState<ConfigType>();
+  const [coords, setCoords] = useState<number[]>([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000,
+  ]);
+  const newCoords = useCoords(!(coords && coords.length > 0));
+  useEffect(() => {
+    if (newCoords?.length) {
+      setCoords(newCoords);
+    }
+  }, [setCoords, newCoords]);
+
+  const refreshConfig = async () => {
+    const newVconfig: ConfigType = await invoke("get_config");
+    setConfig(newVconfig);
+  };
+  useEffect(() => {
+    refreshConfig();
+  }, []);
+
   return (
-    <div className="container">
+    <div>
       <div
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
+          justifyContent: "left", borderBottom: "solid #000 1px"
         }}
       >
-        <div>
-          <img
-            src="/logo.svg"
-            width={50}
-            alt="Mouse Actions logo"
-            style={{ marginRight: 10 }}
-          />
-        </div>
-        <h2>Mouse Action config editor {version}</h2>
-      </div>
+        <img
+          src="/logo.svg"
+          width={16}
+          alt="Mouse Actions logo"
+          style={{ marginRight: 10 }}
+        />
+        {version}
 
-      <Config />
-      <MouseActionRuntime />
-
-      <div className="row">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            getDefaultConfigPath();
-          }}
-        >
-          <button type="submit">get default config path</button>
-        </form>
+        {config && (
+          <div>
+            Shape button : <ButtonSelector button={config.shape_button}/>
+          </div>
+        )}
       </div>
-      <p>{defaultConfigPath}</p>
+      <div>
+        {config &&
+          config.bindings.map((binding) => <Binding binding={binding} />)}
+      </div>
     </div>
   );
 }
-
-export default App;

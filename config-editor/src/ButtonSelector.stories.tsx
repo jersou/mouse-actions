@@ -4,7 +4,7 @@ import { ButtonType } from "./config.type";
 import { ButtonSelector } from "./ButtonSelector";
 
 const meta = {
-  title: "ButtonSelector",
+  title: "Selectors/ButtonSelector",
   component: ButtonSelector,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ["autodocs"],

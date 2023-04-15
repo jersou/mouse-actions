@@ -36,7 +36,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "mouse-actions-config-editor",
+        "title": "Mouse Actions Config Editor",
         "width": 800,
         "height": 600
       }

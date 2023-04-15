@@ -29,6 +29,8 @@ export const Modifiers = [
 
 export type ModifierType = (typeof Modifiers)[number];
 
+export type Point = { x: number; y: number };
+
 export const EventTypes = ["Press", "Release", "Click", "Shape"] as const;
 export type EventTypeType = (typeof EventTypes)[number];
 

@@ -16,15 +16,13 @@ export function Binding({
   return (
     <div
       style={{
-        textAlign: "left",
-        border: "solid black 2px",
-        borderRadius: 15,
         marginBottom: 20,
         padding: 10,
         maxWidth: 800,
         display: "grid",
         gap: 10,
         gridTemplateColumns: "1fr 5fr 1fr",
+        borderBottom: "solid #000 1px",
       }}
     >
       <EventTypeSelector
@@ -80,24 +78,25 @@ export function Binding({
         />
       </div>
       <div>
-        <div className="px-5">
-          <ScreenEdges
-            edges={binding.event.edges ?? []}
-            setEdges={(edges) =>
-              setBinding?.(
-                structuredClone({
-                  ...binding,
-                  event: { ...binding.event, edges },
-                })
-              )
-            }
-          />
-        </div>
-        {binding.event.shapes_xy && (
-          <div className="flex">
+        {binding.event.event_type === "Shape" ? (
+          <div>
             {binding.event.shapes_xy?.map((coords) => (
               <ShapeSvg coords={coords} />
             ))}
+          </div>
+        ) : (
+          <div>
+            <ScreenEdges
+              edges={binding.event.edges ?? []}
+              setEdges={(edges) =>
+                setBinding?.(
+                  structuredClone({
+                    ...binding,
+                    event: { ...binding.event, edges },
+                  })
+                )
+              }
+            />
           </div>
         )}
       </div>
