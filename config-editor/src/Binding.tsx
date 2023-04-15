@@ -15,7 +15,6 @@ export function Binding({
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
 }) {
-  console.log("Binding render");
   return (
     <div
       style={{
@@ -111,7 +110,4 @@ export function Binding({
   );
 }
 
-//FIXME
-export const BindingMemo = memo(Binding, (prev, next) =>
-  isEqual(prev.binding, next.binding)
-);
+export const BindingMemo = memo(Binding);

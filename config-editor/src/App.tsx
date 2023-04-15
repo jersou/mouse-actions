@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { BindingMemo } from "./Binding";
-import { ConfigType } from "./config.type";
+import { BindingType, ConfigType } from "./config.type";
 import { useCoords } from "./UseCoords";
 import { ButtonSelector } from "./ButtonSelector";
 import { Button, CircularProgress } from "@mui/material";
@@ -33,11 +33,36 @@ export default function App() {
 
   const refreshConfig = async () => {
     const newVconfig: ConfigType = await invoke("get_config");
+    newVconfig.bindings.forEach((b) => (b.uid = self.crypto.randomUUID()));
     setConfig(newVconfig);
   };
   useEffect(() => {
     refreshConfig();
   }, []);
+
+  const onNewBinding = useCallback(
+    (newBinding: BindingType) => {
+      setConfig((prevConfig) => {
+        if (prevConfig) {
+          const newConfig = {
+            ...prevConfig,
+            binding: [...prevConfig?.bindings],
+          };
+          const index = prevConfig?.bindings.findIndex(
+            (b) => b.uid === newBinding.uid
+          );
+          if (index >= 0) {
+            newConfig.bindings[index] = newBinding;
+            setConfig(newConfig);
+          }
+          return newConfig;
+        } else {
+          return prevConfig;
+        }
+      });
+    },
+    [setConfig]
+  );
 
   return config ? (
     <div>
@@ -74,11 +99,7 @@ export default function App() {
           <BindingMemo
             key={index}
             binding={binding}
-            setBinding={(newBinding) => {
-              const newConfig = { ...config, binding: [...config?.bindings] };
-              newConfig.bindings[index] = newBinding;
-              setConfig(newConfig);
-            }}
+            setBinding={onNewBinding}
           />
         ))}
       </div>

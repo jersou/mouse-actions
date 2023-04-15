@@ -31,12 +31,15 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .bindings
         .iter()
         .filter(|binding| {
+            // TODO comment
             (binding.event.shapes_angles.is_empty()
                 || shape_button != &binding.event.button
                 || event.event_type != event::EventType::Press)
                 && binding.event.button == event.button
                 && (binding.event.event_type == event.event_type
-                    || binding.event.event_type == event::EventType::Click)
+                    || binding.event.event_type == event::EventType::Click
+                    || binding.event.event_type == event::EventType::Shape
+                        && event.event_type == event::EventType::Press)
                 && edges_are_equals(&binding.event.edges, &event.edges)
                 && modifiers_are_equals(&binding.event.modifiers, &event.modifiers)
         })
