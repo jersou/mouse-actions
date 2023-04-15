@@ -44,7 +44,7 @@ export type EventType = {
   modifiers?: ModifierType[];
   event_type: EventTypeType;
   edges?: EdgeType[];
-  shapes_xy?: [number[]];
+  shapes_xy?: number[][];
 };
 
 export type BindingType = {

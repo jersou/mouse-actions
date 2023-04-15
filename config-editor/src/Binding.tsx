@@ -6,7 +6,6 @@ import { EventTypeSelector } from "./EventTypeSelector";
 import { ButtonSelector } from "./ButtonSelector";
 import { TextField } from "@mui/material";
 import { memo } from "react";
-import { isEqual } from "lodash";
 
 export function Binding({
   binding,
@@ -29,30 +28,37 @@ export function Binding({
     >
       <EventTypeSelector
         eventType={binding.event.event_type}
-        setEventType={(evType) =>
-          setBinding?.(
-            structuredClone({
-              ...binding,
-              event: { ...binding.event, event_type: evType },
-            })
-          )
-        }
+        setEventType={(evType) => {
+          const newBinding = structuredClone({
+            ...binding,
+            event: { ...binding.event, event_type: evType },
+          });
+          if (
+            evType === "Shape" &&
+            (!binding.event.shapes_xy || binding.event.shapes_xy.length === 0)
+          ) {
+            newBinding.event.shapes_xy = [[]];
+          }
+          setBinding?.(newBinding);
+        }}
       />
       <div style={{ flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex" }}>
           {binding.event.event_type !== "Shape" && (
-            <div style={{marginRight: 10}}>
-            <ButtonSelector
-            button={binding.event.button}
-            setButton={(button) =>
-              setBinding?.(
-                structuredClone({
-                  ...binding,
-                  event: { ...binding.event, button },
-                })
-              )
-            }
-            /></div>)}
+            <div style={{ marginRight: 10 }}>
+              <ButtonSelector
+                button={binding.event.button}
+                setButton={(button) =>
+                  setBinding?.(
+                    structuredClone({
+                      ...binding,
+                      event: { ...binding.event, button },
+                    })
+                  )
+                }
+              />
+            </div>
+          )}
 
           <TextField
             size="small"

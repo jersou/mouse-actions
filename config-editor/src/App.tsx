@@ -5,7 +5,16 @@ import { BindingMemo } from "./Binding";
 import { BindingType, ConfigType } from "./config.type";
 import { useCoords } from "./UseCoords";
 import { ButtonSelector } from "./ButtonSelector";
-import { Button, CircularProgress } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import StopIcon from "@mui/icons-material/Stop";
+import SaveIcon from "@mui/icons-material/Save";
+import GestureIcon from "@mui/icons-material/Gesture";
 
 export default function App() {
   const [defaultConfigPath, setGreetMsg] = useState("");
@@ -81,18 +90,26 @@ export default function App() {
           marginBottom: 10,
         }}
       >
-        <div>
-          Shape button : <ButtonSelector button={config.shape_button} />
+        <div style={{ display: "flex", alignItems:"center" }}>
+          <GestureIcon />
+          <Typography style={{marginLeft :10,marginRight:10}}>Shape button :</Typography>
+          <ButtonSelector button={config.shape_button} />
         </div>
-        <div>
-          <Button variant="contained" onClick={() => invoke("stop")}>
-            Stop
+        <ButtonGroup>
+          <Button
+            color="warning"
+            variant="contained"
+            onClick={() => invoke("stop")}
+          >
+            <StopIcon /> Stop
           </Button>
           <Button variant="contained" onClick={() => invoke("start")}>
-            Start
+            <PlayArrowIcon /> Start
           </Button>
-          <Button variant="contained">Save (todo)</Button>
-        </div>
+          <Button variant="contained">
+            <SaveIcon /> Save (todo)
+          </Button>
+        </ButtonGroup>
       </div>
       <div>
         {config.bindings.map((binding, index) => (
