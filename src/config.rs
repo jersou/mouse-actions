@@ -8,13 +8,13 @@ use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
 use std::{fs, thread};
 
-use crate::args::Args;
 use log::{error, info, trace};
 use notify::event::AccessKind::Close;
 use notify::EventKind::Access;
 use notify::{RecommendedWatcher, RecursiveMode, Watcher};
 use serde::{Deserialize, Serialize};
 
+use crate::args::Args;
 use crate::binding::Binding;
 use crate::event::{EventType, MouseButton};
 use crate::points_to_angles::points_to_angles;
@@ -28,6 +28,19 @@ pub struct Config {
 pub fn load(file_path: &str) -> Config {
     let json_config = fs::read_to_string(file_path).unwrap();
     let mut config = load_from_str(&json_config);
+
+    // FIXME
+    let first_button_only_error = config.bindings.iter().any(|b| {
+        b.event.button == MouseButton::Left
+            && b.event.modifiers.is_empty()
+            && b.event.shapes_xy.is_empty()
+            && b.event.edges.is_empty()
+    });
+    // FIXME
+    assert!(
+        !first_button_only_error,
+        "there is an event for left button only !"
+    );
 
     // FIXME
     let shape_empty_error = config

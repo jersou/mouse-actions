@@ -33,13 +33,6 @@
       "active": false
     },
     "windows": [
-      {
-        "fullscreen": false,
-        "resizable": true,
-        "title": "Mouse Actions Config Editor",
-        "width": 800,
-        "height": 600
-      }
     ]
   }
 }

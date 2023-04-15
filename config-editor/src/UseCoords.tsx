@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {Point} from "./Config";
+import {Point} from "./config.type";
 
 export function useCoords(listenerEnable: boolean) {
   const [coords, setCoords] = useState<number[]>([]);

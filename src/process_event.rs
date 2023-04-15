@@ -252,7 +252,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
 }
 
 #[cfg(target_os = "linux")]
-fn process_cmd(cmd: Vec<String>) {
+pub fn process_cmd(cmd: Vec<String>) {
     thread::Builder::new()
         .name("process_cmd".to_string())
         .spawn(move || {

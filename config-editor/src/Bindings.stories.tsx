@@ -22,6 +22,7 @@ const binding1: BindingType = {
     button: "Right",
     modifiers: ["ShiftLeft", "Alt"],
     edges: ["Left", "Top"],
+    shapes_xy: [[1000, 400, 800, 200, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000]],
   },
 };
 
