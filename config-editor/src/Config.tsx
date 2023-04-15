@@ -1,9 +1,9 @@
-import { ShapeSvg } from "./components/ShapeSvg.tsx";
-import { Binding } from "./components/Binding.tsx";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@mui/material";
-import { invoke } from "@tauri-apps/api/tauri";
-import { ConfigType } from "./config.type";
+import {ShapeSvg} from "./ShapeSvg.tsx";
+import {Binding} from "./Binding.tsx";
+import {useEffect, useRef, useState} from "react";
+import {Button} from "@mui/material";
+import {invoke} from "@tauri-apps/api/tauri";
+import {ConfigType} from "./config.type";
 
 export type Point = { x: number; y: number };
 
@@ -14,7 +14,7 @@ export function useCoords(listenerEnable: boolean) {
 
   const mousemove = (event) => {
     if (mouseState.current) {
-      pointsHistory.current.push({ x: event.x, y: event.y });
+      pointsHistory.current.push({x: event.x, y: event.y});
     }
   };
   const mousedown = (event) => {
@@ -33,7 +33,7 @@ export function useCoords(listenerEnable: boolean) {
       const height = maxY - minY;
       const size = Math.max(width, height);
       const normalizedCoords: number[] = [];
-      for (const { x, y } of raw) {
+      for (const {x, y} of raw) {
         normalizedCoords.push(Math.round(((x - minX) * 1000) / size));
         normalizedCoords.push(Math.round(((y - minY) * 1000) / size));
       }
@@ -59,7 +59,7 @@ export function useCoords(listenerEnable: boolean) {
 
 export function ShapeCreator() {
   const coords = useCoords(true);
-  console.log({ coords });
+  console.log({coords});
 
   return (
     <div
@@ -104,14 +104,14 @@ export default function Config() {
         <div>
           <div>shape_button: {config.shape_button}</div>
           {config.bindings.map((binding) => (
-            <Binding binding={binding} />
+            <Binding binding={binding}/>
           ))}
         </div>
       )}
       {coords && coords.length > 0 ? (
-        <ShapeSvg coords={coords} />
+        <ShapeSvg coords={coords}/>
       ) : (
-        <ShapeCreator />
+        <ShapeCreator/>
       )}
 
       <Button onClick={() => setCoords([])}>reset</Button>
