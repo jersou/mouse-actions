@@ -17,7 +17,7 @@ use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent};
 use crate::grab::normalize_points;
 use crate::record::reduce_shape_precision;
 
-const DIFF_MAX: f64 = 0.6;
+const DIFF_MAX: f64 = 0.8;
 const DIFF_MIN_WITH_SECOND: f64 = 0.05;
 const DIFF_MAX_PRINT: f64 = 300.0;
 const SHAPE_MIN_SIZE: usize = 10;

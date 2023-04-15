@@ -1,5 +1,3 @@
-use mouse_actions::args::MouseActionsCommands;
-
 pub mod config_editor;
 
 fn main() {

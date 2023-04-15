@@ -52,13 +52,12 @@ pub fn open_config_editor() {
             start
         ])
         .setup(|app| {
-            let window =
-                tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("index.html".into()))
-                    .title(format!(
-                        "Mouse Actions Config Editor v{}",
-                        mouse_actions::process_args::get_version()
-                    ))
-                    .build()?;
+            tauri::WindowBuilder::new(app, "main", tauri::WindowUrl::App("index.html".into()))
+                .title(format!(
+                    "Mouse Actions Config Editor v{}",
+                    mouse_actions::process_args::get_version()
+                ))
+                .build()?;
             Ok(())
         })
         .run(tauri::generate_context!())
