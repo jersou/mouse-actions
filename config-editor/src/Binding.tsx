@@ -1,11 +1,12 @@
-import {ShapeSvg} from "./ShapeSvg";
-import {ScreenEdges} from "./ScreenEdges";
-import {BindingType} from "./config.type";
+import { ShapeSvg } from "./ShapeSvg";
+import { ScreenEdges } from "./ScreenEdges";
+import { BindingType } from "./config.type";
+import { ModifiersSelector } from "./ModifiersSelector";
 
 export function Binding({
-                          binding,
-                          setBinding,
-                        }: {
+  binding,
+  setBinding,
+}: {
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
 }) {
@@ -21,20 +22,26 @@ export function Binding({
         display: "flex",
       }}
     >
-      <div style={{flex: 1}}>
+      <div style={{ flex: 1 }}>
         <div>{binding.comment}</div>
         <div>
           {binding.event.event_type} with {binding.event.button} button
         </div>
         <div>
-          trigger the command <br/>
+          trigger the command <br />
           {JSON.stringify(binding.cmd)}
         </div>
-        {binding.event.modifiers && (
-          <div className="px-5">
-            modifiers: {JSON.stringify(binding.event.modifiers)}
-          </div>
-        )}
+        <ModifiersSelector
+          modifiers={binding.event.modifiers || []}
+          setModifiers={(modifiers) =>
+            setBinding?.(
+              structuredClone({
+                ...binding,
+                event: { ...binding.event, modifiers },
+              })
+            )
+          }
+        />
       </div>
       <div>
         <div className="px-5">
@@ -44,7 +51,7 @@ export function Binding({
               setBinding?.(
                 structuredClone({
                   ...binding,
-                  edges,
+                  event: { ...binding.event, edges },
                 })
               )
             }
@@ -53,7 +60,7 @@ export function Binding({
         {binding.event.shapes_xy && (
           <div className="flex">
             {binding.event.shapes_xy?.map((coords) => (
-              <ShapeSvg coords={coords}/>
+              <ShapeSvg coords={coords} />
             ))}
           </div>
         )}

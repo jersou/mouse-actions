@@ -29,8 +29,8 @@ export const Modifiers = [
 
 export type ModifierType = (typeof Modifiers)[number];
 
-export const Events = ["Press", "Release", "Click"] as const;
-export type EventTypesType = (typeof Events)[number];
+export const Events = ["Press", "Release", "Click", "Shape"] as const;
+export type EventTypeType = (typeof Events)[number];
 
 export const Edges = ["Top", "Right", "Bottom", "Left"] as const;
 export type EdgeType = (typeof Edges)[number];
@@ -38,7 +38,7 @@ export type EdgeType = (typeof Edges)[number];
 export type EventType = {
   button: ButtonType;
   modifiers?: ModifierType[];
-  event_type: EdgeType;
+  event_type: EventTypeType;
   edges?: EdgeType[];
   shapes_xy?: [number[]];
 };
