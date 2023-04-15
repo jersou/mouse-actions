@@ -28,7 +28,11 @@ export function EventTypeSelector({
     <StyledToggleButtonGroup
       size="small"
       value={eventType}
-      onChange={(e, d) => setEventType?.(d)}
+      onChange={(e, d) => {
+        if(d) {
+          setEventType?.(d);
+        }
+      }}
       color="primary"
       orientation="vertical"
       exclusive

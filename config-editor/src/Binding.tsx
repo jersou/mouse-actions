@@ -5,6 +5,8 @@ import { ModifiersSelector } from "./ModifiersSelector";
 import { EventTypeSelector } from "./EventTypeSelector";
 import { ButtonSelector } from "./ButtonSelector";
 import { TextField } from "@mui/material";
+import { memo } from "react";
+import { isEqual } from "lodash";
 
 export function Binding({
   binding,
@@ -13,6 +15,7 @@ export function Binding({
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
 }) {
+  console.log("Binding render");
   return (
     <div
       style={{
@@ -36,9 +39,11 @@ export function Binding({
           )
         }
       />
-      <div style={{ flex: 1 }}>
+      <div style={{ flexDirection: "column", flex: 1 }}>
         <div style={{ display: "flex" }}>
-          <ButtonSelector
+          {binding.event.event_type !== "Shape" && (
+            <div style={{marginRight: 10}}>
+            <ButtonSelector
             button={binding.event.button}
             setButton={(button) =>
               setBinding?.(
@@ -48,7 +53,8 @@ export function Binding({
                 })
               )
             }
-          />
+            /></div>)}
+
           <TextField
             size="small"
             style={{ flex: 1 }}
@@ -57,14 +63,15 @@ export function Binding({
             value={binding.comment}
           />
         </div>
-
-        <TextField
-          size="small"
-          style={{ flex: 1, marginTop: 10, marginBottom: 10 }}
-          label="Command"
-          variant="outlined"
-          value={JSON.stringify(binding.cmd)}
-        />
+        <div style={{ display: "flex" }}>
+          <TextField
+            size="small"
+            style={{ flex: 1, marginTop: 10, marginBottom: 10 }}
+            label="Command"
+            variant="outlined"
+            value={JSON.stringify(binding.cmd)}
+          />
+        </div>
         <ModifiersSelector
           modifiers={binding.event.modifiers || []}
           setModifiers={(modifiers) =>
@@ -80,8 +87,8 @@ export function Binding({
       <div>
         {binding.event.event_type === "Shape" ? (
           <div>
-            {binding.event.shapes_xy?.map((coords) => (
-              <ShapeSvg coords={coords} />
+            {binding.event.shapes_xy?.map((coords, i) => (
+              <ShapeSvg key={i} coords={coords} />
             ))}
           </div>
         ) : (
@@ -103,3 +110,8 @@ export function Binding({
     </div>
   );
 }
+
+//FIXME
+export const BindingMemo = memo(Binding, (prev, next) =>
+  isEqual(prev.binding, next.binding)
+);

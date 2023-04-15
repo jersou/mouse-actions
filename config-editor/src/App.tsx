@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
-import { Binding } from "./Binding";
+import { BindingMemo } from "./Binding";
 import { ConfigType } from "./config.type";
 import { useCoords } from "./UseCoords";
 import { ButtonSelector } from "./ButtonSelector";
-import {Button, CircularProgress} from "@mui/material";
-
+import { Button, CircularProgress } from "@mui/material";
 
 export default function App() {
   const [defaultConfigPath, setGreetMsg] = useState("");
   const [version, setVersion] = useState("");
+  const [config, setConfig] = useState<ConfigType>();
+  const [coords, setCoords] = useState<number[]>([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000,
+  ]);
 
   async function getDefaultConfigPath() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -21,10 +24,6 @@ export default function App() {
     invoke("get_version").then((v: any) => setVersion(v));
   }, []);
 
-  const [config, setConfig] = useState<ConfigType>();
-  const [coords, setCoords] = useState<number[]>([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000, 1000,
-  ]);
   const newCoords = useCoords(!(coords && coords.length > 0));
   useEffect(() => {
     if (newCoords?.length) {
@@ -53,22 +52,34 @@ export default function App() {
           padding: 10,
           zIndex: 10,
           boxShadow: "0 2px 5px rgb(152, 151, 151)",
-          justifyContent:"space-between",
-          marginBottom:10
+          justifyContent: "space-between",
+          marginBottom: 10,
         }}
       >
         <div>
           Shape button : <ButtonSelector button={config.shape_button} />
         </div>
         <div>
-        <Button variant="contained"  onClick={()=>invoke("stop")}>Stop</Button>
-        <Button variant="contained" onClick={()=>invoke("start")}>Start</Button>
-        <Button variant="contained">Save (todo)</Button>
+          <Button variant="contained" onClick={() => invoke("stop")}>
+            Stop
+          </Button>
+          <Button variant="contained" onClick={() => invoke("start")}>
+            Start
+          </Button>
+          <Button variant="contained">Save (todo)</Button>
         </div>
       </div>
       <div>
-        {config.bindings.map((binding) => (
-          <Binding binding={binding} />
+        {config.bindings.map((binding, index) => (
+          <BindingMemo
+            key={index}
+            binding={binding}
+            setBinding={(newBinding) => {
+              const newConfig = { ...config, binding: [...config?.bindings] };
+              newConfig.bindings[index] = newBinding;
+              setConfig(newConfig);
+            }}
+          />
         ))}
       </div>
     </div>

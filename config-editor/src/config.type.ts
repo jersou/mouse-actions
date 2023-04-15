@@ -1,7 +1,11 @@
+
+
+
+
 export const Buttons = [
   "Left",
   "Right",
-  "iddle",
+  "Middle",
   "Side",
   "Extra",
   "Forward",
