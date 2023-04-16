@@ -120,6 +120,10 @@ export default function App() {
     [setConfig]
   );
 
+  const saveConfig = async () => {
+    await invoke("save_config", { newConfig:config});
+  };
+
   return config && !isLoading ? (
     <div
       style={{
@@ -170,8 +174,8 @@ export default function App() {
           <Button color="warning" variant="contained" onClick={refreshConfig}>
             <UndoIcon /> Reload config
           </Button>
-          <Button variant="contained">
-            <SaveIcon /> Save (todo)
+          <Button variant="contained" onClick={saveConfig}>
+            <SaveIcon /> Save
           </Button>
         </ButtonGroup>
       </div>

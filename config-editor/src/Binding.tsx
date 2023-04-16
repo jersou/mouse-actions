@@ -21,7 +21,6 @@ export function Binding({
   addBinding: () => unknown;
   deleteBinding: () => unknown;
 }) {
-  console.log("Binding render");
   return (
     <div
       style={{

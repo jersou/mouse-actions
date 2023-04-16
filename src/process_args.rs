@@ -80,7 +80,7 @@ pub fn record(args: &Arc<Args>) -> Result<(), GrabError> {
 
 pub fn start(args: &Arc<Args>) -> Result<(), GrabError> {
     let _instance = get_instance().unwrap();
-    let config = get_config_from_args(&args, true);
+    let config = get_config_from_args(args, true);
     grab::start_grab_binding(args.clone(), config, process_event::process_event)
 }
 

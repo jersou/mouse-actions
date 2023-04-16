@@ -19,7 +19,6 @@
       }
     },
     "bundle": {
-      "active": true,
       "icon": [
         "../../mouse_actions_logo.png"
       ],
