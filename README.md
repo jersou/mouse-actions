@@ -240,8 +240,8 @@ Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
 Usage: mouse_actions [OPTIONS] [COMMAND]
 
 Commands:
-  start           Default command, use mouse_actions bindings
-  open-config     Open the config file (xdg-open)
+  show-gui        Default command, show Mouse Actions Config Editor
+  start           Start mouse_actions bindings
   trace           Trace events
   record          Start record mode to add some mouse bindings
   list-bindings   List the current config bindings
@@ -249,6 +249,7 @@ Commands:
   stop            Stop mouse action
   status          Get mouse action status : exit 0 if running
   show-config     print the json config
+  set-config      set the json config from stdin
   help            Print this message or the help of the given subcommand(s)
 
 Options:

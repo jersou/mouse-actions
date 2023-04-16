@@ -133,7 +133,7 @@ export default function App() {
           />
         ))}
       </div>
-      <div style={{ textAlign: "center" }}>TODO Add Binding</div>
+      <div style={{ textAlign: "center" }}>TODO Add & delete Binding</div>
     </div>
   ) : (
     <div

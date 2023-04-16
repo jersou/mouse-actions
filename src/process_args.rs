@@ -18,12 +18,7 @@ static DEV_PATH: &str = "/dev/input";
 
 pub fn main() {
     debug!("Start main");
-    trace!("version : {}", get_version());
-    // TODO add this init to config_editor
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
-    let args: Arc<Args> = Arc::new(Args::parse());
-    trace!("args = {args:#?}!");
-    process_args(args)
+    process_args(Args::parse())
 }
 
 pub fn get_version() -> String {
@@ -36,7 +31,11 @@ pub fn get_version() -> String {
     version
 }
 
-pub fn process_args(args: Arc<Args>) {
+pub fn process_args(args: Args) {
+    let args: Arc<Args> = Arc::new(args);
+    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+    trace!("version : {}", get_version());
+    trace!("args = {args:#?}!");
     if args.version {
         println!("{}", get_version());
     } else {
@@ -51,6 +50,10 @@ pub fn process_args(args: Arc<Args>) {
             Some(MouseActionsCommands::Status) => status(),
             Some(MouseActionsCommands::ShowConfig) => show_config(&args),
             Some(MouseActionsCommands::SetConfig) => set_config(&args),
+            Some(MouseActionsCommands::ShowGui) => {
+                error!("This binary doesn't have the GUI");
+                exit(6);
+            }
         };
         if let Err(error) = res {
             process_error(&error);

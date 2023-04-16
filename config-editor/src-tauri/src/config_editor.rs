@@ -42,12 +42,19 @@ fn get_config() -> config::Config {
     config::get_config(&config_path)
 }
 
+#[tauri::command]
+fn save_config(newConfig: config::Config) {
+    let args = mouse_actions::args::parse();
+    config::save_config(&newConfig, &args.config_path)
+}
+
 pub fn open_config_editor() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_default_config_path,
             get_version,
             get_config,
+            save_config,
             stop,
             start
         ])
