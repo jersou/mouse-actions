@@ -8,6 +8,7 @@ import { memo } from "react";
 import { ShapeEditor } from "./ShapeEditor";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { isEqual } from "lodash";
 
 export function Binding({
   binding,
@@ -17,9 +18,10 @@ export function Binding({
 }: {
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
-  addBinding: () => unknown,
-  deleteBinding: ( ) => unknown,
+  addBinding: () => unknown;
+  deleteBinding: () => unknown;
 }) {
+  console.log("Binding render");
   return (
     <div
       style={{
@@ -41,11 +43,7 @@ export function Binding({
         >
           <DeleteIcon />
         </IconButton>
-        <IconButton
-          title="Add a binding"
-          color="primary"
-          onClick={addBinding}
-        >
+        <IconButton title="Add a binding" color="primary" onClick={addBinding}>
           <AddIcon />
         </IconButton>
       </div>
@@ -178,4 +176,6 @@ export function Binding({
   );
 }
 
-export const BindingMemo = memo(Binding);
+export const BindingMemo = memo(Binding, (prev, next) =>
+  isEqual(prev.binding, next.binding)
+);

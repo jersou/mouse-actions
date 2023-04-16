@@ -25,6 +25,7 @@ fn stop() {
         String::from("stop"),
     ])
 }
+
 #[tauri::command]
 fn start() {
     let ma_exe_path = std::env::current_exe().unwrap();
@@ -43,9 +44,9 @@ fn get_config() -> config::Config {
 }
 
 #[tauri::command]
-fn save_config(newConfig: config::Config) {
+fn save_config(new_config: config::Config) {
     let args = mouse_actions::args::parse();
-    config::save_config(&newConfig, &args.config_path)
+    config::save_config(&new_config, &args.config_path)
 }
 
 pub fn open_config_editor() {

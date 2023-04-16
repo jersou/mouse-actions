@@ -23,16 +23,19 @@ export function ShapeCreator({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: "#ccc",
+        backgroundColor: "#999",
         zIndex: 10,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontSize: 40,
         userSelect: "none",
+        opacity: 0.9,
       }}
     >
-      <div>Draw a new shape with left button here !</div>
+      <div>
+        Draw a new shape with <b>left button</b> here !
+      </div>
     </div>
   ) : null;
 }

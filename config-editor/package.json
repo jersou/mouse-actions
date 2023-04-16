@@ -9,7 +9,8 @@
     "prettier": "prettier --write \"src/**/*\"",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri dev": "tauri dev",
+    "tauri-dev": "tauri dev",
+    "tauri-build": "tauri build",
     "storybook": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build"
   },

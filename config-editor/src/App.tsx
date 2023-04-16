@@ -13,9 +13,11 @@ import {
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 import GestureIcon from "@mui/icons-material/Gesture";
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(false);
   const [defaultConfigPath, setGreetMsg] = useState("");
   const [version, setVersion] = useState("");
   const [config, setConfig] = useState<ConfigType>();
@@ -41,9 +43,11 @@ export default function App() {
   // }, [setCoords, newCoords]);
 
   const refreshConfig = async () => {
+    setIsLoading(true);
     const newVconfig: ConfigType = await invoke("get_config");
     newVconfig.bindings.forEach((b) => (b.uid = self.crypto.randomUUID()));
     setConfig(newVconfig);
+    setIsLoading(false);
   };
   useEffect(() => {
     refreshConfig();
@@ -112,12 +116,20 @@ export default function App() {
     [setConfig]
   );
 
-  return config ? (
-    <div>
+  return config && !isLoading ? (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
       <div
         style={{
-          position: "sticky",
-          top: 0,
           backgroundColor: "#fff",
           display: "flex",
           flexDirection: "row",
@@ -151,6 +163,9 @@ export default function App() {
           >
             <PlayArrowIcon /> Start
           </Button>
+          <Button color="warning" variant="contained" onClick={refreshConfig}>
+            <UndoIcon /> Reload config
+          </Button>
           <Button variant="contained">
             <SaveIcon /> Save (todo)
           </Button>
@@ -161,11 +176,12 @@ export default function App() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          overflow: "auto",
         }}
       >
         {config.bindings.map((binding, index) => (
           <BindingMemo
-            key={index}
+            key={binding.uid || index}
             binding={binding}
             setBinding={onNewBinding}
             addBinding={() => addBinding(index + 1)}
