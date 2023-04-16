@@ -80,8 +80,8 @@ export default function App() {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings.splice(index,1)
-        return newConfig
+        newConfig.bindings.splice(index, 1);
+        return newConfig;
       });
     },
     [setConfig]
@@ -94,7 +94,7 @@ export default function App() {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings?.push({
+        newConfig.bindings?.splice(index, 0, {
           uid: self.crypto.randomUUID(),
           cmd: ["TODO"],
           comment: "TODO",
