@@ -395,14 +395,8 @@ upx --best --lzma mouse-actions-config-editor
 
 ### Medium
 
-* split main to lib (or ?) to use in the config editor
-* **config editor** :
-    * cli help
-    * add/edit binding
-    * edit the other config values
-    * doc
+* **config editor**
 * block event "left click only" without modifier/shape...
-* add "enable" in bindings
 * shape type instead of shapes.is_empty() ?
 * run config editor subcommand
 * create ~/.config if it doesn't exist
@@ -415,14 +409,8 @@ upx --best --lzma mouse-actions-config-editor
 
 ### Low
 
-* release a debug version and a gui-less version ?
 * use https://github.com/hoodie/notify-rust
-* add config file version
 * a better Readme
-* options
-    * dry-run option
-    * min diff shape config option
-    * min score shape config option
 * improve shape recognition
 * refactor
     * don't use arrayvec ?
@@ -434,6 +422,13 @@ upx --best --lzma mouse-actions-config-editor
 
 ### Maybe
 
+* add "enable" in bindings
+* add config file version
+* release a debug version and a gui-less version ?
+* options
+  * dry-run option
+  * min diff shape config option
+  * min score shape config option
 * find a better project name and icon
 * support Wayland & Windows & macOS (get the mouse position on wayland
   is impossible ?)
