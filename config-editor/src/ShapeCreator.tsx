@@ -1,10 +1,21 @@
-import {useCoords} from "./UseCoords";
+import { useCoords } from "./UseCoords";
+import { useEffect } from "react";
 
-export function ShapeCreator() {
-  const coords = useCoords(true);
-  console.log({coords});
+export function ShapeCreator({
+  enable,
+  setShape,
+}: {
+  enable: boolean;
+  setShape: (shape: number[]) => unknown;
+}) {
+  const coords = useCoords(enable);
+  useEffect(() => {
+    if (coords.length) {
+      setShape(coords);
+    }
+  }, [coords]);
 
-  return (
+  return enable ? (
     <div
       style={{
         position: "absolute",
@@ -13,9 +24,15 @@ export function ShapeCreator() {
         left: 0,
         right: 0,
         backgroundColor: "#ccc",
+        zIndex: 10,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 40,
+        userSelect: "none",
       }}
     >
-      <div>Draw a new shape with left button !</div>
+      <div>Draw a new shape with left button here !</div>
     </div>
-  );
+  ) : null;
 }

@@ -27,9 +27,10 @@ export function ModifiersSelector({
       value={modifiers}
       onChange={(e, d) => setModifiers?.(d)}
       color="primary"
+      style={{ display: "flex" }}
     >
       {Modifiers.map((e) => e).map((modifier) => (
-        <ToggleButton key={modifier} value={modifier}>
+        <ToggleButton key={modifier} value={modifier} style={{ flex: 1 }}>
           {startCase(modifier)}
         </ToggleButton>
       ))}

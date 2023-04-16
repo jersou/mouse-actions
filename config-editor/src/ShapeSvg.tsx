@@ -6,7 +6,8 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
     const x2 = coords[i];
     const y2 = coords[i + 1];
     lines.push(
-      <line key={i}
+      <line
+        key={i}
         x1={x1}
         y1={y1}
         x2={x2}
@@ -20,7 +21,8 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
   }
   if (coords.length > 10) {
     lines.push(
-      <line key="z"
+      <line
+        key="z"
         markerEnd="url(#arrow)"
         x1={coords[coords.length - 10]}
         y1={coords[coords.length - 9]}
@@ -34,8 +36,8 @@ export function ShapeSvg({ coords }: { coords: number[] }) {
   return (
     <svg
       viewBox="-100 -100 1200 1200"
-      width="150"
-      height="150"
+      width="120"
+      height="120"
       style={{ border: "black solid 1px", borderRadius: 10, margin: 4 }}
       xmlns="http://www.w3.org/2000/svg"
     >

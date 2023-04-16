@@ -1,5 +1,3 @@
-
-
 export const Buttons = [
   "Left",
   "Right",
@@ -48,7 +46,7 @@ export type EventType = {
 };
 
 export type BindingType = {
-  uid: string;
+  uid?: string;
   comment: string;
   cmd: string[];
   event: EventType;

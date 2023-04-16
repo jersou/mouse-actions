@@ -74,6 +74,7 @@ pub fn find_candidates_with_shape_with_offset<'a>(
                     .event
                     .shapes_angles
                     .iter()
+                    .filter(|angles| angles.len() > SHAPE_MIN_SIZE)
                     .map(|angles| {
                         let res = compare_angles_with_offset(
                             &event.shapes_angles.first().unwrap(),

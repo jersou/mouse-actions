@@ -1,4 +1,3 @@
-import { ShapeSvg } from "./ShapeSvg";
 import { ScreenEdges } from "./ScreenEdges";
 import { BindingType } from "./config.type";
 import { ModifiersSelector } from "./ModifiersSelector";
@@ -6,9 +5,9 @@ import { EventTypeSelector } from "./EventTypeSelector";
 import { ButtonSelector } from "./ButtonSelector";
 import { IconButton, TextField } from "@mui/material";
 import { memo } from "react";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { ShapeEditor } from "./ShapeEditor";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export function Binding({
   binding,
@@ -22,13 +21,30 @@ export function Binding({
       style={{
         marginBottom: 20,
         padding: 10,
-        maxWidth: 800,
+        maxWidth: 1000,
         display: "grid",
         gap: 10,
-        gridTemplateColumns: "1fr 5fr 1fr",
+        // FIXME
+        gridTemplateColumns: "30px 90px 1fr 170px",
         borderBottom: "solid #000 1px",
       }}
     >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <IconButton
+          title="Delete the binding"
+          color="warning"
+          onClick={() => console.log("TODO")}
+        >
+          <DeleteIcon />
+        </IconButton>
+        <IconButton
+          title="Add a binding"
+          color="primary"
+          onClick={() => console.log("TODO")}
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
       <EventTypeSelector
         eventType={binding.event.event_type}
         setEventType={(evType) => {
@@ -50,7 +66,7 @@ export function Binding({
           setBinding?.(newBinding);
         }}
       />
-      <div style={{ flexDirection: "column", flex: 1 }}>
+      <div style={{ flexDirection: "column", flex: 1, display: "flex" }}>
         <div style={{ display: "flex" }}>
           {binding.event.event_type !== "Shape" && (
             <div style={{ marginRight: 10 }}>
@@ -76,7 +92,7 @@ export function Binding({
             value={binding.comment}
           />
         </div>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flex: 0 }}>
           <TextField
             size="small"
             style={{ flex: 1, marginTop: 10, marginBottom: 10 }}
@@ -101,22 +117,41 @@ export function Binding({
         {binding.event.event_type === "Shape" ? (
           <div>
             {binding.event.shapes_xy?.map((coords, i) => (
-              <div style={{ display: "flex" }}>
-                <ShapeSvg key={i} coords={coords} />
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {i > 0 && (
-                    <IconButton color="warning">
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                  <IconButton color="primary">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton color="primary">
-                    <AddIcon />
-                  </IconButton>
-                </div>
-              </div>
+              <ShapeEditor
+                key={i}
+                enableDelete={(binding.event.shapes_xy?.length || 0) > 1}
+                coords={coords}
+                setShape={(shape) => {
+                  const shapes_xy = [...(binding.event.shapes_xy || [])];
+                  shapes_xy[i] = shape;
+                  setBinding?.(
+                    structuredClone({
+                      ...binding,
+                      event: { ...binding.event, shapes_xy },
+                    })
+                  );
+                }}
+                addShape={() => {
+                  const shapes_xy = [...(binding.event.shapes_xy || [])];
+                  shapes_xy.splice(i + 1, 0, []);
+                  setBinding?.(
+                    structuredClone({
+                      ...binding,
+                      event: { ...binding.event, shapes_xy },
+                    })
+                  );
+                }}
+                deleteShape={() => {
+                  const shapes_xy = [...(binding.event.shapes_xy || [])];
+                  shapes_xy.splice(i, 1);
+                  setBinding?.(
+                    structuredClone({
+                      ...binding,
+                      event: { ...binding.event, shapes_xy },
+                    })
+                  );
+                }}
+              />
             ))}
           </div>
         ) : (

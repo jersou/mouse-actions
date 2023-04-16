@@ -3,7 +3,6 @@ import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { BindingMemo } from "./Binding";
 import { BindingType, ConfigType } from "./config.type";
-import { useCoords } from "./UseCoords";
 import { ButtonSelector } from "./ButtonSelector";
 import {
   Button,
@@ -133,7 +132,6 @@ export default function App() {
           />
         ))}
       </div>
-      <div style={{ textAlign: "center" }}>TODO Add & delete Binding</div>
     </div>
   ) : (
     <div
