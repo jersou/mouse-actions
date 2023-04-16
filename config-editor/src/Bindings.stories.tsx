@@ -33,5 +33,12 @@ export const Test1: Story = { args: { binding: binding1 } };
 
 export const Test = () => {
   const [binding, setBinding] = useState<BindingType>(binding1);
-  return <Binding binding={binding} setBinding={(b) => setBinding(b)} />;
+  return (
+    <Binding
+      binding={binding}
+      setBinding={(b) => setBinding(b)}
+      addBinding={() => console.log("addBinding")}
+      deleteBinding={() => console.log("deleteBinding")}
+    />
+  );
 };

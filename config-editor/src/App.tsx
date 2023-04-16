@@ -73,6 +73,45 @@ export default function App() {
     [setConfig]
   );
 
+  const deleteBinding = useCallback(
+    (index: number) => {
+      setConfig((prevConfig) => {
+        const newConfig: ConfigType = {
+          shape_button: prevConfig?.shape_button || "Right",
+          bindings: [...(prevConfig?.bindings || [])],
+        };
+        newConfig.bindings.splice(index,1)
+        return newConfig
+      });
+    },
+    [setConfig]
+  );
+
+  const addBinding = useCallback(
+    (index: number) => {
+      setConfig((prevConfig) => {
+        const newConfig: ConfigType = {
+          shape_button: prevConfig?.shape_button || "Right",
+          bindings: [...(prevConfig?.bindings || [])],
+        };
+        newConfig.bindings?.push({
+          uid: self.crypto.randomUUID(),
+          cmd: ["TODO"],
+          comment: "TODO",
+          event: {
+            button: "Right",
+            event_type: "Click",
+            edges: ["Top"],
+            modifiers: [],
+            shapes_xy: [],
+          },
+        });
+        return newConfig;
+      });
+    },
+    [setConfig]
+  );
+
   return config ? (
     <div>
       <div
@@ -129,6 +168,8 @@ export default function App() {
             key={index}
             binding={binding}
             setBinding={onNewBinding}
+            addBinding={() => addBinding(index + 1)}
+            deleteBinding={() => deleteBinding(index)}
           />
         ))}
       </div>

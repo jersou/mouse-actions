@@ -12,9 +12,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export function Binding({
   binding,
   setBinding,
+  addBinding,
+  deleteBinding,
 }: {
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
+  addBinding: () => unknown,
+  deleteBinding: ( ) => unknown,
 }) {
   return (
     <div
@@ -33,14 +37,14 @@ export function Binding({
         <IconButton
           title="Delete the binding"
           color="warning"
-          onClick={() => console.log("TODO")}
+          onClick={deleteBinding}
         >
           <DeleteIcon />
         </IconButton>
         <IconButton
           title="Add a binding"
           color="primary"
-          onClick={() => console.log("TODO")}
+          onClick={addBinding}
         >
           <AddIcon />
         </IconButton>
