@@ -385,6 +385,7 @@ upx --best --lzma mouse-actions-config-editor
 
 ### High
 
+* config editor : add binding btn if empty
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -426,9 +427,9 @@ upx --best --lzma mouse-actions-config-editor
 * add config file version
 * release a debug version and a gui-less version ?
 * options
-  * dry-run option
-  * min diff shape config option
-  * min score shape config option
+    * dry-run option
+    * min diff shape config option
+    * min score shape config option
 * find a better project name and icon
 * support Wayland & Windows & macOS (get the mouse position on wayland
   is impossible ?)

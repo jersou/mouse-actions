@@ -99,6 +99,7 @@ pub fn watch_config(config: Arc<Mutex<Config>>, config_path: PathBuf) {
     thread::Builder::new()
         .name("watch_config".to_string())
         .spawn(move || {
+            info!("Watch the config {:?} !", config_path);
             let (tx, rx) = channel();
             let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).unwrap();
             watcher
@@ -157,11 +158,11 @@ pub fn save_config(config: &Config, config_path_from_args: &Option<String>) {
         config_path.file_name().unwrap().to_str().unwrap()
     ));
     let _ = fs::remove_file(&config_path_bak);
-    fs::rename(&config_path, &config_path_bak)
-        .expect("Error while backup the previous config file");
+    fs::copy(&config_path, &config_path_bak).expect("Error while backup the previous config file");
     let mut config_file = fs::OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&config_path)
         .unwrap();
 
