@@ -98,29 +98,26 @@ export default function App() {
   const addBinding = useCallback(
     (binding?: BindingType) => {
       setConfig((prevConfig) => {
-        const index = binding
-          ? prevConfig?.bindings.findIndex((b) => b.uid === binding.uid)
-          : undefined;
+        const index = prevConfig?.bindings.findIndex(
+          (b) => b.uid === binding?.uid
+        );
+
         const newConfig: ConfigType = {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings?.splice(
-          (index || newConfig.bindings.length) + 1,
-          0,
-          {
-            uid: self.crypto.randomUUID(),
-            cmd: ["TODO"],
-            comment: "TODO",
-            event: {
-              button: "Right",
-              event_type: "Click",
-              edges: ["Top"],
-              modifiers: [],
-              shapes_xy: [],
-            },
-          }
-        );
+        newConfig.bindings?.splice((index ?? -1) + 1, 0, {
+          uid: self.crypto.randomUUID(),
+          cmd: ["TODO"],
+          comment: "TODO",
+          event: {
+            button: "Right",
+            event_type: "Click",
+            edges: ["Top"],
+            modifiers: [],
+            shapes_xy: [],
+          },
+        });
         return newConfig;
       });
     },
@@ -212,7 +209,13 @@ export default function App() {
             justifyContent: "center",
           }}
         >
-          <Button variant="contained" size="small" onClick={() => addBinding()}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() =>
+              addBinding(config?.bindings[config.bindings.length - 1])
+            }
+          >
             <AddIcon /> Add a binding
           </Button>
         </div>
