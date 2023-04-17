@@ -62,6 +62,15 @@ half of which by shape bindings.
 [Download the release](https://github.com/jersou/mouse-actions/releases), or run
 it directly with Cargo `cargo run` or build the binary `cargo build --release`.
 
+The 2 release binaries `mouse-actions` and `mouse-actions-gui` are standalone,
+the avantage of GUI less version is the ram usage : 6.6 Mo vs 34 Mo.
+
+The gui unbundled release need this packages :
+
+* Debian/Ubuntu : libwebkit2gtk-4.0-37, libgtk-3-0
+* Arch : webkit2gtk, gtk3
+* Fedora : webkit2gtk3, gtk3
+
 ### Requirement :
 
 To use the main feature "grab event", you need to have the read&write permission
@@ -240,8 +249,8 @@ Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
 Usage: mouse_actions [OPTIONS] [COMMAND]
 
 Commands:
-  show-gui        Default command, show Mouse Actions Config Editor
-  start           Start mouse_actions bindings
+  show-gui        Default command with mouse-actions-gui, show Mouse Actions Config Editor
+  start           Default command with mouse-actions, Start mouse_actions bindings
   trace           Trace events
   record          Start record mode to add some mouse bindings
   list-bindings   List the current config bindings
@@ -385,7 +394,6 @@ upx --best --lzma mouse-actions-config-editor
 
 ### High
 
-* config editor : add binding btn if empty
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -396,10 +404,6 @@ upx --best --lzma mouse-actions-config-editor
 
 ### Medium
 
-* **config editor**
-* block event "left click only" without modifier/shape...
-* shape type instead of shapes.is_empty() ?
-* run config editor subcommand
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`

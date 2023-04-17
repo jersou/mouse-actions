@@ -27,11 +27,11 @@ pub struct Args {
 
 #[derive(Debug, Subcommand, PartialEq, Clone)]
 pub enum MouseActionsCommands {
-    /// Default command, show Mouse Actions Config Editor
+    /// Default command with mouse-actions-gui, show Mouse Actions Config Editor
     #[clap()]
     ShowGui,
 
-    /// Start mouse_actions bindings
+    /// Default command with mouse-actions, Start mouse_actions bindings
     #[clap()]
     Start,
 
