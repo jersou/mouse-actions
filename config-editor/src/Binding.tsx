@@ -18,8 +18,8 @@ export function Binding({
 }: {
   binding: BindingType;
   setBinding?: (binding: BindingType) => unknown;
-  addBinding: () => unknown;
-  deleteBinding: () => unknown;
+  addBinding: (binding: BindingType) => unknown;
+  deleteBinding: (binding: BindingType) => unknown;
 }) {
   return (
     <div
@@ -31,18 +31,22 @@ export function Binding({
         gap: 10,
         // FIXME
         gridTemplateColumns: "30px 90px 1fr 170px",
-        borderBottom: "solid #000 1px",
+        borderBottom: "solid #aaa 2px",
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
         <IconButton
           title="Delete the binding"
           color="warning"
-          onClick={deleteBinding}
+          onClick={() => deleteBinding(binding)}
         >
           <DeleteIcon />
         </IconButton>
-        <IconButton title="Add a binding" color="primary" onClick={addBinding}>
+        <IconButton
+          title="Add a binding"
+          color="primary"
+          onClick={() => addBinding(binding)}
+        >
           <AddIcon />
         </IconButton>
       </div>
@@ -91,6 +95,14 @@ export function Binding({
             label="Comment"
             variant="outlined"
             value={binding.comment}
+            onChange={(e) => {
+              setBinding?.(
+                structuredClone({
+                  ...binding,
+                  comment: e.target.value,
+                })
+              );
+            }}
           />
         </div>
         <div style={{ display: "flex", flex: 0 }}>
@@ -100,6 +112,14 @@ export function Binding({
             label="Command"
             variant="outlined"
             value={JSON.stringify(binding.cmd)}
+            onChange={(e) => {
+              setBinding?.(
+                structuredClone({
+                  ...binding,
+                  cmd: JSON.parse(e.target.value),
+                })
+              );
+            }}
           />
         </div>
         <ModifiersSelector

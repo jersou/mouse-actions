@@ -17,7 +17,7 @@ fn get_version() -> String {
     format!("v{}", mouse_actions::process_args::get_version())
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn stop() {
     let ma_exe_path = std::env::current_exe().unwrap();
     mouse_actions::process_event::process_cmd(vec![
@@ -26,7 +26,7 @@ fn stop() {
     ])
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn start() {
     let ma_exe_path = std::env::current_exe().unwrap();
     mouse_actions::process_event::process_cmd(vec![
@@ -35,7 +35,7 @@ fn start() {
     ])
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn get_config() -> config::Config {
     let args = mouse_actions::args::parse();
     let config_path = config::get_config_path(&args.config_path);
@@ -43,7 +43,7 @@ fn get_config() -> config::Config {
     config::get_config(&config_path)
 }
 
-#[tauri::command]
+#[tauri::command(async)]
 fn save_config(new_config: config::Config) {
     let args = mouse_actions::args::parse();
     config::save_config(&new_config, &args.config_path)

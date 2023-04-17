@@ -4,19 +4,14 @@ import "./App.css";
 import { BindingMemo } from "./Binding";
 import { BindingType, ConfigType } from "./config.type";
 import { ButtonSelector } from "./ButtonSelector";
-import {
-  Button,
-  ButtonGroup,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, ButtonGroup, Typography } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import SaveIcon from "@mui/icons-material/Save";
 import UndoIcon from "@mui/icons-material/Undo";
 import GestureIcon from "@mui/icons-material/Gesture";
-import { BindingSkeleton } from "./BindingSkeleton";
+import AddIcon from "@mui/icons-material/Add";
+import { AppSkeleton } from "./AppSkeleton";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -82,13 +77,18 @@ export default function App() {
   );
 
   const deleteBinding = useCallback(
-    (index: number) => {
+    (binding: BindingType) => {
       setConfig((prevConfig) => {
+        const index = prevConfig?.bindings.findIndex(
+          (b) => b.uid === binding.uid
+        );
         const newConfig: ConfigType = {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings.splice(index, 1);
+        if (index !== undefined) {
+          newConfig.bindings.splice(index, 1);
+        }
         return newConfig;
       });
     },
@@ -96,13 +96,16 @@ export default function App() {
   );
 
   const addBinding = useCallback(
-    (index: number) => {
+    (binding?: BindingType) => {
       setConfig((prevConfig) => {
+        const index = binding
+          ? prevConfig?.bindings.findIndex((b) => b.uid === binding.uid)
+          : undefined;
         const newConfig: ConfigType = {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings?.splice(index, 0, {
+        newConfig.bindings?.splice((index || -1) + 1, 0, {
           uid: self.crypto.randomUUID(),
           cmd: ["TODO"],
           comment: "TODO",
@@ -121,7 +124,7 @@ export default function App() {
   );
 
   const saveConfig = async () => {
-    await invoke("save_config", { newConfig:config});
+    await invoke("save_config", { newConfig: config });
   };
 
   return config && !isLoading ? (
@@ -192,76 +195,26 @@ export default function App() {
             key={binding.uid || index}
             binding={binding}
             setBinding={onNewBinding}
-            addBinding={() => addBinding(index + 1)}
-            deleteBinding={() => deleteBinding(index)}
+            addBinding={addBinding}
+            deleteBinding={deleteBinding}
           />
         ))}
+        <div
+          style={{
+            width: "100%",
+            paddingBottom: 8,
+            marginBottom: 8,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button variant="contained" size="small" onClick={() => addBinding()}>
+            <AddIcon /> Add a binding
+          </Button>
+        </div>
       </div>
     </div>
   ) : (
-    <>
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div className="lds-dual-ring"></div>
-      </div>
-      <Stack
-        spacing={1}
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#fff",
-            display: "flex",
-            flexDirection: "row",
-            borderBottom: "solid #888 1px",
-            padding: 10,
-            zIndex: 10,
-            boxShadow: "0 2px 5px rgb(152, 151, 151)",
-            justifyContent: "space-between",
-            marginBottom: 10,
-          }}
-        >
-          <Stack spacing={1} direction="row">
-            <Skeleton variant="rectangular" width={150} height={60} />
-            <Skeleton variant="rectangular" width={100} height={60} />
-          </Stack>
-          <div style={{ flex: 1, display: "flex", justifyContent: "end" }}>
-            <Skeleton variant="rectangular" width={500} height={60} />
-          </div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            overflow: "auto",
-          }}
-        >
-          <BindingSkeleton />
-          <BindingSkeleton />
-          <BindingSkeleton />
-          <BindingSkeleton />
-        </div>
-      </Stack>
-    </>
+    <AppSkeleton />
   );
 }
