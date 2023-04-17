@@ -1,0 +1,33 @@
+[package]
+name = "mouse_actions_config_editor"
+version = "0.4.0"
+description = "Mouse Actions Config Editor"
+authors = ["Jerem <jersou@gmail.com>"]
+repository = "https://github.com/jersou/mouse-actions"
+edition = "2021"
+license = "MIT"
+
+[build-dependencies]
+tauri-build = { version = "1.2", features = [] }
+
+[dependencies]
+tauri = { version = "1.2", features = ["shell-open"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+mouse_actions = { path = "../.." }
+
+[features]
+# this feature is used for production builds or when `devPath` points to the filesystem
+# DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+
+[profile.release]
+# to generate small binary : https://github.com/johnthagen/min-sized-rust
+strip = true  # Automatically strip symbols from the binary.
+#opt-level = "z"  # Optimize for size.
+lto = true
+codegen-units = 1
+#panic = "abort"
+

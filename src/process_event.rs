@@ -12,15 +12,15 @@ use crate::args::Args;
 use crate::binding::Binding;
 use crate::compare_angles::compare_angles_with_offset;
 use crate::config::Config;
-use crate::event::PressState::Press;
-use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent, PressState};
+use crate::event;
+use crate::event::{edges_are_equals, modifiers_are_equals, ClickEvent};
 use crate::grab::normalize_points;
 use crate::record::reduce_shape_precision;
 
-const DIFF_MAX: f64 = 0.6;
+const DIFF_MAX: f64 = 0.8;
 const DIFF_MIN_WITH_SECOND: f64 = 0.05;
 const DIFF_MAX_PRINT: f64 = 300.0;
-const SHAPE_MIN_SIZE: usize = 10;
+const SHAPE_MIN_SIZE: usize = 8;
 
 // TODO refactor
 
@@ -31,12 +31,15 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
         .bindings
         .iter()
         .filter(|binding| {
+            // TODO comment
             (binding.event.shapes_angles.is_empty()
                 || shape_button != &binding.event.button
-                || event.event_type != Press)
+                || event.event_type != event::EventType::Press)
                 && binding.event.button == event.button
                 && (binding.event.event_type == event.event_type
-                    || binding.event.event_type == PressState::Click)
+                    || (binding.event.event_type == event::EventType::Click
+                        || binding.event.event_type == event::EventType::Shape
+                            && event.event_type == event::EventType::Release))
                 && edges_are_equals(&binding.event.edges, &event.edges)
                 && modifiers_are_equals(&binding.event.modifiers, &event.modifiers)
         })
@@ -71,6 +74,7 @@ pub fn find_candidates_with_shape_with_offset<'a>(
                     .event
                     .shapes_angles
                     .iter()
+                    .filter(|angles| angles.len() > SHAPE_MIN_SIZE)
                     .map(|angles| {
                         let res = compare_angles_with_offset(
                             &event.shapes_angles.first().unwrap(),
@@ -79,10 +83,11 @@ pub fn find_candidates_with_shape_with_offset<'a>(
                         trace!("  res = {res}");
                         res
                     })
-                    .min_by(|a, b| a.partial_cmp(b).unwrap())
-                    .unwrap(),
+                    .min_by(|a, b| a.partial_cmp(b).unwrap()),
             )
         })
+        .filter(|(_, res)| res.is_some())
+        .map(|(b, res)| (b, res.unwrap()))
         .filter(|(_, diff)| *diff < DIFF_MAX_PRINT)
         .collect::<Vec<_>>();
     candidates_with_shape.sort_by(|(_, d1), (_, d2)| d1.partial_cmp(d2).unwrap());
@@ -193,7 +198,7 @@ pub fn trace_event(_config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Ar
 pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
     if config.lock().unwrap().shape_button != event.button
         || !event.shapes_angles.is_empty()
-        || event.event_type != Press
+        || event.event_type != event::EventType::Press
         || !event.edges.is_empty()
         || !event.modifiers.is_empty()
     {
@@ -222,13 +227,15 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
         debug!("----------------------------------------");
         if let Some(binding) = find_the_chosen_one_among_the_candidates(&candidates, &event) {
             propagate = false;
-            if !(event.event_type == PressState::Release
-                && binding.event.event_type == PressState::Click
+            if !(event.event_type == event::EventType::Release
+                && binding.event.event_type == event::EventType::Click
                 && binding.event.shapes_angles.is_empty())
             {
                 process_cmd(binding.cmd.clone());
             }
-        } else if event.event_type == PressState::Release && event.button == config.shape_button {
+        } else if event.event_type == event::EventType::Release
+            && event.button == config.shape_button
+        {
             propagate = false;
             let rdev_btn = config.shape_button.to_rdev_event();
 
@@ -250,7 +257,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
 }
 
 #[cfg(target_os = "linux")]
-fn process_cmd(cmd: Vec<String>) {
+pub fn process_cmd(cmd: Vec<String>) {
     thread::Builder::new()
         .name("process_cmd".to_string())
         .spawn(move || {

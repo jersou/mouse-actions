@@ -12,7 +12,3 @@ pub mod process_event;
 pub mod record;
 pub mod single_instance;
 pub mod trace_svg;
-
-fn main() {
-    process_args::main()
-}

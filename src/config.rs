@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::Write;
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::str::FromStr;
@@ -13,8 +14,9 @@ use notify::EventKind::Access;
 use notify::{RecommendedWatcher, RecursiveMode, Watcher};
 use serde::{Deserialize, Serialize};
 
+use crate::args::Args;
 use crate::binding::Binding;
-use crate::event::MouseButton;
+use crate::event::{EventType, MouseButton};
 use crate::points_to_angles::points_to_angles;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -25,7 +27,40 @@ pub struct Config {
 
 pub fn load(file_path: &str) -> Config {
     let json_config = fs::read_to_string(file_path).unwrap();
-    load_from_str(&json_config)
+    let mut config = load_from_str(&json_config);
+
+    // FIXME
+    let first_button_only_error = config.bindings.iter().any(|b| {
+        b.event.button == MouseButton::Left
+            && b.event.modifiers.is_empty()
+            && b.event.shapes_xy.is_empty()
+            && b.event.edges.is_empty()
+    });
+    // FIXME
+    assert!(
+        !first_button_only_error,
+        "there is an event for left button only !"
+    );
+
+    // FIXME
+    let shape_empty_error = config
+        .bindings
+        .iter()
+        .filter(|b| b.event.event_type == EventType::Shape)
+        .any(|b| b.event.shapes_xy.is_empty());
+    // FIXME
+    assert!(
+        !shape_empty_error,
+        "event_type=Shape but shapes_xy is empty !"
+    );
+
+    config
+        .bindings
+        .iter_mut()
+        .filter(|b| b.event.event_type != EventType::Shape && !b.event.shapes_xy.is_empty())
+        .for_each(|b| b.event.event_type = EventType::Shape);
+
+    config
 }
 
 pub fn load_from_str(json_config: &str) -> Config {
@@ -64,6 +99,7 @@ pub fn watch_config(config: Arc<Mutex<Config>>, config_path: PathBuf) {
     thread::Builder::new()
         .name("watch_config".to_string())
         .spawn(move || {
+            info!("Watch the config {:?} !", config_path);
             let (tx, rx) = channel();
             let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).unwrap();
             watcher
@@ -122,11 +158,11 @@ pub fn save_config(config: &Config, config_path_from_args: &Option<String>) {
         config_path.file_name().unwrap().to_str().unwrap()
     ));
     let _ = fs::remove_file(&config_path_bak);
-    fs::rename(&config_path, &config_path_bak)
-        .expect("Error while backup the previous config file");
+    fs::copy(&config_path, &config_path_bak).expect("Error while backup the previous config file");
     let mut config_file = fs::OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&config_path)
         .unwrap();
 
@@ -145,9 +181,27 @@ pub fn open_config(config_path: PathBuf) {
         .ok();
 }
 
+pub fn get_config_from_args(args: &Args, watch_config_enabled: bool) -> Arc<Mutex<Config>> {
+    let config_path = get_config_path(&args.config_path);
+    init_config_file_if_not_exists(&config_path);
+    let config: Arc<Mutex<Config>> = Arc::new(Mutex::new(get_config(&config_path)));
+    if watch_config_enabled {
+        watch_config(config.clone(), config_path.clone());
+    }
+    config
+}
+
+pub fn get_json_config(args: &Args) -> String {
+    let config = get_config_from_args(&args, false);
+    let c = config.lock().unwrap();
+    let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
+    serialized
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, Point, PressState};
+    use crate::event;
+    use crate::event::{ClickEvent, Edge, KeyboardModifier, MouseButton, Point};
 
     use super::*;
 
@@ -160,7 +214,7 @@ mod tests {
                     button: MouseButton::Left,
                     edges: vec![Edge::Top, Edge::Left],
                     modifiers: vec![KeyboardModifier::ControlLeft],
-                    event_type: PressState::Press,
+                    event_type: event::EventType::Press,
                     shapes_angles: vec![vec![0.0, 1.0, 2.0]],
                     shapes_xy: vec![],
                 },
@@ -245,7 +299,7 @@ mod tests {
         assert_eq!(binding.event.edges[0], Edge::Top);
         assert_eq!(binding.event.edges[1], Edge::Left);
         assert_eq!(binding.event.modifiers[0], KeyboardModifier::ControlLeft);
-        assert_eq!(binding.event.event_type, PressState::Press);
+        assert_eq!(binding.event.event_type, event::EventType::Press);
         assert_eq!(
             binding.event.shapes_xy.first().unwrap().to_vec(),
             vec![Point { x: 0, y: 1 }, Point { x: 2, y: 3 }]

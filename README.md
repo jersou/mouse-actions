@@ -62,6 +62,15 @@ half of which by shape bindings.
 [Download the release](https://github.com/jersou/mouse-actions/releases), or run
 it directly with Cargo `cargo run` or build the binary `cargo build --release`.
 
+The 2 release binaries `mouse-actions` and `mouse-actions-gui` are standalone,
+the avantage of GUI less version is the ram usage : 6.6 Mo vs 34 Mo.
+
+The gui unbundled release need this packages :
+
+* Debian/Ubuntu : libwebkit2gtk-4.0-37, libgtk-3-0
+* Arch : webkit2gtk, gtk3
+* Fedora : webkit2gtk3, gtk3
+
 ### Requirement :
 
 To use the main feature "grab event", you need to have the read&write permission
@@ -131,10 +140,6 @@ Run `mouse_actions record` to init the configuration. It's a basic CLI editor.
 
 This GUI tool is "work in progress" state ! For now, it only displays the
 configuration. The modify feature should be release soon.
-
-You must install [deno](https://deno.land/manual/getting_started/installation)
-and then, run `deno task start` from `config-editor/` and go
-to http://localhost:8000/ with a web browser.
 
 ![mace.png](config-editor/mace.png)
 
@@ -244,8 +249,8 @@ Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
 Usage: mouse_actions [OPTIONS] [COMMAND]
 
 Commands:
-  start           Default command, use mouse_actions bindings
-  open-config     Open the config file (xdg-open)
+  show-gui        Default command with mouse-actions-gui, show Mouse Actions Config Editor
+  start           Default command with mouse-actions, Start mouse_actions bindings
   trace           Trace events
   record          Start record mode to add some mouse bindings
   list-bindings   List the current config bindings
@@ -253,6 +258,7 @@ Commands:
   stop            Stop mouse action
   status          Get mouse action status : exit 0 if running
   show-config     print the json config
+  set-config      set the json config from stdin
   help            Print this message or the help of the given subcommand(s)
 
 Options:
@@ -370,6 +376,18 @@ cargo test
 cargo build --release
 ```
 
+## WIP
+
+Build min size : 13Mo → 1.7Mo :
+
+```bash
+cd config-editor/
+npm run tauri build
+cd src-tauri/target/release/
+strip mouse-actions-config-editor
+upx --best --lzma mouse-actions-config-editor
+```
+
 ----
 
 ## TODO
@@ -386,41 +404,18 @@ cargo build --release
 
 ### Medium
 
-* block event "left click only" without modifier/shape...
-* add "enable" in bindings
-* shape type instead of shapes.is_empty() ?
-* run config editor subcommand
-* **basic config editor** : config editor server with deno fresh
-    * auto open the web browser (with xdg-open or
-      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L14)
-    * cli help
-    * doc
-    * close config editor button to stop server/use websocket to detect browser
-      close,
-      like https://github.com/jersou/jira-work-logger/blob/main/backend/server.ts#L25
-    * add/edit binding
-    * edit the other config values
-    * use Preact, bundle the editor in mouse_actions binary, add config-editor
-      subcommand
-        * https://gist.github.com/developit/3631edd9033df8df5975786b19f16bd8
-        * https://github.com/developit/htm
-        * https://unpkg.com/browse/preact@10.13.2/dist/
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * process TODO and FIXME
 * github actions : tests, build
+* merge the config editor and the main binary : add config-gui subcommand ?
 
 ### Low
 
 * use https://github.com/hoodie/notify-rust
-* add config file version
 * a better Readme
-* options
-    * dry-run option
-    * min diff shape config option
-    * min score shape config option
 * improve shape recognition
 * refactor
     * don't use arrayvec ?
@@ -432,11 +427,17 @@ cargo build --release
 
 ### Maybe
 
+* add "enable" in bindings
+* add config file version
+* release a debug version and a gui-less version ?
+* options
+    * dry-run option
+    * min diff shape config option
+    * min score shape config option
 * find a better project name and icon
-* GUI (with Tauri ?)
 * support Wayland & Windows & macOS (get the mouse position on wayland
   is impossible ?)
-* notif/sound/cursor change on action trigger (
+* notif/sound/cursor change on action trigger success/failure (
   configurable) ? https://crates.io/crates/rodio
 * mouse move edge event ?
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger

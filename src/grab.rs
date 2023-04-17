@@ -9,9 +9,9 @@ use crate::args::Args;
 use crate::config::Config;
 use crate::event::{
     ButtonState, ClickEvent, Edge, KeyboardModifier, KeyboardState, MouseButton, Point,
-    PointHistory, PointHistoryArcMutex, PressState,
+    PointHistory, PointHistoryArcMutex,
 };
-use crate::{listen, points_to_angles, trace_svg};
+use crate::{event, listen, points_to_angles, trace_svg};
 
 pub struct GrabContext {
     pub point_history: PointHistoryArcMutex,
@@ -88,7 +88,7 @@ pub fn grab_event_fn(
                 button: MouseButton::from_rdev_event(pressed_btn),
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
-                event_type: PressState::Press,
+                event_type: event::EventType::Press,
                 shapes_angles: vec![],
                 shapes_xy: vec![],
             };
@@ -123,7 +123,7 @@ pub fn grab_event_fn(
                 button: MouseButton::from_rdev_event(btn),
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
-                event_type: PressState::Release,
+                event_type: event::EventType::Release,
                 shapes_angles: vec![angles],
                 shapes_xy: vec![point_history.lock().unwrap().clone()],
             };
@@ -142,7 +142,7 @@ pub fn grab_event_fn(
                 button: MouseButton::from_rdev_wheel(delta_y),
                 edges: Edge::edges_from_pos(last_point_clone.x, last_point_clone.y),
                 modifiers: KeyboardModifier::from_keyboard_state(*keyboard_state.lock().unwrap()),
-                event_type: PressState::Release,
+                event_type: event::EventType::Release,
                 shapes_angles: vec![],
                 shapes_xy: vec![],
             };

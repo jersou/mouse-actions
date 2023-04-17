@@ -1,9 +1,11 @@
 [package]
 name = "mouse_actions"
-version = "0.3.2"
+version = "0.4.0"
 authors = ["Jerem <jersou@gmail.com>"]
+repository = "https://github.com/jersou/mouse-actions"
 edition = "2021"
 build = "build.rs"
+license = "MIT"
 
 [dependencies]
 rdev = { path = "rdev", features = ["unstable_grab"] }
@@ -25,3 +27,15 @@ users = "0.11.0"
 
 [build-dependencies]
 vergen = { version = "8.1.1", features = ["build", "git", "gitcl", "cargo"] }
+
+[profile.release]
+# to generate small binary : https://github.com/johnthagen/min-sized-rust
+strip = true  # Automatically strip symbols from the binary.
+#opt-level = "z"  # Optimize for size.
+lto = true
+codegen-units = 1
+#panic = "abort"
+
+[[bin]]
+name = "mouse-actions"
+path = "src/main.rs"

@@ -1,10 +1,10 @@
 # Changelog
 
-## [unreleased]
+## [0.4.0] - 2023-04-18
 
 ### Features
 
-- Config editor: init
+- **Config editor with Tauri**
 - Add commit & build date to version
 - Backup config before save
 - Add ShowConfig subcommand

@@ -6,7 +6,7 @@ use clap::{Parser, Subcommand};
 /// https://github.com/jersou/mouse-actions
 /// Use RUST_LOG to set the log level : error, warn, info, debug, trace,
 /// Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, Clone, PartialEq)]
 #[clap(author, about, verbatim_doc_comment)]
 pub struct Args {
     /// don't run the listen thread (for Wayland), the edge bindings might not work
@@ -25,15 +25,15 @@ pub struct Args {
     pub version: bool,
 }
 
-#[derive(Debug, Subcommand, PartialEq)]
+#[derive(Debug, Subcommand, PartialEq, Clone)]
 pub enum MouseActionsCommands {
-    /// Default command, use mouse_actions bindings
+    /// Default command with mouse-actions-gui, show Mouse Actions Config Editor
+    #[clap()]
+    ShowGui,
+
+    /// Default command with mouse-actions, Start mouse_actions bindings
     #[clap()]
     Start,
-
-    /// Open the config file (xdg-open)
-    #[clap()]
-    OpenConfig,
 
     /// Trace events
     #[clap()]
@@ -63,7 +63,11 @@ pub enum MouseActionsCommands {
     #[clap()]
     ShowConfig,
 
-    /// the the json config from stdin
+    /// set the json config from stdin
     #[clap()]
     SetConfig,
+}
+
+pub fn parse() -> Args {
+    Args::parse()
 }
