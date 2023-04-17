@@ -23,6 +23,9 @@ For instance, you can configure:
 
 ![mouse_actions_logo.gif](mouse_actions_logo.gif)
 
+The GUI to configure the application :
+![Mouse Action Configuration Editor](config-editor/mace.png)
+
 ## Features
 
 Bind command execution with mouse button/wheel events (this conditions bellow
@@ -36,20 +39,15 @@ are optional):
 
 ## Project status
 
-**/!\ Alpha version !**
+**⚠️ Alpha version ⚠️**
 
-It's works (tested on Linux/X11) but there is no GUI to configure the bindings
-for now, you must write the json config yourself or
-use `mouse_actions record`. A basic GUI is in progress, see
-bellow [Mouse Action Configuration Editor](#mouse-action-configuration-editor).
-
-My feedback : after 10 month of daily use (since 15/05/2022) and 300'000
-triggers, it's works well and X11 has not crashed (Unlike Easystroke which made
-X11 crash every day before on my laptop).
+My feedback on Linux/X11 : after 10 month of daily use (since 15/05/2022) and
+300'000 triggers, it's works well and X11 has not crashed (Unlike Easystroke
+which made X11 crash every day before on my laptop).
 With my usage, mouse_actions triggers commands about once/twice per minute, and
 half of which by shape bindings.
 
-### Known bugs
+## Known bugs
 
 * when a device (like mouse or bluetooth earphone) is added, the mouse/keyboard
   modifier are locked : if Ctrl is pressed during this plug, Ctrl keep pressed.
@@ -57,19 +55,22 @@ half of which by shape bindings.
 * when a device (like mouse or bluetooth earphone ) is added, the cursor freeze
   while 2 seconds.
 
-## Install / run / build
+## Install / run
 
-[Download the release](https://github.com/jersou/mouse-actions/releases), or run
-it directly with Cargo `cargo run` or build the binary `cargo build --release`.
-
-The 2 release binaries `mouse-actions` and `mouse-actions-gui` are standalone,
-the avantage of GUI less version is the ram usage : 6.6 Mo vs 34 Mo.
+[Download the release](https://github.com/jersou/mouse-actions/releases), the 2
+release binaries `mouse-actions` and `mouse-actions-gui` are standalone,
+the avantage of GUI less version is the RAM usage : 6.6 Mo vs 34 Mo.
 
 The gui unbundled release need this packages :
 
 * Debian/Ubuntu : libwebkit2gtk-4.0-37, libgtk-3-0
 * Arch : webkit2gtk, gtk3
 * Fedora : webkit2gtk3, gtk3
+
+### Build
+
+* GUI less version : `cargo build --release`
+* GUI version : `cd config-editor && npm i && npm run tauri-build`
 
 ### Requirement :
 
@@ -132,16 +133,9 @@ feature is used to detect edge of screen clik.
 
 ## Configuration
 
-### record subcommand
+### config editor
 
-Run `mouse_actions record` to init the configuration. It's a basic CLI editor.
-
-### Mouse Action Configuration Editor
-
-This GUI tool is "work in progress" state ! For now, it only displays the
-configuration. The modify feature should be release soon.
-
-![mace.png](config-editor/mace.png)
+Run `mouse-actions-gui` to init the configuration.
 
 ### Configuration file format
 
@@ -167,78 +161,6 @@ The config file default path `~/.config/mouse-actions.json`
           `ControlRight`, `MetaLeft`, `Alt`, `AltGr`
         * `shapes_xy`: the shapes, array of arrays of coordinates. The best
           shape match will be used.
-
-#### Get shape values
-
-To get a shape angles values, run :
-
-```
-mouse_actions trace
-```
-
-#### Exemple
-
-```json
-{
-  "comment": "Extra click → script: Alt + Tab",
-  "shape_button": "Right",
-  "bindings": [
-    {
-      "cmd": [
-        "xdotool",
-        "key",
-        "Alt+Tab"
-      ],
-      "event": {
-        "button": "Extra",
-        "event_type": "Click"
-      }
-    },
-    {
-      "comment": "Right click in the top right corner → script: go to the top right desktop",
-      "event": {
-        "button": "Right",
-        "edges": [
-          "Right",
-          "Top"
-        ],
-        "event_type": "Click"
-      },
-      "cmd": [
-        "wmctrl",
-        "-s",
-        "1"
-      ]
-    },
-    {
-      "comment": "Draw T shape with the right button → launch the terminal",
-      "event": {
-        "button": "Right",
-        "edges": [],
-        "modifiers": [],
-        "event_type": "Click",
-        "shapes_xy": [
-          [
-            0,
-            0,
-            500,
-            0,
-            1000,
-            0,
-            500,
-            0,
-            500,
-            1000
-          ]
-        ]
-      },
-      "cmd": [
-        "gnome-terminal"
-      ]
-    }
-  ]
-}
-```
 
 ## CLI usage
 
@@ -375,20 +297,6 @@ cargo audit
 cargo test
 cargo build --release
 ```
-
-## WIP
-
-Build min size : 13Mo → 1.7Mo :
-
-```bash
-cd config-editor/
-npm run tauri build
-cd src-tauri/target/release/
-strip mouse-actions-config-editor
-upx --best --lzma mouse-actions-config-editor
-```
-
-----
 
 ## TODO
 
