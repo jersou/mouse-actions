@@ -3,7 +3,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { styled } from "@mui/material/styles";
 import { startCase } from "lodash";
-import {MenuItem, Select} from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   "& .MuiToggleButtonGroup-grouped": {
@@ -20,7 +20,8 @@ export function ButtonSelector({
   setButton?: (evType: ButtonType) => unknown;
 }) {
   return (
-    <Select size="small"
+    <Select
+      size="small"
       value={button}
       onChange={(e) => setButton?.(e.target.value as ButtonType)}
       color="primary"

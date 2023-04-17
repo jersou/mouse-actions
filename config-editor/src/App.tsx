@@ -105,18 +105,22 @@ export default function App() {
           shape_button: prevConfig?.shape_button || "Right",
           bindings: [...(prevConfig?.bindings || [])],
         };
-        newConfig.bindings?.splice((index || -1) + 1, 0, {
-          uid: self.crypto.randomUUID(),
-          cmd: ["TODO"],
-          comment: "TODO",
-          event: {
-            button: "Right",
-            event_type: "Click",
-            edges: ["Top"],
-            modifiers: [],
-            shapes_xy: [],
-          },
-        });
+        newConfig.bindings?.splice(
+          (index || newConfig.bindings.length) + 1,
+          0,
+          {
+            uid: self.crypto.randomUUID(),
+            cmd: ["TODO"],
+            comment: "TODO",
+            event: {
+              button: "Right",
+              event_type: "Click",
+              edges: ["Top"],
+              modifiers: [],
+              shapes_xy: [],
+            },
+          }
+        );
         return newConfig;
       });
     },

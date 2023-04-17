@@ -1,5 +1,5 @@
-import {useEffect, useRef, useState} from "react";
-import {Point} from "./config.type";
+import { useEffect, useRef, useState } from "react";
+import { Point } from "./config.type";
 
 export function useCoords(listenerEnable: boolean) {
   const [coords, setCoords] = useState<number[]>([]);
@@ -8,7 +8,7 @@ export function useCoords(listenerEnable: boolean) {
 
   const mousemove = (event: any) => {
     if (mouseState.current) {
-      pointsHistory.current.push({x: event.x, y: event.y});
+      pointsHistory.current.push({ x: event.x, y: event.y });
     }
   };
   const mousedown = (event: any) => {
@@ -27,7 +27,7 @@ export function useCoords(listenerEnable: boolean) {
       const height = maxY - minY;
       const size = Math.max(width, height);
       const normalizedCoords: number[] = [];
-      for (const {x, y} of raw) {
+      for (const { x, y } of raw) {
         normalizedCoords.push(Math.round(((x - minX) * 1000) / size));
         normalizedCoords.push(Math.round(((y - minY) * 1000) / size));
       }

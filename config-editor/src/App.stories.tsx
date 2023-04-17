@@ -1,4 +1,4 @@
-import type {Meta, StoryObj} from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import App from "./App";
 
 const meta = {
@@ -6,13 +6,12 @@ const meta = {
   component: App,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: ["autodocs"],
-
 } satisfies Meta<typeof App>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Empty: Story = {args: {}};
+export const Empty: Story = { args: {} };
 
 //   </div>
 // };

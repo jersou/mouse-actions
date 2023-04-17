@@ -7,8 +7,8 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "mouse-actions-config-editor",
-    "version": "0.0.0"
+    "productName": "mouse-actions-gui",
+    "version": "0.4.0"
   },
   "tauri": {
     "allowlist": {
@@ -19,6 +19,7 @@
       }
     },
     "bundle": {
+      "active": true,
       "icon": [
         "../../mouse_actions_logo.png"
       ],
