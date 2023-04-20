@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { BindingMemo } from "./Binding";
-import { BindingType, ConfigType } from "./config.type";
+import { BindingType, ButtonType, ConfigType } from "./config.type";
 import { ButtonSelector } from "./ButtonSelector";
 import { Button, ButtonGroup, Typography } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -124,6 +124,13 @@ export default function App() {
     [setConfig]
   );
 
+  const setShapeButton = (shape_button: ButtonType) => {
+    setConfig((prevConfig) => ({
+      bindings: [...(prevConfig?.bindings || [])],
+      shape_button,
+    }));
+  };
+
   const saveConfig = async () => {
     await invoke("save_config", { newConfig: config });
   };
@@ -158,7 +165,10 @@ export default function App() {
           <Typography style={{ marginLeft: 10, marginRight: 10 }}>
             Shape button :
           </Typography>
-          <ButtonSelector button={config.shape_button} />
+          <ButtonSelector
+            button={config.shape_button}
+            setButton={setShapeButton}
+          />
         </div>
         <ButtonGroup>
           <Button
