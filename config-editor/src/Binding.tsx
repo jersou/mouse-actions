@@ -73,21 +73,19 @@ export function Binding({
       />
       <div style={{ flexDirection: "column", flex: 1, display: "flex" }}>
         <div style={{ display: "flex" }}>
-          {binding.event.event_type !== "Shape" && (
-            <div style={{ marginRight: 10 }}>
-              <ButtonSelector
-                button={binding.event.button}
-                setButton={(button) =>
-                  setBinding?.(
-                    structuredClone({
-                      ...binding,
-                      event: { ...binding.event, button },
-                    })
-                  )
-                }
-              />
-            </div>
-          )}
+          <div style={{ marginRight: 10 }}>
+            <ButtonSelector
+              button={binding.event.button}
+              setButton={(button) =>
+                setBinding?.(
+                  structuredClone({
+                    ...binding,
+                    event: { ...binding.event, button },
+                  })
+                )
+              }
+            />
+          </div>
 
           <TextField
             size="small"

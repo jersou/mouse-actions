@@ -312,7 +312,6 @@ cargo build --release
 
 ### Medium
 
-* refactor the CI
 * CI: build release
 * Shape event use also the screen edges/corners : adapt the filter or the GUI (
   bug or feature ?)
