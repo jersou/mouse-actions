@@ -302,8 +302,6 @@ cargo build --release
 
 ### High
 
-* [fix CI](https://github.com/jersou/mouse-actions/actions/runs/4748503540/jobs/8434768758)
-
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -314,6 +312,8 @@ cargo build --release
 
 ### Medium
 
+* refactor the CI
+* CI: build release
 * Shape event use also the screen edges/corners : adapt the filter or the GUI (
   bug or feature ?)
 * create ~/.config if it doesn't exist
