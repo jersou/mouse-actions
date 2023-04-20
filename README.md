@@ -302,6 +302,11 @@ cargo build --release
 
 ### High
 
+* [fix CI](https://github.com/jersou/mouse-actions/actions/runs/4748503540/jobs/8434768758)
+* config editor: fix the shape button selector on top
+* config editor: change the default binding (on add binding btn): no screen
+  part, add modifiers
+
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
