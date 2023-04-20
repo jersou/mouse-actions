@@ -113,8 +113,8 @@ export default function App() {
           event: {
             button: "Right",
             event_type: "Click",
-            edges: ["Top"],
-            modifiers: [],
+            edges: [],
+            modifiers: ["ControlLeft"],
             shapes_xy: [],
           },
         });
