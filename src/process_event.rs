@@ -40,7 +40,8 @@ pub fn find_candidates<'a>(config: &'a Config, event: &ClickEvent) -> Vec<&'a Bi
                     || (binding.event.event_type == event::EventType::Click
                         || binding.event.event_type == event::EventType::Shape
                             && event.event_type == event::EventType::Release))
-                && edges_are_equals(&binding.event.edges, &event.edges)
+                && (edges_are_equals(&binding.event.edges, &event.edges)
+                    || binding.event.event_type == event::EventType::Shape)
                 && modifiers_are_equals(&binding.event.modifiers, &event.modifiers)
         })
         .collect::<Vec<&Binding>>()

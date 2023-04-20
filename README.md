@@ -313,8 +313,6 @@ cargo build --release
 ### Medium
 
 * CI: build release
-* Shape event use also the screen edges/corners : adapt the filter or the GUI (
-  bug or feature ?)
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
