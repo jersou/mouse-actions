@@ -312,17 +312,16 @@ cargo build --release
 
 ### Medium
 
-* CI: build release
 * create ~/.config if it doesn't exist
 * fix exec cmd
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
-* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
-* process TODO and FIXME
-* github actions : tests, build
-* merge the config editor and the main binary : add config-gui subcommand ?
+* fix `TODO` and `FIXME`
+* change config : if shape → no need button in binding) or (rm shape_btn :
+  several button for shape event is then possible)
 
 ### Low
 
+* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * use https://github.com/hoodie/notify-rust
 * a better Readme
 * improve shape recognition
@@ -336,8 +335,7 @@ cargo build --release
 
 ### Maybe
 
-* add "enable" in bindings
-* add config file version
+* CI: build the releases
 * release a debug version and a gui-less version ?
 * options
     * dry-run option
@@ -352,7 +350,6 @@ cargo build --release
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
   keyboard event as action (avoid xdotool usage in
   cmd) : https://github.com/Narsil/rdev#sending-some-events
-* change config : if shape → no need button
 * move shape_button from root config to bindings
 * hide/freeze cursor while shape drawing ?
 * Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,
