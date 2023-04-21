@@ -1,6 +1,7 @@
 # Mouse actions
 
 ![mouse_actions_logo.svg](mouse_actions_logo.svg)
+[![Build](https://github.com/jersou/mouse-actions/actions/workflows/rust.yml/badge.svg)](https://github.com/jersou/mouse-actions/actions)
 
 mouse_actions allows to execute some commands from mouse events such as:
 
@@ -24,6 +25,7 @@ For instance, you can configure:
 ![mouse_actions_logo.gif](mouse_actions_logo.gif)
 
 The GUI to configure the application :
+
 ![Mouse Action Configuration Editor](config-editor/mace.png)
 
 ## Features
@@ -129,17 +131,17 @@ Linux+Wayland (with --no-listen option for Wayland).
 The `grab` feature from rdev give an inaccurate mouse position, so I used
 the `listen` feature from rdev. This function not works on Wayland, but the
 mouse shape detection should work (with little modification of code), the listen
-feature is used to detect edge of screen clik.
+feature is used to detect edge of screen click.
 
 ## Configuration
 
 ### config editor
 
-Run `mouse-actions-gui` to init the configuration.
+Run `mouse-actions-gui` to edit the configuration.
 
 ### Configuration file format
 
-The config file default path `~/.config/mouse-actions.json`
+The config file default path is `~/.config/mouse-actions.json`
 
 #### Structure
 
@@ -189,6 +191,45 @@ Options:
   -v, --version                    print version
   -h, --help                       Print help
 ```
+
+### RUST_LOG env var
+
+The project use [env_logger](https://github.com/rust-cli/env_logger/) to
+log. The log levels : error, warn, info, debug, trace.
+
+`RUST_LOG=debug ./mouse_actions` output:
+
+```
+[DEBUG] Binding without shape found : Binding { comment: "Middle click in the top left corner → script: key ² → open Tilda", event: ClickEvent { button: Middle, edges: [Left, Top], event_type: Click}, cmd: ["xdotool", "key", "49"] }
+[DEBUG] Process event duration : 39.74µs
+[INFO ]      → cmd ["xdotool", "key", "49"]
+[DEBUG] ----------------------------------------
+[DEBUG] angles: 3.14, 3.14, -3.07, -3.07, -3.04, -3.04, -2.96, ...
+[DEBUG] find_candidates_with_shape_with_offset duration : 81.714µs
+[DEBUG] shape candidates=
+[DEBUG]    75.29 %    0.50 : Draw G shape with the right button → launch gedit (text editor)                        ["gedit"]
+[DEBUG]    56.13 %    0.66 : Draw S shape with the right button → Ctrl+S key (save)                                 ["xdotool", "key", "ctrl+s"]
+[DEBUG]    25.80 %    0.86 : Draw D shape with the right button → Ctrl+Alt+D key (show the window on all desktops)  ["xdotool", "key", "ctrl+alt+d"]
+[DEBUG]    11.70 %    0.94 : Draw H shape with the right button → Ctrl+H key (toggle hide)                          ["xdotool", "key", "ctrl+h"]
+[DEBUG] Process event duration : 145.143µs
+[INFO ]      → cmd ["gedit"]
+[DEBUG] ----------------------------------------
+[DEBUG] angles: 0.00, 0.13, 0.13, 0.20, 0.15, 0.15, 0.23, 0.23, ... 
+[DEBUG] find_candidates_with_shape_with_offset duration : 113.35µs
+[DEBUG] shape candidates=
+[DEBUG]    84.78 %    0.39 : Draw T shape with the right button → launch the terminal                                        ["gnome-terminal"]
+[DEBUG]    49.18 %    0.71 : Draw Z shape with the right button → Ctrl+Z key (undo)                                          ["xdotool", "key", "ctrl+z"]
+[DEBUG]    18.31 %    0.90 : Draw ↘ (line to the bottom right) shape with the right button → Alt+F8 key (resize the window)  ["xdotool", "key", "alt+F8"]
+[DEBUG]    13.46 %    0.93 : Draw n shape with the right button → launch nemo (file explorer)                                ["nemo"]
+[DEBUG] Process event duration : 194.956µs
+[INFO ]      → cmd ["gnome-terminal"]
+```
+
+→ 3 events :
+
+* `Middle click in the top left corner`
+* `Draw G shape with the right button`
+* `Draw T shape with the right button`
 
 ## Exemple : big config
 
@@ -277,7 +318,9 @@ CCSM screenshot (Compiz Config Setting Manager) :
 Easystoke screenshot :
 ![easystroke.png](easystroke.png)
 
-### Dev notes : Shape recognition
+### Dev notes :
+
+#### Shape recognition
 
 Shape recognition : compare angles, get the average of the angles differences :
 
@@ -289,7 +332,7 @@ angles (mod 2𝜋) visible on the right of the above image.
 Get the minimum difference by shifting a curve horizontally: try removing the
 beginning or the end, by +/- 10 % max offset (max 20 try).
 
-### upgrade
+#### upgrade
 
 ```bash
 cargo update
@@ -350,6 +393,5 @@ cargo build --release
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
   keyboard event as action (avoid xdotool usage in
   cmd) : https://github.com/Narsil/rdev#sending-some-events
-* move shape_button from root config to bindings
 * hide/freeze cursor while shape drawing ?
 * Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,

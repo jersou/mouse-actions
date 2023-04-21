@@ -150,6 +150,7 @@ pub fn process_error(error: &GrabError) {
                     r#"  $ sudo tee /etc/udev/rules.d/80-mouse-actions.rules <<<'KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput"'"#
                 );
                 error!("Then restart to apply this user modifications.");
+                error!("See https://github.com/jersou/mouse-actions#requirement-");
             }
         }
     }
