@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.1] - 2023-04-21
+
+### Bug Fixes
+
+- config editor: fix shape button select
+- config editor: default binding: no screen part, add Ctrl modifiers
+- config editor: show button select for shape type
+- don't compare edges for shape events
+
 ## [0.4.0] - 2023-04-18
 
 ### Features
