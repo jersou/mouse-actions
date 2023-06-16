@@ -345,7 +345,8 @@ cargo build --release
 
 ### High
 
-* config file for /dev/input/event* in /etc/udev/rules.d/? instead of the usermod if possible, script to create this file, add to the deb package, ...
+* config file for /dev/input/event* in /etc/udev/rules.d/? instead of the
+  usermod if possible, script to create this file, add to the deb package, ...
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
@@ -365,6 +366,7 @@ cargo build --release
 
 ### Low
 
+* use https://crates.io/crates/deno_task_shell to execute commands ?
 * check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * use https://github.com/hoodie/notify-rust
 * a better Readme

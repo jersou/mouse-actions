@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.2] - XXX
+
+### Features
+
+* force --no-listen option if Wayland is detected
+
 ## [0.4.1] - 2023-04-21
 
 ### Bug Fixes

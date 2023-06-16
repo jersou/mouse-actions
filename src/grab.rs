@@ -32,7 +32,7 @@ pub fn start_grab_binding(
     let point_history: PointHistoryArcMutex = Arc::new(Mutex::new(PointHistory::new()));
     let button_state: Arc<Mutex<ButtonState>> = Arc::new(Mutex::new(ButtonState::None));
     let keyboard_state: Arc<Mutex<KeyboardState>> = Arc::new(Mutex::new(KeyboardState::default()));
-    let last_point: Arc<Mutex<Point>> = Arc::new(Mutex::new(Point { x: 0, y: 0 }));
+    let last_point: Arc<Mutex<Point>> = Arc::new(Mutex::new(Point { x: 10, y: 10 }));
     if !args.no_listen {
         listen::start_listen(last_point.clone());
     }
@@ -97,7 +97,7 @@ pub fn grab_event_fn(
                 if !histo.is_full() {
                     histo.push(last_point_clone);
                 } else {
-                    trace!("point_history is full !")
+                    trace!("point_history is full !");
                 }
                 if histo.len() < 10 {
                     process_event_fn(config, click_event, args);
