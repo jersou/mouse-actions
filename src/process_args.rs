@@ -34,7 +34,11 @@ pub fn get_version() -> String {
 
 pub fn process_args(args: Args) {
     let mut args: Arc<Args> = Arc::new(args);
-    env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
+
+    let log_level = args.deref().log_level.clone().unwrap_or("info".to_string());
+    env_logger::Builder::from_env(Env::default().default_filter_or(&log_level)).init();
+    debug!("log_level={log_level}");
+
     trace!("version : {}", get_version());
     trace!("args = {args:#?}!");
     if !args.no_listen && is_wayland() {

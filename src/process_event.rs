@@ -264,7 +264,7 @@ pub fn process_cmd(cmd: Vec<String>) {
         .spawn(move || {
             info!("     → cmd {:?}", cmd);
             let res = Command::new(&cmd[0])
-                .env("RUST_LOG", "")
+                .env_remove("RUST_LOG")
                 .args(&cmd[1..])
                 .process_group(0)
                 .spawn();

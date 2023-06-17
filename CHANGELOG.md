@@ -5,6 +5,7 @@
 ### Features
 
 * force --no-listen option if Wayland is detected
+* add --log-level option
 
 ## [0.4.1] - 2023-04-21
 

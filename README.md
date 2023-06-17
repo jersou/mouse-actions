@@ -167,9 +167,6 @@ The config file default path is `~/.config/mouse-actions.json`
 ## CLI usage
 
 ```
-Use RUST_LOG to set the log level : error, warn, info, debug, trace,
-Example : RUST_BACKTRACE=1 RUST_LOG=debug ./mouse_actions
-
 Usage: mouse_actions [OPTIONS] [COMMAND]
 
 Commands:
@@ -189,6 +186,7 @@ Options:
   -n, --no-listen                  don't run the listen thread (for Wayland), the edge bindings might not work
   -c, --config-path <CONFIG_PATH>  config path, default : ~/.config/mouse-actions.json
   -v, --version                    print version
+  -l, --log-level <LOG_LEVEL>      log level : error, warn, info, debug, trace. [default=info]
   -h, --help                       Print help
 ```
 
@@ -197,7 +195,7 @@ Options:
 The project use [env_logger](https://github.com/rust-cli/env_logger/) to
 log. The log levels : error, warn, info, debug, trace.
 
-`RUST_LOG=debug ./mouse_actions` output:
+`RUST_LOG=debug ./mouse_actions` or `./mouse_actions --log-level debug` output:
 
 ```
 [DEBUG] Binding without shape found : Binding { comment: "Middle click in the top left corner → script: key ² → open Tilda", event: ClickEvent { button: Middle, edges: [Left, Top], event_type: Click}, cmd: ["xdotool", "key", "49"] }
