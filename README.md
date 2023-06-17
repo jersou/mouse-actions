@@ -38,6 +38,7 @@ are optional):
 * with some modifiers : shift/Ctrl/Alt...
 * with screen edge : Top/Left...
 * auto reload config on changes
+* fast shape recognition ~200µs (0.0002 secondes) for a config with 30 shapes
 
 ## Project status
 
@@ -55,19 +56,29 @@ half of which by shape bindings.
   modifier are locked : if Ctrl is pressed during this plug, Ctrl keep pressed.
   A workaround for me is to switch : Ctrl+Alt+F1 & Ctrl+Alt+F7.
 * when a device (like mouse or bluetooth earphone ) is added, the cursor freeze
-  while 2 seconds.
+  while 2 seconds or the mouse_actions program may crash.
 
 ## Install / run
 
 [Download the release](https://github.com/jersou/mouse-actions/releases), the 2
-release binaries `mouse-actions` and `mouse-actions-gui` are standalone,
-the avantage of GUI less version is the RAM usage : 6.6 Mo vs 34 Mo.
+release binaries `mouse-actions` and `mouse-actions-gui` are standalone (but use
+the same configuration), the avantage of GUI less version is the RAM usage :
+6.6 Mo vs 34 Mo.
 
-The gui unbundled release need this packages :
+The gui unbundled standalone binary need this packages :
 
 * Debian/Ubuntu : libwebkit2gtk-4.0-37, libgtk-3-0
 * Arch : webkit2gtk, gtk3
 * Fedora : webkit2gtk3, gtk3
+
+The AppImage and deb releases includes these dependencies.
+
+### Release types
+
+* mouse-actions-gui-vX.X.X.tar.gz (2 MB) : GUI version standalone binary
+* mouse-actions-gui_X.X.X_amd64.AppImage (69 MB) : GUI version AppImage, includes webkit2gtk & gtk3
+* mouse-actions-gui_X.X.X_amd64.deb (2.5 MB) : GUI deb package, includes webkit2gtk & gtk3 ref
+* mouse-actions-vX.X.X.tar.gz (1 MB) : GUI less version standalone binary
 
 ### Build
 
@@ -123,15 +134,22 @@ $ getfacl /dev/uinput
 # ...
 ```
 
+**⚠️ The changes introduced by this chapter may cause security problems:
+an application launched with your user can listen to your input events ⚠️**
+
 ### Platform compatibility
 
-I only tested on Linux & X11, but it should work on Mac, Windows as well as
-Linux+Wayland (with --no-listen option for Wayland).
+I only tested on Linux + X11 and Linux + Wayland, but it should work on Mac, Windows.
 
 The `grab` feature from rdev give an inaccurate mouse position, so I used
 the `listen` feature from rdev. This function not works on Wayland, but the
-mouse shape detection should work (with little modification of code), the listen
-feature is used to detect edge of screen click.
+mouse shape detection works, the listen feature is used to detect edge of screen click.
+
+#### Wayland
+
+Notes:
+* Edge screen event doesn't work with Wayland
+* xdotool doesn't work on Wayland, use ydotool or other alternatives
 
 ## Configuration
 
@@ -190,7 +208,7 @@ Options:
   -h, --help                       Print help
 ```
 
-### RUST_LOG env var
+### RUST_LOG env var / --log-level option
 
 The project use [env_logger](https://github.com/rust-cli/env_logger/) to
 log. The log levels : error, warn, info, debug, trace.
@@ -337,6 +355,13 @@ cargo update
 cargo audit
 cargo test
 cargo build --release
+
+cd config-editor
+npm install @tauri-apps/cli@latest @tauri-apps/api@latest
+
+cd src-tauri
+cargo update
+cargo audit
 ```
 
 ## TODO
@@ -355,17 +380,18 @@ cargo build --release
 
 ### Medium
 
+* CI: build the releases https://github.com/tauri-apps/tauri-action
 * create ~/.config if it doesn't exist
-* fix exec cmd
+* fix exec cmd not found
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * fix `TODO` and `FIXME`
-* change config : if shape → no need button in binding) or (rm shape_btn :
+* change config : if shape → (no need button in binding) or (rm shape_btn :
   several button for shape event is then possible)
+* support Windows & macOS
 
 ### Low
 
 * use https://crates.io/crates/deno_task_shell to execute commands ?
-* check $XDG_SESSION_TYPE == "x11"/"wayland" to trace/enable --no-listen option
 * use https://github.com/hoodie/notify-rust
 * a better Readme
 * improve shape recognition
@@ -376,23 +402,20 @@ cargo build --release
     * refactor Arc/Mutex usages
     * refactor/change the pressState usage
     * dev doc, tests
+* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
+  keyboard event as action (avoid xdotool usage in
+  cmd) : https://github.com/Narsil/rdev#sending-some-events
 
 ### Maybe
 
-* CI: build the releases
 * release a debug version and a gui-less version ?
 * options
     * dry-run option
     * min diff shape config option
     * min score shape config option
 * find a better project name and icon
-* support Wayland & Windows & macOS (get the mouse position on wayland
-  is impossible ?)
 * notif/sound/cursor change on action trigger success/failure (
   configurable) ? https://crates.io/crates/rodio
 * mouse move edge event ?
-* use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
-  keyboard event as action (avoid xdotool usage in
-  cmd) : https://github.com/Narsil/rdev#sending-some-events
 * hide/freeze cursor while shape drawing ?
 * Ctrl alias for ControlLeft & ControlRight, Shift for ShiftLeft & ShiftRight,

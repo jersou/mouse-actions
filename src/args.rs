@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 
 /// mouse_actions allows to execute some commands from mouse events such as
-/// clicks on the side / corners of the screen, or drawing shapes.
+/// clicks on the side/corners of the screen, or drawing shapes.
 /// It's a mix between Easystroke and Compiz edge commands.
 /// https://github.com/jersou/mouse-actions
 #[derive(Parser, Debug, Clone, PartialEq)]
