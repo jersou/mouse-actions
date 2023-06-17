@@ -6,9 +6,9 @@ use std::process::Command;
 use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
-use std::{fs, thread};
+use std::{env, fs, thread};
 
-use log::{error, info, trace};
+use log::{debug, error, info, trace};
 use notify::event::AccessKind::Close;
 use notify::EventKind::Access;
 use notify::{RecommendedWatcher, RecursiveMode, Watcher};
@@ -196,6 +196,12 @@ pub fn get_json_config(args: &Args) -> String {
     let c = config.lock().unwrap();
     let serialized = serde_json::to_string_pretty(c.deref()).unwrap();
     serialized
+}
+
+pub fn is_wayland() -> bool {
+    let is_wayland = env::var("WAYLAND_DISPLAY").is_ok();
+    debug!("is_wayland = {is_wayland}");
+    is_wayland
 }
 
 #[cfg(test)]

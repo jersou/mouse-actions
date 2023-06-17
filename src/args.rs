@@ -9,7 +9,7 @@ use clap::{Parser, Subcommand};
 #[derive(Parser, Debug, Clone, PartialEq)]
 #[clap(author, about, verbatim_doc_comment)]
 pub struct Args {
-    /// don't run the listen thread (for Wayland), the edge bindings might not work
+    /// don't run the listen thread (autodetected on Wayland), the edge bindings might not work
     #[clap(short, long)]
     pub no_listen: bool,
 

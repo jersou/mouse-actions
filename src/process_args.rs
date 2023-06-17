@@ -1,5 +1,6 @@
 use std::io;
 use std::io::{ErrorKind, Read};
+use std::ops::Deref;
 use std::process::exit;
 use std::sync::Arc;
 
@@ -9,7 +10,7 @@ use log::{debug, error, info, trace};
 use rdev::GrabError;
 
 use crate::args::{Args, MouseActionsCommands};
-use crate::config::get_config_from_args;
+use crate::config::{get_config_from_args, is_wayland};
 use crate::single_instance::get_instance;
 use crate::{config, grab, process_event, record, single_instance};
 
@@ -32,10 +33,16 @@ pub fn get_version() -> String {
 }
 
 pub fn process_args(args: Args) {
-    let args: Arc<Args> = Arc::new(args);
+    let mut args: Arc<Args> = Arc::new(args);
     env_logger::Builder::from_env(Env::default().default_filter_or("info")).init();
     trace!("version : {}", get_version());
     trace!("args = {args:#?}!");
+    if !args.no_listen && is_wayland() {
+        info!("Wayland detected : enable --no-listen option");
+        let mut new_args = args.deref().clone();
+        new_args.no_listen = true;
+        args = Arc::new(new_args);
+    }
     if args.version {
         println!("{}", get_version());
     } else {
