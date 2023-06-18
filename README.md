@@ -76,8 +76,10 @@ The AppImage and deb releases includes these dependencies.
 ### Release types
 
 * mouse-actions-gui-vX.X.X.tar.gz (2 MB) : GUI version standalone binary
-* mouse-actions-gui_X.X.X_amd64.AppImage (69 MB) : GUI version AppImage, includes webkit2gtk & gtk3
-* mouse-actions-gui_X.X.X_amd64.deb (2.5 MB) : GUI deb package, includes webkit2gtk & gtk3 ref
+* mouse-actions-gui_X.X.X_amd64.AppImage (69 MB) : GUI version AppImage,
+  includes webkit2gtk & gtk3
+* mouse-actions-gui_X.X.X_amd64.deb (2.5 MB) : GUI deb package, includes
+  webkit2gtk & gtk3 ref
 * mouse-actions-vX.X.X.tar.gz (1 MB) : GUI less version standalone binary
 
 ### Build
@@ -139,17 +141,22 @@ an application launched with your user can listen to your input events ⚠️**
 
 ### Platform compatibility
 
-I only tested on Linux + X11 and Linux + Wayland, but it should work on Mac, Windows.
+I only tested on Linux + X11 and Linux + Wayland, but it should work on Mac,
+Windows.
 
-The `grab` feature from rdev give an inaccurate mouse position, so I used
-the `listen` feature from rdev. This function not works on Wayland, but the
-mouse shape detection works, the listen feature is used to detect edge of screen click.
+The `grab` feature from rdev give an inaccurate mouse position, so Mouse_actions
+used the `listen` feature from rdev. This function not works on Wayland and the
+listen feature is used to detect edge of screen click, so this edge actions
+doesn't works on Wayland (no absolute mouse position).
 
 #### Wayland
 
 Notes:
-* Edge screen event doesn't work with Wayland
-* xdotool doesn't work on Wayland, use ydotool or other alternatives
+
+* Edge screen event doesn't work with Wayland.
+* but the mouse shape actions works !
+* xdotool doesn't work on Wayland, use ydotool or other alternatives to simulate
+  keyboard event.
 
 ## Configuration
 
@@ -208,7 +215,7 @@ Options:
   -h, --help                       Print help
 ```
 
-### RUST_LOG env var / --log-level option
+### LOG : RUST_LOG env var & --log-level option
 
 The project use [env_logger](https://github.com/rust-cli/env_logger/) to
 log. The log levels : error, warn, info, debug, trace.
