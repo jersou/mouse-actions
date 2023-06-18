@@ -62,8 +62,8 @@ half of which by shape bindings.
 
 [Download the release](https://github.com/jersou/mouse-actions/releases), the 2
 release binaries `mouse-actions` and `mouse-actions-gui` are standalone (but use
-the same configuration), the avantage of GUI less version is the RAM usage :
-6.6 Mo vs 34 Mo.
+the same configuration), the avantage of using GUI less version is the RAM
+usage : 6.6 Mo vs 34 Mo.
 
 The gui unbundled standalone binary need this packages :
 
@@ -141,7 +141,7 @@ an application launched with your user can listen to your input events ⚠️**
 
 ### Platform compatibility
 
-I only tested on Linux + X11 and Linux + Wayland, but it should work on Mac,
+I only tested it on Linux + X11 and Linux + Wayland, but it should work on Mac,
 Windows.
 
 The `grab` feature from rdev give an inaccurate mouse position, so Mouse_actions

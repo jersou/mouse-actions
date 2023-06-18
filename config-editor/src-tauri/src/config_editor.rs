@@ -31,7 +31,6 @@ fn start() {
     let args = mouse_actions::args::parse();
     let mut cmd: Vec<String> = Vec::new();
     cmd.push(ma_exe_path.to_str().unwrap().to_string());
-    // Args::
     // FIXME : generic forward args
     if args.no_listen {
         cmd.push(String::from("--no-listen"));
