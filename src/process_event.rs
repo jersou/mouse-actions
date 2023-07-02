@@ -222,7 +222,7 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
     let config = config_lock.deref();
     let candidates = find_candidates(config, &event);
     trace!("event={:?}", event);
-    trace!("candidates={:?}", candidates);
+    // trace!("candidates={:?}", candidates);
 
     if !candidates.is_empty() {
         debug!("----------------------------------------");
