@@ -15,7 +15,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const binding1: BindingType = {
-  cmd: ["cmd", "cmd", "cmd"],
+  cmd_str: "cmd cmd cmd",
   comment: "comment",
   event: {
     event_type: "Click",

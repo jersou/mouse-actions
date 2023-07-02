@@ -38,7 +38,7 @@ are optional):
 * with some modifiers : shift/Ctrl/Alt...
 * with screen edge : Top/Left...
 * auto reload config on changes
-* fast shape recognition ~200µs (0.0002 secondes) for a config with 30 shapes
+* fast shape recognition ~200µs (0.0002 sec) for a config with 30 shapes
 
 ## Project status
 
@@ -176,7 +176,7 @@ The config file default path is `~/.config/mouse-actions.json`
   | `Unknown` | `None`
 
 * `bindings` : array of binding :
-    * `cmd` : command line to exec, as array of string
+    * `cmd_str` : command line to exec
     * `event`: object :
         * `button`: `Left` | `Right` | `Middle` | `Side` | `Extra` | `Forward`
           | `Back`
@@ -388,6 +388,7 @@ cargo audit
 ### Medium
 
 * CI: build the releases https://github.com/tauri-apps/tauri-action
+* add ARM64 target
 * create ~/.config if it doesn't exist
 * fix exec cmd not found
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`

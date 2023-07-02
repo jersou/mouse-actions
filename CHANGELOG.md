@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.3] - 2023-07-02
+
+### Features
+
+* use command as string in config #7 : the configuration is upgrade at the first
+  start of version > 0.4.2
+
+BREAKING config file format : config from < v0.4.3 will be automatically upgrade
+to v0.4.3 but mouse-actions program < v0.4.3 will not be able to open this
+v0.4.3 config format.
+
 ## [0.4.2] - 2023-06-18
 
 ### Features

@@ -108,7 +108,7 @@ export default function App() {
         };
         newConfig.bindings?.splice((index ?? -1) + 1, 0, {
           uid: self.crypto.randomUUID(),
-          cmd: ["TODO"],
+          cmd_str: "TODO",
           comment: "TODO",
           event: {
             button: "Right",

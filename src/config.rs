@@ -6,6 +6,7 @@ use std::process::Command;
 use std::str::FromStr;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 use std::{env, fs, thread};
 
 use log::{debug, error, info, trace};
@@ -16,6 +17,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::args::Args;
 use crate::binding::Binding;
+use crate::cmd_str_spliter::{str_array_cmd_to_str_cmd, str_cmd_to_array};
 use crate::event::{EventType, MouseButton};
 use crate::points_to_angles::points_to_angles;
 
@@ -64,6 +66,7 @@ pub fn load(file_path: &str) -> Config {
 }
 
 pub fn load_from_str(json_config: &str) -> Config {
+    let start = Instant::now();
     let mut config: Config = serde_json::from_str(&json_config).unwrap();
     // xy → angles
     for mut binding in &mut config.bindings {
@@ -73,7 +76,20 @@ pub fn load_from_str(json_config: &str) -> Config {
             .iter()
             .map(|shape_xy| points_to_angles(&shape_xy))
             .collect();
+        if binding.cmd_str.is_empty() {
+            binding.cmd_str = str_array_cmd_to_str_cmd(&binding.cmd);
+            debug!(
+                "[v0.4.3 migration] Convert cmd array to cmd_str : {:?} → {}",
+                &binding.cmd, binding.cmd_str
+            );
+        }
+        binding.cmd = str_cmd_to_array(&binding.cmd_str);
+        debug!(
+            "set cmd array from cmd_str : {} → {:?}",
+            binding.cmd_str, &binding.cmd
+        );
     }
+    debug!("load_from_str duration : {:?}", start.elapsed());
     config
 }
 
@@ -224,7 +240,8 @@ mod tests {
                     shapes_angles: vec![vec![0.0, 1.0, 2.0]],
                     shapes_xy: vec![],
                 },
-                cmd: vec![String::from("xlogo")],
+                cmd: vec![],
+                cmd_str: String::from("xlogo"),
                 comment: String::new(),
             }],
         };
@@ -246,9 +263,7 @@ mod tests {
         ],
         "event_type": "Press"
       },
-      "cmd": [
-        "xlogo"
-      ]
+      "cmd_str": "xlogo"
     }
   ]
 }"#;
@@ -301,6 +316,61 @@ mod tests {
         assert_eq!(config.shape_button, MouseButton::Right);
         let binding = &config.bindings[0];
         assert_eq!(binding.cmd[0], "xlogo");
+        assert_eq!(binding.event.button, MouseButton::Left);
+        assert_eq!(binding.event.edges[0], Edge::Top);
+        assert_eq!(binding.event.edges[1], Edge::Left);
+        assert_eq!(binding.event.modifiers[0], KeyboardModifier::ControlLeft);
+        assert_eq!(binding.event.event_type, event::EventType::Press);
+        assert_eq!(
+            binding.event.shapes_xy.first().unwrap().to_vec(),
+            vec![Point { x: 0, y: 1 }, Point { x: 2, y: 3 }]
+        );
+    }
+
+    #[test]
+    fn test_load_from_str() {
+        let serialized = r#"{
+  "shape_button": "Right",
+  "bindings": [
+    {
+      "event": {
+        "button": "Left",
+        "edges": [
+          "Top",
+          "Left"
+        ],
+        "modifiers": [
+          "ControlLeft"
+        ],
+        "event_type": "Press",
+        "shapes_xy": [[
+          0,
+          1,
+          2,
+          3
+        ]]
+      },
+      "cmd": [
+        "xlogo",
+        "arg1",
+        "--arg2='aa aa'",
+        "--arg3=\"aa aa\""
+      ]
+    }
+  ]
+}"#;
+        let config: Config = load_from_str(serialized);
+        println!("config = {:?}", config);
+        assert_eq!(config.shape_button, MouseButton::Right);
+        let binding = &config.bindings[0];
+        assert_eq!(
+            binding.cmd_str,
+            "xlogo arg1 --arg2='aa aa' --arg3=\"aa aa\""
+        );
+        assert_eq!(
+            &binding.cmd[..],
+            vec!["xlogo", "arg1", "--arg2='aa aa'", "--arg3=\"aa aa\""]
+        );
         assert_eq!(binding.event.button, MouseButton::Left);
         assert_eq!(binding.event.edges[0], Edge::Top);
         assert_eq!(binding.event.edges[1], Edge::Left);

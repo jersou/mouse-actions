@@ -1,6 +1,6 @@
 pub mod args;
 pub mod binding;
-pub mod cmd_from_string;
+pub mod cmd_str_spliter;
 pub mod compare_angles;
 pub mod config;
 pub mod event;

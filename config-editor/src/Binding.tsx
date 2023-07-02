@@ -109,12 +109,12 @@ export function Binding({
             style={{ flex: 1, marginTop: 10, marginBottom: 10 }}
             label="Command"
             variant="outlined"
-            value={JSON.stringify(binding.cmd)}
+            value={binding.cmd_str}
             onChange={(e) => {
               setBinding?.(
                 structuredClone({
                   ...binding,
-                  cmd: JSON.parse(e.target.value),
+                  cmd_str: e.target.value,
                 })
               );
             }}

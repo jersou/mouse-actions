@@ -2,11 +2,11 @@ use std::io::stdin;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use log::{debug, error, info};
+use log::{debug, info};
 
 use crate::args::Args;
 use crate::binding::Binding;
-use crate::cmd_from_string::cmd_from_str;
+use crate::cmd_str_spliter::str_cmd_to_array;
 use crate::config::{save_config, Config};
 use crate::event;
 use crate::event::EventType::Shape;
@@ -57,24 +57,20 @@ pub fn record_event(config: Arc<Mutex<Config>>, event: ClickEvent, args: Arc<Arg
                             event.event_type = Shape;
                         }
 
-                        match cmd_from_str(cmd_string) {
-                            Ok(cmd) => {
-                                let binding = Binding {
-                                    comment,
-                                    event,
-                                    cmd,
-                                };
-                                info!("push : {binding:#?}");
-                                config.lock().unwrap().bindings.push(binding);
-                                save_config(&config.lock().unwrap(), &args.config_path);
-                                // FIXME
-                                println!(
-                                    "\nStart record event : draw a shape with the {:?} button :",
-                                    config.lock().unwrap().shape_button
-                                );
-                            }
-                            Err(err) => error!("Error while command parsing : {:#?}", err),
+                        let binding = Binding {
+                            comment,
+                            event,
+                            cmd: str_cmd_to_array(cmd_string),
+                            cmd_str: String::new(),
                         };
+                        info!("push : {binding:#?}");
+                        config.lock().unwrap().bindings.push(binding);
+                        save_config(&config.lock().unwrap(), &args.config_path);
+                        // FIXME
+                        println!(
+                            "\nStart record event : draw a shape with the {:?} button :",
+                            config.lock().unwrap().shape_button
+                        );
                     } else {
                         std::process::exit(0);
                     }

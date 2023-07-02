@@ -48,7 +48,7 @@ export type EventType = {
 export type BindingType = {
   uid?: string;
   comment: string;
-  cmd: string[];
+  cmd_str: string;
   event: EventType;
 };
 
