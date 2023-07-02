@@ -1,8 +1,10 @@
 use fancy_regex::Regex;
+use lazy_static::lazy_static;
 
 pub fn str_cmd_to_array(cmd_str: &str) -> Vec<String> {
-    let re = Regex::new(
-        r#"(?x)
+    lazy_static! {
+        static ref RE: Regex = Regex::new(
+            r#"(?x)
                               (?<=\s|^)(?<!\\)'
                               (?<quoted1>(?:[^']|\\')*)
                               (?<!\\)'(?=\s|$)
@@ -25,10 +27,11 @@ pub fn str_cmd_to_array(cmd_str: &str) -> Vec<String> {
                                 )
                               +)
                           "#,
-    )
-    .unwrap();
+        )
+        .unwrap();
+    }
 
-    re.captures_iter(cmd_str)
+    RE.captures_iter(cmd_str)
         .map(|caps| caps.unwrap())
         .map(|caps| {
             if let Some(p) = caps.name("quoted1") {
@@ -55,9 +58,10 @@ pub fn str_array_cmd_to_str_cmd(cmd_array: &Vec<String>) -> String {
 
 // return the one command string version of an element of the command array version
 pub fn quote_cmd_part(cmd_part: &str) -> String {
-    let re_double_quoted = Regex::new(r#"^"(?:[^"]|\\")*"$"#).unwrap();
-    let re = Regex::new(
-        r#"(?x)
+    lazy_static! {
+        static ref RE_DOUBLE_QUOTED: Regex = Regex::new(r#"^"(?:[^"]|\\")*"$"#).unwrap();
+        static ref RE: Regex = Regex::new(
+            r#"(?x)
                                             ^(?:
                                                   [^\s]+
                                                 |
@@ -70,15 +74,15 @@ pub fn quote_cmd_part(cmd_part: &str) -> String {
                                                     (?<!\\)"
                                             )+
                                             $"#,
-    )
-    .unwrap();
-
-    if re_double_quoted.is_match(cmd_part).unwrap() {
+        )
+        .unwrap();
+    }
+    if RE_DOUBLE_QUOTED.is_match(cmd_part).unwrap() {
         format!(
             "\"{}\"",
             cmd_part.replace('\\', r#"\\"#).replace('"', r#"\""#)
         )
-    } else if re.is_match(cmd_part).unwrap() {
+    } else if RE.is_match(cmd_part).unwrap() {
         cmd_part.to_string()
     } else {
         format!("\"{}\"", cmd_part.replace('"', r#"\""#))
