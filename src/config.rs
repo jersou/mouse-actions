@@ -9,6 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use std::{env, fs, thread};
 
+use lazy_static::lazy_static;
 use log::{debug, error, info, trace};
 use notify::event::AccessKind::Close;
 use notify::EventKind::Access;
@@ -214,10 +215,8 @@ pub fn get_json_config(args: &Args) -> String {
     serialized
 }
 
-pub fn is_wayland() -> bool {
-    let is_wayland = env::var("WAYLAND_DISPLAY").is_ok();
-    debug!("is_wayland = {is_wayland}");
-    is_wayland
+lazy_static! {
+    pub static ref IS_WAYLAND: bool = env::var("WAYLAND_DISPLAY").is_ok();
 }
 
 #[cfg(test)]

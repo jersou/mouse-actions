@@ -10,7 +10,7 @@ use log::{debug, error, info, trace};
 use rdev::GrabError;
 
 use crate::args::{Args, MouseActionsCommands};
-use crate::config::{get_config_from_args, is_wayland};
+use crate::config::{get_config_from_args, IS_WAYLAND};
 use crate::single_instance::get_instance;
 use crate::{config, grab, process_event, record, single_instance};
 
@@ -41,7 +41,7 @@ pub fn process_args(args: Args) {
 
     trace!("version : {}", get_version());
     trace!("args = {args:#?}!");
-    if !args.no_listen && is_wayland() {
+    if !args.no_listen && *IS_WAYLAND {
         info!("Wayland detected : enable --no-listen option");
         let mut new_args = args.deref().clone();
         new_args.no_listen = true;
