@@ -14,7 +14,7 @@ commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
 For instance, you can configure:
 
-* a click on the top left corner of the screen to go to the first desktop,
+* a click in the top left corner of the screen to go to the first desktop,
 * a middle click on the top side of the screen to play/pause the media,
 * scroll from the left side to increase/decrease the brightness of the
   screen,
@@ -33,14 +33,17 @@ The GUI to configure the application :
 Bind command execution with mouse button/wheel events (this conditions bellow
 are optional):
 
-* shape drawing with the mouse (like Easystroke)
-* press/release only or click (don't propagate the press & release event)
-* with some modifiers : shift/Ctrl/Alt...
-* with screen edge : Top/Left...
-* auto reload config on changes
-* fast shape recognition : ~200µs (0.0002 sec) for a config with 30 shapes
-* fast event without shape processing : ~30µs (0.00003 sec)
-* works under Wayland but with limitations, see the "Platform compatibility"
+* Shape drawing with the mouse (like Easystroke)
+* Press/release only or click (don't propagate the press & release event)
+* With some modifiers : shift/Ctrl/Alt...
+* With screen edge : Top/Left...
+* Auto reload config on changes
+* Very low resource usage
+    * Fast shape recognition : ~200µs (0.0002 sec) for a config with 30 shapes
+    * Fast event without shape processing : ~30µs (0.00003 sec)
+    * CPU : ~7 sec CPU usage per hour (~0.2%)
+    * RAM : 5.6 Mo (GUI less version)
+* Works under Wayland but with limitations, see the "Platform compatibility"
   section below.
 
 ## Project status
@@ -66,7 +69,7 @@ half of which by shape bindings.
 [Download the release](https://github.com/jersou/mouse-actions/releases), the 2
 release binaries `mouse-actions` and `mouse-actions-gui` are standalone (but use
 the same configuration), the avantage of using GUI less version is the RAM
-usage : 6.6 Mo vs 34 Mo.
+usage : 5.6 Mo vs 34 Mo.
 
 The gui unbundled standalone binary need this packages :
 
