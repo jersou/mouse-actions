@@ -38,7 +38,10 @@ are optional):
 * with some modifiers : shift/Ctrl/Alt...
 * with screen edge : Top/Left...
 * auto reload config on changes
-* fast shape recognition ~200µs (0.0002 sec) for a config with 30 shapes
+* fast shape recognition : ~200µs (0.0002 sec) for a config with 30 shapes
+* fast event without shape processing : ~30µs (0.00003 sec)
+* works under Wayland but with limitations, see the "Platform compatibility"
+  section below.
 
 ## Project status
 
@@ -155,6 +158,8 @@ Notes:
 
 * Edge screen event doesn't work with Wayland.
 * but the mouse shape actions works !
+* #8 `Gesture button is 'stolen' on Wayland`, this bug should be fixed in the
+  future
 * xdotool doesn't work on Wayland, use ydotool or other alternatives to simulate
   keyboard event.
 
@@ -380,16 +385,16 @@ cargo audit
 * fix rdev
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
-    * pull request/contribute/modify rdev without checkout it in this repo (
+    * pull request/contribute/modify rdev without fork it in this repo (
       mouse btn add & fix devices setup/Delete notify)
 * reset the modifiers/button state at root loop restart
-* cancel shape if no move after few ms (400 ms ?)
+* #8 Gesture button is 'stolen' on Wayland
 
 ### Medium
 
+* cancel shape if no move after few ms (400 ms ?)
 * CI: build the releases https://github.com/tauri-apps/tauri-action
 * add ARM64 target
-* create ~/.config if it doesn't exist
 * fix exec cmd not found
   error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * fix `TODO` and `FIXME`
@@ -399,6 +404,7 @@ cargo audit
 
 ### Low
 
+* create ~/.config if it doesn't exist
 * use https://crates.io/crates/deno_task_shell to execute commands ?
 * use https://github.com/hoodie/notify-rust
 * a better Readme
