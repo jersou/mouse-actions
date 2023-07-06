@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4] - 2023-07-07
+
+### Bug Fixes
+
+* fix app crash or hang on new device event : the new device detection is now
+  disabled (a better fix might be found later)
+
 ## [0.4.3] - 2023-07-02
 
 ### Features

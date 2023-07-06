@@ -64,6 +64,13 @@ half of which by shape bindings.
 * when a device (like mouse or bluetooth earphone ) is added, the cursor freeze
   while 2 seconds or the mouse_actions program may crash.
 
+**→ a fix (2023-07-07) disable the detection of new devices from rdev → no
+crash but new devices may not be usable with MA without restarting it**
+
+* On PC suspend, the mouse_actions program may crash
+* On wayland, the gesture button event is not propagated if there are no
+  detected gesture #8.
+
 ## Install / run
 
 [Download the release](https://github.com/jersou/mouse-actions/releases), the 2

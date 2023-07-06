@@ -1811,7 +1811,7 @@ dependencies = [
 
 [[package]]
 name = "mouse_actions"
-version = "0.4.3"
+version = "0.4.4"
 dependencies = [
  "anyhow",
  "arrayvec",
@@ -1835,7 +1835,7 @@ dependencies = [
 
 [[package]]
 name = "mouse_actions_config_editor"
-version = "0.4.3"
+version = "0.4.4"
 dependencies = [
  "mouse_actions",
  "serde",
