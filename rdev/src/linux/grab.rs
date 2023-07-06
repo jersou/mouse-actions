@@ -495,7 +495,8 @@ where
 
 fn inotify_devices() -> io::Result<Inotify> {
     let mut inotify = Inotify::init()?;
-    inotify.add_watch(DEV_PATH, WatchMask::CREATE)?;
+    // FIXME
+    // inotify.add_watch(DEV_PATH, WatchMask::CREATE)?;
     Ok(inotify)
 }
 
