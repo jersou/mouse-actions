@@ -390,32 +390,32 @@ cargo audit
 
 ### High
 
+* #8 Gesture button is 'stolen' on Wayland
 * config file for /dev/input/event* in /etc/udev/rules.d/? instead of the
   usermod if possible, script to create this file, add to the deb package, ...
+
+### Medium
+
+* CI: build the releases https://github.com/tauri-apps/tauri-action
+* change config : if shape → (no need button in binding) or (rm shape_btn :
+  several button for shape event is then possible)
+* cancel shape if no move after few ms (400 ms ?)
+* fix `TODO` and `FIXME`
 * fix rdev
+    * reset the modifiers/button state at root loop restart
     * fix rdev devices delete/update: the FIXME "inotify CREATE but not DELETE
       in grab::inotify_devices()" in rdev/src/linux/grab.rs:493
     * pull request/contribute/modify rdev without fork it in this repo (
       mouse btn add & fix devices setup/Delete notify)
-* reset the modifiers/button state at root loop restart
-* #8 Gesture button is 'stolen' on Wayland
-
-### Medium
-
-* cancel shape if no move after few ms (400 ms ?)
-* CI: build the releases https://github.com/tauri-apps/tauri-action
-* add ARM64 target
-* fix exec cmd not found
-  error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
-* fix `TODO` and `FIXME`
-* change config : if shape → (no need button in binding) or (rm shape_btn :
-  several button for shape event is then possible)
-* support Windows & macOS
+* add ARM64 target #6
 
 ### Low
 
+* re-enable the new device detection, disabled by the v0.4.4
+* support Windows & macOS
+* fix exec cmd not found
+  error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * create ~/.config if it doesn't exist
-* use https://crates.io/crates/deno_task_shell to execute commands ?
 * use https://github.com/hoodie/notify-rust
 * a better Readme
 * improve shape recognition
@@ -432,6 +432,7 @@ cargo audit
 
 ### Maybe
 
+* use https://crates.io/crates/deno_task_shell to execute commands ?
 * release a debug version and a gui-less version ?
 * options
     * dry-run option
