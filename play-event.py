@@ -64,55 +64,7 @@ def fetch(yaml, key):
     except KeyError:
         raise YamlException("Failed to get '{}' from recording.".format(key))
 
-
-def check_udev_properties(yaml_data, uinput):
-    """
-    Compare the properties our new uinput device has with the ones from the
-    recording and ring the alarm bell if one of them is off.
-    """
-    #yaml_udev_section = fetch(yaml_data, "udev")
-    #yaml_udev_props = fetch(yaml_udev_section, "properties")
-    #yaml_props = {
-    #    k: v for (k, v) in [prop.split("=", maxsplit=1) for prop in yaml_udev_props]
-    #}
-    #try:
-    #    # We don't assign this one to virtual devices
-    #    del yaml_props["LIBINPUT_DEVICE_GROUP"]
-    #except KeyError:
-    #    pass
-
-    # give udev some time to catch up
-    time.sleep(0.1)
-    #context = pyudev.Context()
-    #udev_device = pyudev.Devices.from_device_file(context, uinput.devnode)
-    #for name, value in udev_device.properties.items():
-    #    if name in yaml_props:
-    #        if yaml_props[name] != value:
-    #            error(
-    #                f"Warning: udev property mismatch: recording has {name}={yaml_props[name]}, device has {name}={value}"
-    #            )
-    #        del yaml_props[name]
-    #    else:
-    #        # The list of properties we add to the recording, see libinput-record.c
-    #        prefixes = (
-    #            "ID_INPUT",
-    #            "LIBINPUT",
-    #            "EVDEV_ABS",
-    #            "MOUSE_DPI",
-    #            "POINTINGSTICK_",
-    #        )
-    #        for prefix in prefixes:
-    #            if name.startswith(prefix):
-    #                error(f"Warning: unexpected property: {name}={value}")
-
-    # the ones we found above were removed from the dict
-    #for name, value in yaml_props.items():
-    #    error(f"Warning: device is missing recorded udev property: {name}={value}")
-
-
 def create(device):
-  
-
     evdev = fetch(device, "evdev")
 
     d = libevdev.Device()
@@ -150,8 +102,6 @@ def create(device):
 
     uinput = d.create_uinput_device()
 
-    #check_udev_properties(device, uinput)
-    
     # give udev some time to catch up
     #time.sleep(0.2)
     time.sleep(0.1)
@@ -173,7 +123,6 @@ def print_events(devnode, indent, evs):
                 e.value,
             )
         )
-
 
 def collect_events(frame):
     evs = []
@@ -303,7 +252,6 @@ def main():
         default=276,
         help="Button code for evdev",
     )
-
 
     # BTN_LEFT   = 272
     # BTN_RIGHT  = 273
