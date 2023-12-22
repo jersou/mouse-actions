@@ -24,12 +24,12 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^7.0.4",
+    "@storybook/addon-essentials": "^7.5.0",
     "@storybook/addon-interactions": "^7.0.4",
     "@storybook/addon-links": "^7.0.4",
     "@storybook/blocks": "^7.0.4",
     "@storybook/react": "^7.0.4",
-    "@storybook/react-vite": "^7.0.4",
+    "@storybook/react-vite": "^7.5.0",
     "@storybook/testing-library": "^0.0.14-next.2",
     "@tauri-apps/cli": "^1.4.0",
     "@types/node": "^18.7.10",
@@ -39,7 +39,7 @@
     "lodash": "^4.17.21",
     "prettier": "^2.8.7",
     "prop-types": "^15.8.1",
-    "storybook": "^7.0.4",
+    "storybook": "^7.5.0",
     "typescript": "^5.0.4",
     "vite": "^4.2.3"
   }
