@@ -1,13 +1,13 @@
-use anyhow::{anyhow, Context};
-use fs2::FileExt;
-use log::info;
-use rustix::path::Arg;
-use rustix::process::{kill_process, Pid, Signal};
+use std::{env, fs, process};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::thread::sleep;
 use std::time::Duration;
-use std::{env, fs, process};
+
+use anyhow::{anyhow, Context};
+use fs2::FileExt;
+use log::info;
+use rustix::process::{kill_process, Pid, Signal};
 use users::get_current_username;
 
 pub fn kill() -> anyhow::Result<bool> {
@@ -52,7 +52,7 @@ pub fn get_pid_file_path() -> PathBuf {
     let username = get_current_username();
     env::temp_dir().join(format!(
         "mouse_actions_{}.pid",
-        username.unwrap().as_str().unwrap()
+        username.unwrap().to_str().unwrap()
     ))
 }
 

@@ -1,6 +1,6 @@
 [package]
 name = "mouse_actions_config_editor"
-version = "0.4.4"
+version = "0.4.5"
 description = "Mouse Actions Config Editor"
 authors = ["Jerem <jersou@gmail.com>"]
 repository = "https://github.com/jersou/mouse-actions"

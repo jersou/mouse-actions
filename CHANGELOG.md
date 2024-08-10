@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.5] - 2024-08-10
+
+* update dependencies
+
 ## [0.4.4] - 2023-07-07
 
 ### Bug Fixes
