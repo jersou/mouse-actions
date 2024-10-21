@@ -1,9 +1,10 @@
 use std::ops::{Deref, Mul};
 use std::os::unix::process::CommandExt;
-use std::process::{exit, Command};
+use std::process::exit;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use std::{thread, time};
+use tokio::process::Command;
 
 use log::{debug, error, info, trace, warn};
 use rdev::{simulate, EventType};
@@ -259,19 +260,18 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
 
 #[cfg(unix)]
 pub fn process_cmd(cmd: Vec<String>) {
-    thread::Builder::new()
-        .name("process_cmd".to_string())
-        .spawn(move || {
-            info!("     → cmd {:?}", cmd);
-            let res = Command::new(&cmd[0])
-                .env_remove("RUST_LOG")
-                .args(&cmd[1..])
-                .process_group(0)
-                .spawn();
-
-            trace!("spawn result : {:?}", res);
-        })
-        .unwrap();
+    info!("     → cmd {:?}", cmd);
+    tokio::spawn(async move {
+        let res = Command::new(&cmd[0])
+            .env_remove("RUST_LOG")
+            .args(&cmd[1..])
+            .process_group(0)
+            .kill_on_drop(true)
+            .spawn()
+            .unwrap()
+            .wait()
+            .await;
+    });
 }
 
 #[cfg(windows)]

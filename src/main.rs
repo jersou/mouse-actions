@@ -13,6 +13,7 @@ pub mod record;
 pub mod single_instance;
 pub mod trace_svg;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     process_args::main()
 }

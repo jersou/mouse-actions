@@ -1,8 +1,8 @@
-use std::{env, fs, process};
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::thread::sleep;
 use std::time::Duration;
+use std::{env, fs, process};
 
 use anyhow::{anyhow, Context};
 use fs2::FileExt;

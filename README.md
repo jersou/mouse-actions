@@ -433,6 +433,7 @@ cargo audit
 * use rdev send() ? → cmd OR sendKeys in bindings (or autopilot-rs) :  trigger
   keyboard event as action (avoid xdotool usage in
   cmd) : https://github.com/Narsil/rdev#sending-some-events
+* check [Tauri issue](https://github.com/tauri-apps/tauri/issues/9304) for #38
 
 ### Maybe
 

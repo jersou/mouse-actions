@@ -25,6 +25,8 @@ tempfile = "3.5.0"
 rustix = { version = "0.37.25", features = ["process"] }
 users = "0.11.0"
 fancy-regex = "0.11.0"
+tokio = { version = "1.40.0", features = ["process", "rt", "rt-multi-thread", "macros"] }
+tokio-macros = "2.4.0"
 
 [build-dependencies]
 vergen = { version = "8.1.1", features = ["build", "git", "gitcl", "cargo"] }
