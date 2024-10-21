@@ -70,6 +70,9 @@ crash but new devices may not be usable with MA without restarting it**
 * On PC suspend, the mouse_actions program may crash
 * On wayland, the gesture button event is not propagated if there are no
   detected gesture #8.
+* Under Linux with Nvidia gpu, the GUI window is blank #38, [it's an open bug
+  of Tauri](https://github.com/tauri-apps/tauri/issues/9304) but there is a
+  workaround : set the env var `WEBKIT_DISABLE_DMABUF_RENDERER=1`
 
 ## Install / run
 
@@ -414,7 +417,8 @@ cargo audit
 * re-enable the new device detection, disabled by the v0.4.4
 * support Windows & macOS
 * fix exec cmd not found
-  error `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
+  error
+  `Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })`
 * create ~/.config if it doesn't exist
 * use https://github.com/hoodie/notify-rust
 * a better Readme
