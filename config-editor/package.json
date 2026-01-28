@@ -39,7 +39,7 @@
     "lodash": "^4.17.21",
     "prettier": "^2.8.7",
     "prop-types": "^15.8.1",
-    "storybook": "^7.5.0",
+    "storybook": "^10.2.1",
     "typescript": "^5.0.4",
     "vite": "^7.1.7"
   }
