@@ -12,6 +12,19 @@ It's a mix between [Easystroke](https://github.com/thjaeger/easystroke)
 and [Compiz edge
 commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
+----
+**[!NOTE 2026-08-29]**
+Work in progress! A major rewrite is currently underway to address key open issues and roadmap features:
+* Wayland support, including screen edge triggers.
+* Application-aware events based on the currently focused window.
+* Absolute positioning devices (graphics tablets, touchscreens, etc.).
+* Rocker gestures (e.g., Left + Right click combinations).
+* Modifier sequence events (e.g., double-tap Ctrl).
+* Direct evdev integration (dropping rdev) to fix device handling issues.
+* Future goal: ESP32-based Bluetooth KVM support.
+----
+
+
 For instance, you can configure:
 
 * a click in the top left corner of the screen to go to the first desktop,
