@@ -4,9 +4,10 @@ use std::process::{exit, Command};
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 use std::{thread, time};
+use std::fmt;
 
 use log::{debug, error, info, trace, warn};
-use rdev::{simulate, EventType};
+use rdev::{simulate, EventType, Button};
 
 use crate::args::Args;
 use crate::binding::Binding;
@@ -213,6 +214,8 @@ pub fn grab_one_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<
     true
 }
 
+
+
 /// Execute the command of the event if the corresponding binding is found.
 /// return false if the event must not be propagated
 pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<Args>) -> bool {
@@ -240,14 +243,35 @@ pub fn process_event(config: Arc<Mutex<Config>>, event: ClickEvent, _args: Arc<A
             propagate = false;
             let rdev_btn = config.shape_button.to_rdev_event();
 
-            trace!("simulate");
-            simulate(&EventType::ButtonPress(rdev_btn))
+            debug!("simulate");
+            debug!("event shape_angles: {}", event.shapes_angles.first().unwrap().len());
+            /*simulate(&EventType::ButtonPress(rdev_btn))
                 .map_err(|err| error!("simulate err: {:?}", err))
                 .ok();
             thread::sleep(time::Duration::from_millis(10));
             simulate(&EventType::ButtonRelease(rdev_btn))
                 .map_err(|err| error!("simulate err: {:?}", err))
-                .ok();
+                .ok(); */
+            //if(rdev_btn == Button::Extra){
+            let code = match rdev_btn {
+                Button::Left   => 272,
+                Button::Right  => 273,
+                Button::Middle => 274,
+                Button::Side   => 275,
+                Button::Extra  => 276,
+                Button::Forward=> 277,
+                Button::Back   => 278,
+                Button::Task   => 279,
+                _ => 274
+            };
+            process_cmd(vec!["play-event.py".to_string(),"--code".to_string(), code.to_string()]);
+            debug!("button attemped={:?}", rdev_btn);
+            //} else if(rdev_btn == Button::Right){
+            //    process_cmd(vec!["libinput".to_string(),"replay".to_string(),"--once".to_string(),"--replay-after".to_string(),"0".to_string(),"/home/spaceslug/Projects/mouse-actions/right-button.yaml".to_string()]);
+            //    debug!("button extra attemped");
+            //} else {
+            //    debug!("no simulate attemped");
+            //}
         }
     }
     trace!("propagate = {propagate}");
