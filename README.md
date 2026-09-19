@@ -13,15 +13,33 @@ and [Compiz edge
 commands](http://wiki.compiz.org/CCSM#Mouse_Buttons).
 
 ----
-**[!NOTE 2026-08-29]**
-Work in progress! A major rewrite is currently underway to address key open issues and roadmap features:
-* Wayland support, including screen edge triggers.
-* Application-aware events based on the currently focused window.
-* Absolute positioning devices (graphics tablets, touchscreens, etc.).
-* Rocker gestures (e.g., Left + Right click combinations).
-* Modifier sequence events (e.g., double-tap Ctrl).
-* Direct evdev integration (dropping rdev) to fix device handling issues.
-* Future goal: ESP32-based Bluetooth KVM support.
+
+* **NOTE (2026-08-29) - Work in Progress**: A major rewrite is underway to address key open issues and roadmap features.
+  * **2026-09-19 Update**: The active alpha version currently supports (with a few known bugs):
+    * [x] Previous MA features (edge/gesture triggers) without the config GUI
+    * [x] Wayland support, including screen edge triggers (**some bugs remaining**)
+    * [x] Absolute positioning devices (graphics tablets, touchscreens, etc.) (**some bugs remaining**)
+    * [x] Application-aware events based on the active window
+    * [x] Rocker gestures (e.g., Left + Right click combinations)
+    * [x] Modifier sequence events (e.g., double-tap Ctrl)
+    * [x] Direct evdev integration (replacing `rdev`) to fix device handling issues
+    * [x] Input states exposure via environment variables in shell commands
+    * [x] Cursor shaking for notifications
+    * [x] Direct event emission from MA (removing the need for `xdotool`, etc.)
+    * [x] Action throttling
+    * [x] Live pattern drawing on screen
+    * [x] Edge detection without clicking
+    * [x] Device selection via whitelist/blacklist
+    * [x] Keyboard-only triggers
+    * [x] Multiple actions per binding
+    * [x] Toggleable statistics (click count, distance traveled, trigger count, etc.)
+    * [x] Visual feedback for triggers (very basic for now)
+    * [x] Fixes for issues: #3, #14, #16, #20, #23, #31, #32, #46, #49, #61, #63, #67, #74, #86, #95, #102, #103
+* **Roadmap**:
+  * [ ] ESP32-based Bluetooth KVM support: switch input target to a Bluetooth virtual keyboard/mouse
+  * [ ] Configuration GUI update for new features
+  * [ ] Basic selection wheel action (GUI)
+
 ----
 
 
